@@ -73,6 +73,12 @@ services:
       FONTE_CURVA_PASSWORD: ons_lab
       # Conexao unica usada nos exemplos da aula ETL I (extracao da carga).
       PG_DSN: postgresql://ons_lab:ons_lab@fonte-curva:5432/curva
+      # Aula ETL II: API de clima com defeitos e armazenamento S3 (RustFS).
+      CLIMA_URL: http://api-clima:8080/v1/archive
+      S3_ENDPOINT: http://rustfs:9000
+      S3_ACCESS_KEY: ons_lab
+      S3_SECRET_KEY: ons_lab_s3
+      S3_BUCKET: aula2
       DESTINO_HOST: destino
       DESTINO_PORT: "5432"
       DESTINO_DB: analytics
@@ -86,12 +92,52 @@ services:
         condition: service_healthy
       destino:
         condition: service_healthy
+      api-clima:
+        condition: service_healthy
+      rustfs:
+        condition: service_healthy
     volumes:
       - ./:/work
     networks: [etl-net]
     command: ["python", "--version"]
 
+  # Aula ETL II: imita a Historical Weather da Open-Meteo, com defeitos de proposito.
+  api-clima:
+    build:
+      context: ./docker/etl
+    image: pecege-ons-etl:local
+    working_dir: /work
+    command: ["python", "servicos/api_clima.py"]
+    volumes:
+      - ./:/work:ro
+    networks: [etl-net]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/saude')"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Aula ETL II: armazenamento de objetos compativel com S3. O console web fica
+  # em http://localhost:9001/rustfs/console/ (usuario ons_lab, senha ons_lab_s3).
+  rustfs:
+    image: rustfs/rustfs:1.0.3
+    environment:
+      RUSTFS_ACCESS_KEY: ons_lab
+      RUSTFS_SECRET_KEY: ons_lab_s3
+      RUSTFS_CONSOLE_ENABLE: "true"
+    volumes:
+      - rustfs_data:/data
+    ports:
+      - "127.0.0.1:${RUSTFS_CONSOLE_PORT:-9001}:9001"
+    networks: [etl-net]
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1:9000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
 volumes:
+  rustfs_data:
   balanco_data:
   curva_data:
   destino_data:

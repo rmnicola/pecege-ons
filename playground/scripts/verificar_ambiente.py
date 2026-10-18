@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Verifica se o ambiente da aula ETL I esta pronto.
+"""Verifica se o ambiente das aulas ETL I e II esta pronto.
 
 Confere, em ordem: bibliotecas Python, conexao com a fonte PostgreSQL
-(PG_DSN), acesso a API Historical Weather da Open-Meteo e gravacao na
-pasta saida/. Nao altera dados das fontes.
+(PG_DSN), acesso a API Historical Weather da Open-Meteo, a API de clima
+local e o armazenamento S3 da aula ETL II, e gravacao na pasta saida/.
+Nao altera dados das fontes.
 
 Uso:
     docker compose run --rm etl python scripts/verificar_ambiente.py
@@ -29,7 +30,7 @@ def registrar(item: str, ok: bool, detalhe: str) -> None:
 
 def verificar_bibliotecas() -> None:
     faltando = []
-    for nome in ("psycopg", "httpx", "pandas"):
+    for nome in ("psycopg", "httpx", "pandas", "pyarrow", "boto3"):
         try:
             __import__(nome)
         except ImportError:
@@ -38,7 +39,7 @@ def verificar_bibliotecas() -> None:
         registrar("bibliotecas", False,
                   f"faltando {', '.join(faltando)}; rode: docker compose build etl")
     else:
-        registrar("bibliotecas", True, "psycopg, httpx e pandas disponiveis")
+        registrar("bibliotecas", True, "psycopg, httpx, pandas, pyarrow e boto3 disponiveis")
 
 
 def verificar_postgres() -> None:
@@ -82,6 +83,44 @@ def verificar_open_meteo() -> None:
     registrar("Open-Meteo", horas == 24, f"{horas} horas recebidas para um dia")
 
 
+def verificar_api_local() -> None:
+    url = os.environ.get("CLIMA_URL")
+    if not url:
+        registrar("API de clima local", False, "variavel CLIMA_URL ausente; confira compose.yaml")
+        return
+    try:
+        import httpx
+        resposta = httpx.get(url, params={
+            "latitude": -1.46, "longitude": -48.49,
+            "start_date": "2025-01-01", "end_date": "2025-01-01",
+            "hourly": "temperature_2m",
+        }, timeout=10.0)
+        resposta.raise_for_status()
+        horas = len(resposta.json()["hourly"]["time"])
+    except Exception as erro:  # noqa: BLE001 - mensagem para o aluno
+        registrar("API de clima local", False, f"{type(erro).__name__}: {erro} | rode ./preparar.sh de novo")
+        return
+    registrar("API de clima local", horas == 24, f"{horas} horas recebidas para um dia")
+
+
+def verificar_armazenamento() -> None:
+    try:
+        import boto3
+        from botocore.config import Config
+        s3 = boto3.client(
+            "s3", endpoint_url=os.environ["S3_ENDPOINT"],
+            aws_access_key_id=os.environ["S3_ACCESS_KEY"],
+            aws_secret_access_key=os.environ["S3_SECRET_KEY"],
+            region_name="us-east-1", config=Config(s3={"addressing_style": "path"}),
+        )
+        bucket = os.environ["S3_BUCKET"]
+        s3.head_bucket(Bucket=bucket)
+    except Exception as erro:  # noqa: BLE001 - mensagem para o aluno
+        registrar("armazenamento S3", False, f"{type(erro).__name__}: {erro} | rode ./preparar.sh de novo")
+        return
+    registrar("armazenamento S3", True, f"bucket {bucket} disponivel no RustFS")
+
+
 def verificar_saida() -> None:
     teste = SAIDA / ".teste_gravacao"
     try:
@@ -100,6 +139,8 @@ def main() -> int:
     verificar_bibliotecas()
     verificar_postgres()
     verificar_open_meteo()
+    verificar_api_local()
+    verificar_armazenamento()
     verificar_saida()
     falhas = [item for item, ok, _ in resultados if not ok]
     print()

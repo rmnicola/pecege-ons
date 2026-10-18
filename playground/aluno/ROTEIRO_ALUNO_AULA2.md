@@ -1,60 +1,39 @@
-# Aula 2 — roteiro operacional do aluno
+# Aula 2 — roteiro do aluno
 
-Use o ambiente da aula1, previamente preparado. A cópia `laboratorio.*` contém alterações didáticas para investigação; os dados oficiais estão preservados. Não refaça o setup com `00` sem necessidade de reiniciar o laboratório.
+Todos os comandos rodam dentro de `playground/`.
 
-## 1. Extrair as entradas
-
-```sh
-docker compose run --rm etl python scripts/01_extrair_balanco.py --cenario aula2
-docker compose run --rm etl python scripts/02_extrair_curva.py --cenario aula2
-```
-
-As staging `aula2.stg_*` preservam o conteúdo recebido como texto. Registre fontes e inspecione entradas antes de propor transformações.
-
-## 2. Verificar se é possível integrar
+## 0. Atualizar o ambiente
 
 ```sh
-docker compose run --rm etl python scripts/03_integrar.py --cenario aula2
+git pull
+./preparar.sh
 ```
 
-A rejeição com código de saída2 faz parte do exercício. Leia a causa e consulte `aula2.integracao_rejeitada`; identifique o requisito violado e o que investigar.
+O script atualiza a imagem e sobe dois serviços novos: a API de clima local e o RustFS, um armazenamento de objetos compatível com S3. A verificação final mostra seis linhas `[OK]`.
 
-## 3. Diagnosticar
+## 1. Conhecer as fontes da aula 2
+
+O código de `aluno/aula2/` é o pipeline em peças da aula 1, com duas fontes trocadas:
+
+- `CargaPostgres` lê `laboratorio.curva_horaria`, uma cópia didática da Curva de Carga em que **todas as colunas chegam como texto**.
+- `ClimaApi` consulta a API local (`CLIMA_URL`), no mesmo formato da Open-Meteo, e devolve também a coluna `unidade`.
+
+As duas fontes trazem problemas de propósito. Eles não estão listados: investigue.
+
+## 2. Desafio, parte 1: dados limpos
+
+Complete `limpar_carga` e `limpar_clima` em `aluno/aula2/transformacoes.py` e rode:
 
 ```sh
-docker compose run --rm etl python scripts/04_diagnosticar.py
-docker compose exec destino psql -U ons_lab -d analytics
+docker compose run --rm etl python aluno/aula2/executar.py
 ```
 
-Escreva as consultas de `aluno/exercicios_aula2.sql`. Examine `aula2.diagnostico_*`, distinguindo ausências, cobertura, conflitos, formatos e valores suspeitos. Normalizar a chave ajuda a reconhecer conflitos sem sobrescrever o bruto.
+O resultado é `saida/dados_limpos.csv`, uma linha por subsistema e hora (01 a 07/01/2025), com as colunas da aula 1 e duas marcas novas, `carga_mwmed_imputado` e `temperatura_c_imputado`, que dizem quais valores você preencheu ou substituiu.
 
-## 4. Propor e executar políticas
+Para cada correção, escreva a regra e o motivo num comentário. Não existe uma única resposta certa; existe regra explícita e justificada.
 
-Antes de tratar, registre problema, evidência, regra, ação e efeito esperado. Em seguida:
+## 3. Desafio, parte 2: Parquet no S3
 
-```sh
-docker compose run --rm etl python scripts/05_tratar.py
-```
+Complete `ParquetS3` em `aluno/aula2/destinos.py`, troque o destino em `executar.py` e rode de novo. O arquivo deve aparecer em `s3://aula2/carga_clima/dados.parquet`.
 
-Inspecione `aula2.limpo_*`, `aula2.quarentena`, `aula2.lacunas` e flags. Compare sua proposta com a implementação. Esse script integra a saída tratada após verificar unicidade; não repetir `03` como se ele integrasse as tabelas limpas.
-
-### Experimento com parâmetros
-
-Edite `aluno/parametros_aula2.json`, um parâmetro por vez. Registre hipótese e compare efeitos:
-
-- `mult_iqr` e `fator_mediana`: reexecute04e05; investigue valores sinalizados ou na quarentena didática. Justifique o critério: limiar estatístico não prova impossibilidade física.
-- `imputar`: extensão opcional. Reexecute05; a implementação preenche lacunas de registro pela mediana da mesma hora, não células existentes. Registre hipótese, grupo, flags e limite de valor(min/max), que não é limite de comprimento da lacuna.
-
-Restaure os parâmetros iniciais ao terminar e mantenha o arquivo utilizado como evidência.
-
-## 5. Avaliar a saída
-
-```sh
-docker compose run --rm etl python scripts/06_avaliar.py
-```
-
-Compare cenários em `aula2.avaliacao_indicadores`, especificando medida, grupo, unidade e denominador. A referência limpa é recurso didático de avaliação, não uma maneira automática de conhecer os valores corretos em produção.
-
-## Entrega
-
-Consultas, parâmetros e tabela de regras com evidências, efeitos e limitações. Explique quais dados podem ser publicados, exigem uso restrito ou devem ser rejeitados/investigados. Não há resultados de gabarito neste roteiro.
+Para conferir no navegador: http://localhost:9001/rustfs/console/ (usuário `ons_lab`, senha `ons_lab_s3`).

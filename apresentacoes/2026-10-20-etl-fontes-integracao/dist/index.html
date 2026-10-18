@@ -528,7 +528,7 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
         </div>
         <div class="slot">
           <span class="rotulo-termo">Destino</span><code class="contrato">gravar(dados)</code>
-          <div class="soquete"><div class="peca passo" data-passo="0" data-sai="2">CsvLocal</div><div class="peca nova passo" data-passo="2">MinIO</div></div>
+          <div class="soquete"><div class="peca passo" data-passo="0" data-sai="2">CsvLocal</div><div class="peca nova passo" data-passo="2">ParquetS3</div></div>
           <p class="troca passo" data-passo="2">próxima aula</p>
         </div>
       </div>
@@ -950,7 +950,7 @@ executar(
     ],
     pipeline: [
       { inicio:0, fim:2, texto:'Fonte é um contrato: qualquer objeto com nome e extrair(inicio, fim) que devolva id_subsistema, instante e valor serve. Protocol só descreve o formato; ninguém precisa herdar dele.' },
-      { inicio:4, fim:5, texto:'Destino é qualquer objeto com gravar(dados). Hoje, CsvLocal; na próxima aula, o MinIO.' },
+      { inicio:4, fim:5, texto:'Destino é qualquer objeto com gravar(dados). Hoje, CsvLocal; na próxima aula, ParquetS3, que grava Parquet num armazenamento S3.' },
       { inicio:7, fim:8, texto:'executar recebe as peças prontas, de fora. Ele não sabe se os dados vêm de um banco, de uma API ou de um arquivo.' },
       { inicio:9, fim:13, texto:'Para cada fonte: extrai o período, renomeia valor para o nome da fonte e junta pela chave, com a mesma validação da solução.' },
       { inicio:14, fim:14, texto:'Entrega o resultado ao destino, seja ele qual for.' }

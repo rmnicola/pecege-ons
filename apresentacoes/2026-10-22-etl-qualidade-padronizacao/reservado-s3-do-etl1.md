@@ -1,6 +1,6 @@
 # Par de slides S3 retirado do ETL I (18/10/2026)
 
-Usar como introdução ao MinIO (API S3) na aula ETL II. Os trechos abaixo vêm de `../2026-10-20-etl-fontes-integracao/deck.html` e seguem a mesma estrutura (`FONTES_MUNDO_REAL`, `AJUDA_CODIGOS`, ícone `s3` em `ICONES_FONTES`, arquivo `lambda_s3.py`). Na ETL II, o MinIO será destino da carga; adaptar o texto que trata o S3 como fonte acionada por evento.
+Usar como introdução ao armazenamento S3 da aula ETL II (RustFS, compatível com a API S3; a MinIO deixou de distribuir imagens públicas). Os trechos abaixo vêm de `../2026-10-20-etl-fontes-integracao/deck.html` e seguem a mesma estrutura (`FONTES_MUNDO_REAL`, `AJUDA_CODIGOS`, ícone `s3` em `ICONES_FONTES`, arquivo `lambda_s3.py`). Na ETL II, o RustFS será destino da carga; adaptar o texto que trata o S3 como fonte acionada por evento.
 
 ## Ajuda do código
 

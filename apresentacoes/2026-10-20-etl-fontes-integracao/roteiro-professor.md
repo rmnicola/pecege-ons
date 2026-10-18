@@ -10,7 +10,7 @@ O restante da segunda parte continua em construção incremental: discutir uma p
 
 ## Ajustes de 18/10/2026 (slides 1–16)
 
-Decisão: o laboratório usará PostgreSQL (Curva de Carga) + Open-Meteo e gravará o CSV numa pasta local. MinIO fica para ETL II. O notebook do slide 4 já lê o contrato do `dados.csv` final (`id_subsistema`, `carga_mwmed`, `temperatura_c`). Os slides 11–12 usam o endpoint Historical Weather (`/v1/archive`), com `start_date`/`end_date` inclusivos, diferente do fim exclusivo da consulta PostgreSQL. As notas dos slides 13–14 antecipam o MinIO (API S3) da aula ETL II. Slide 8 sem sobreposição; legenda dos slides 9/11/13 à esquerda. Próxima parte: slides 17 em diante e implementação no playground.
+Decisão: o laboratório usará PostgreSQL (Curva de Carga) + Open-Meteo e gravará o CSV numa pasta local. MinIO (substituído por RustFS em 18/10/2026: a MinIO deixou de distribuir imagens públicas) fica para ETL II. O notebook do slide 4 já lê o contrato do `dados.csv` final (`id_subsistema`, `carga_mwmed`, `temperatura_c`). Os slides 11–12 usam o endpoint Historical Weather (`/v1/archive`), com `start_date`/`end_date` inclusivos, diferente do fim exclusivo da consulta PostgreSQL. As notas dos slides 13–14 antecipam o MinIO (API S3) da aula ETL II. Slide 8 sem sobreposição; legenda dos slides 9/11/13 à esquerda. Próxima parte: slides 17 em diante e implementação no playground.
 
 ## Plano revisado (18/10/2026)
 

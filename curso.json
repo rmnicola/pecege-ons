@@ -28,12 +28,20 @@
     {
       "slug": "2026-10-22-etl-ii",
       "pasta": "apresentacoes/2026-10-22-etl-qualidade-padronizacao",
-      "rascunho": true,
       "data": "2026-10-22",
       "horario": "09h–12h · Zoom",
       "titulo": "ETL e Limpeza de Dados II",
       "subtitulo": "Qualidade e Padronização",
-      "apresentacao": "dist/2026-10-22-etl-qualidade-padronizacao.html"
+      "resumo": "Os problemas que a transformação corrige (ausentes, duplicatas, formatos, unidades, extremos), um desafio com fontes defeituosas e um destino novo: Parquet num armazenamento S3. No fim, data warehouse, data lake e lakehouse.",
+      "apresentacao": "dist/index.html",
+      "antes": [
+        {
+          "rotulo": "Atualizar o ambiente",
+          "link": "preparacao/",
+          "tipo": "passo a passo"
+        }
+      ],
+      "laboratorio": true
     },
     {
       "slug": "2026-10-29-storytelling",

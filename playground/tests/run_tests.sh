@@ -13,7 +13,8 @@ DC="docker compose"
 log() { printf '\n=== %s ===\n' "$*"; }
 
 log "subindo os bancos (aguardando healthcheck)"
-$DC up -d --wait fonte-balanco fonte-curva destino
+$DC up -d --wait fonte-balanco fonte-curva destino api-clima rustfs
+$DC run --rm etl python scripts/preparar_armazenamento.py
 
 log "testes unitarios puros (sem acesso aos bancos)"
 $DC run --rm etl python tests/test_unit_sem_docker.py
@@ -25,22 +26,14 @@ pipeline() {
   run scripts/01_extrair_balanco.py --cenario aula1
   run scripts/02_extrair_curva.py --cenario aula1
   run scripts/03_integrar.py --cenario aula1
-  run scripts/01_extrair_balanco.py --cenario aula2
-  run scripts/02_extrair_curva.py --cenario aula2
-  run scripts/04_diagnosticar.py
-  run scripts/05_tratar.py
-  run scripts/06_avaliar.py
 }
 
 contagens() {
   $DC exec -T -e PGPASSWORD=ons_lab destino psql -U ons_lab -d analytics -At -F';' -c "
     SELECT
       (SELECT count(*) FROM aula1.integrado)
-      || ',' || (SELECT count(*) FROM aula2.limpo_balanco)
-      || ',' || (SELECT count(*) FROM aula2.limpo_curva)
-      || ',' || (SELECT count(*) FROM aula2.integrado_limpo)
-      || ',' || (SELECT count(*) FROM aula2.quarentena)
-      || ',' || (SELECT count(*) FROM aula2.diagnostico_extremos);"
+      || ',' || (SELECT count(*) FROM aula1.stg_balanco)
+      || ',' || (SELECT count(*) FROM aula1.stg_curva);"
 }
 
 log "pipeline (execucao 1)"
@@ -61,15 +54,7 @@ cat > resultados/_idempotencia.json <<JSON
 JSON
 printf 'idempotencia: %s\n  exec1=%s\n  exec2=%s\n' "$igual" "$c1" "$c2"
 
-log "integracao ingenua do cenario aula2 (deve rejeitar com exit 2)"
-set +e
-$DC run --rm etl python scripts/03_integrar.py --cenario aula2
-codigo=$?
-set -e
-printf '%s\n' "$codigo" > resultados/03_aula2_exitcode.txt
-printf 'exit code de 03 aula2 = %s (esperado 2)\n' "$codigo"
-
-log "testes de invariantes"
+log "testes de invariantes e das aulas"
 $DC run --rm etl python -m pytest tests -q
 
 log "concluido"

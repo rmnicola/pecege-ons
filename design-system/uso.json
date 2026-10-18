@@ -170,114 +170,122 @@
     },
     {
       "slide": 3,
-      "tipo": "sob medida: fronteira-aceitacao"
+      "tipo": "agenda"
     },
     {
       "slide": 4,
-      "tipo": "sob medida: ciclo-qualidade"
+      "tipo": "sob medida: pipeline-encaixes"
     },
     {
       "slide": 5,
-      "tipo": "sob medida: contrato-entrada"
+      "tipo": "agenda"
     },
     {
       "slide": 6,
-      "tipo": "sob medida: esquema-identidade"
+      "tipo": "sob medida: cartoes"
     },
     {
       "slide": 7,
-      "tipo": "sob medida: cobertura-grade"
+      "tipo": "sob medida: cartoes"
     },
     {
       "slide": 8,
-      "tipo": "sob medida: uso-tolerancias"
+      "tipo": "sob medida: serie-imputacao"
     },
     {
       "slide": 9,
-      "tipo": "sob medida: diagnostico-dimensoes"
+      "tipo": "sob medida: cartoes"
     },
     {
       "slide": 10,
-      "tipo": "sob medida: completude-celula-registro"
+      "tipo": "sob medida: conversao"
     },
     {
       "slide": 11,
-      "tipo": "sob medida: unicidade-duplicata-conflito"
+      "tipo": "sob medida: cartoes"
     },
     {
       "slide": 12,
-      "tipo": "sob medida: validade-formato-significado"
+      "tipo": "sob medida: serie-outlier"
     },
     {
       "slide": 13,
-      "tipo": "sob medida: consistencia-geracao-carga"
+      "tipo": "sob medida: codigo-consulta"
     },
     {
       "slide": 14,
-      "tipo": "sob medida: acuracia-evidencia"
+      "tipo": "sob medida: codigo-consulta"
     },
     {
       "slide": 15,
-      "tipo": "sob medida: transformacoes-classes"
+      "tipo": "agenda"
     },
     {
       "slide": 16,
-      "tipo": "sob medida: padronizacao-regras"
+      "tipo": "sob medida: cartoes"
     },
     {
       "slide": 17,
-      "tipo": "sob medida: conformacao-significado"
+      "tipo": "sob medida: comando-tarefa"
     },
     {
       "slide": 18,
-      "tipo": "sob medida: politica-problema"
+      "tipo": "agenda"
     },
     {
       "slide": 19,
-      "tipo": "sob medida: politica-representacao-duplicidade"
+      "tipo": "agenda"
     },
     {
       "slide": 20,
-      "tipo": "sob medida: politica-ausencia"
+      "tipo": "sob medida: desafio-fluxo"
     },
     {
       "slide": 21,
-      "tipo": "sob medida: politica-valor-suspeito"
+      "tipo": "sob medida: caminho"
     },
     {
       "slide": 22,
-      "tipo": "sob medida: aceitacao-publicacao"
+      "tipo": "agenda"
     },
     {
       "slide": 23,
-      "tipo": "sob medida: sequencia-decisao"
+      "tipo": "sob medida: cartoes"
     },
     {
       "slide": 24,
-      "tipo": "sob medida: intervalo"
+      "tipo": "sob medida: caminho"
     },
     {
       "slide": 25,
-      "tipo": "sob medida: cenario-atividade"
+      "tipo": "sob medida: mapa-ferramenta"
     },
     {
       "slide": 26,
-      "tipo": "sob medida: atividade-extrair-testar"
+      "tipo": "sob medida: codigo-consulta"
     },
     {
       "slide": 27,
-      "tipo": "sob medida: atividade-diagnosticar"
+      "tipo": "sob medida: codigo-consulta"
     },
     {
       "slide": 28,
-      "tipo": "sob medida: atividade-tratar-integrar"
+      "tipo": "sob medida: codigo-consulta"
     },
     {
       "slide": 29,
-      "tipo": "sob medida: atividade-avaliar-entrega"
+      "tipo": "sob medida: codigo-consulta"
     },
     {
       "slide": 30,
+      "tipo": "sob medida: codigo-consulta"
+    },
+    {
+      "slide": 31,
+      "tipo": "encerramento"
+    },
+    {
+      "slide": 32,
       "tipo": "referencias"
     }
   ]

@@ -42,7 +42,6 @@ from _util import (  # noqa: F401  (reexportado para os scripts)
 ROOT = Path(os.environ.get("PLAYGROUND_DIR", Path(__file__).resolve().parents[1]))
 OFICIAL_DIR = ROOT / "data" / "oficial"
 LAB_DIR = ROOT / "data" / "laboratorio"
-CLEAN_REF_DIR = ROOT / "data" / "clean_ref"
 RESULT_DIR = ROOT / "resultados"
 
 RECORTE_INI = "2025-01-01 00:00:00"

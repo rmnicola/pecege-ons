@@ -1,169 +1,114 @@
 # Laboratorio ETL Pecege-ONS
 
-Ambiente didatico com **duas fontes PostgreSQL** (Balanco de Energia e Curva de
-Carga Horaria, do Portal de Dados Abertos do ONS), um **destino** (analytics) e
-um **container Python** de ETL. Roda o pipeline completo sem instalar Python
-nem PostgreSQL no seu computador.
+Ambiente didatico das aulas de ETL, todo em containers Docker: nao e preciso
+instalar Python nem PostgreSQL no computador.
 
-Leia tambem `CONTRATO.md` (contrato de integracao com as apresentacoes).
+| Servico | Papel |
+|---|---|
+| `fonte-curva` | PostgreSQL com a Curva de Carga do ONS (`oficial.curva_horaria`) e uma copia com defeitos (`laboratorio.curva_horaria`) |
+| `fonte-balanco` | PostgreSQL com o Balanco de Energia do ONS |
+| `destino` | PostgreSQL de destino do pipeline de integracao |
+| `api-clima` | API local no formato da Open-Meteo, com defeitos de proposito (aula 2) |
+| `rustfs` | Armazenamento de objetos compativel com S3 (aula 2) |
+| `etl` | Python 3.12 com psycopg, httpx, pandas, pyarrow e boto3 |
 
-## Requisitos
+Passo a passo para os alunos:
+https://rmnicola.github.io/pecege-ons/aulas/2026-10-20-etl-i/preparacao/
 
-- Docker Desktop (Windows/macOS) ou Docker Engine + Compose (Linux).
-- Docker Compose v2 (`docker compose ...`).
-- ~1 GB de espaco para as imagens. **Instale e baixe as imagens antes da
-  aula.** Durante a aula nao e preciso internet: os dados ja estao em
-  `data/oficial/`.
-
-Verifique a instalacao:
-
-```sh
-docker --version
-docker compose version
-docker compose config --quiet && echo "compose OK"
-```
-
-Em Linux, se ao gravar em `resultados/` aparecer erro de permissao, copie
-`.env.example` para `.env` e ajuste `ETL_UID`/`ETL_GID` para a saida de
-`id -u` e `id -g`. Nos ultimos testes usamos Docker 29.7.2 e Compose 5.5.1.
-
-## Preparar (uma vez, com internet)
-
-```sh
-docker compose build etl
-docker compose up -d --wait fonte-balanco fonte-curva destino
-```
-
-Os tres bancos ficam `healthy`. Nenhuma porta e publicada no host, entao nao
-ha conflito com um PostgreSQL que ja esteja rodando.
-
-## Preparar tudo de uma vez (aula ETL I)
+## Preparar
 
 ```sh
 ./preparar.sh
 ```
 
-Registra seu usuario em `.env`, constroi a imagem, sobe os bancos, carrega os
-dados se ainda nao estiverem carregados (sem apagar resultados) e roda a
-verificacao abaixo. Pode ser executado de novo a qualquer momento.
+Registra seu usuario em `.env`, constroi a imagem, sobe os servicos, carrega os
+dados se ainda nao estiverem carregados (sem apagar resultados), cria o bucket
+`aula2` e roda a verificacao. Pode ser executado de novo a qualquer momento;
+depois de um `git pull`, rode de novo para atualizar a imagem e os servicos.
 
-## Verificar o ambiente (aula ETL I)
+A verificacao sozinha:
 
 ```sh
 docker compose run --rm etl python scripts/verificar_ambiente.py
 ```
 
-Confere bibliotecas (psycopg, httpx, pandas), a fonte PostgreSQL via `PG_DSN`,
-o acesso HTTPS a `archive-api.open-meteo.com` e a gravacao em `saida/`, pasta
-onde a aula ETL I grava o CSV. Instrucoes para os alunos:
-https://rmnicola.github.io/pecege-ons/aulas/2026-10-20-etl-i/preparacao/
+Requisitos: Docker Engine com Compose v2 (`docker compose`) e cerca de 1,5 GB
+para as imagens. Testado com Docker 29.7.2 e Compose 5.5.1.
 
-## Pipeline
+## Aula 1 — extracao e codigo componivel
 
 ```sh
-# 1) cria os schemas e carrega as fontes (idempotente; reseta destino)
-#    ATENCAO: rodar de novo apaga os schemas aula1 e aula2 (resultados das
-#    duas aulas). Rode UMA VEZ por sequencia; para so recarregar as fontes
-#    sem perder os resultados, use --sem-reset.
-docker compose run --rm etl python scripts/00_carregar_fontes.py
+docker compose run --rm etl python aluno/aula1/extrair_carga.py
+docker compose run --rm etl python aluno/aula1/extrair_clima.py
+docker compose run --rm etl python aluno/aula1/combinar.py      # desafio
+```
 
-# 2) Aula 1 - fontes e integracao (schemas oficial)
+Roteiro: `aluno/ROTEIRO_ALUNO_AULA1.md`. Respostas salvas da Open-Meteo para
+trabalhar sem internet: `aluno/aula1/dados/`. Solucao: `gabarito/aula1/`
+(`combinar.py` e o pipeline em pecas em `componivel/`).
+
+## Aula 2 — transformacao e armazenamento S3
+
+```sh
+docker compose run --rm etl python aluno/aula2/executar.py
+```
+
+Parte 1: completar `aluno/aula2/transformacoes.py` ate gerar
+`saida/dados_limpos.csv`. Parte 2: completar `ParquetS3` em
+`aluno/aula2/destinos.py` e gravar em `s3://aula2/carga_clima/dados.parquet`.
+Roteiro: `aluno/ROTEIRO_ALUNO_AULA2.md`.
+
+API de clima local: `http://api-clima:8080/v1/archive` (dentro do compose).
+Console do RustFS: http://localhost:9001/rustfs/console/ (usuario `ons_lab`,
+senha `ons_lab_s3`); para outra porta, defina `RUSTFS_CONSOLE_PORT` no `.env`.
+
+Solucao e defeitos documentados: `gabarito/aula2/`.
+
+## Pipeline de integracao Balanco + Curva
+
+Pipeline de referencia que integra as duas bases do ONS no PostgreSQL de destino:
+
+```sh
 docker compose run --rm etl python scripts/01_extrair_balanco.py --cenario aula1
 docker compose run --rm etl python scripts/02_extrair_curva.py   --cenario aula1
 docker compose run --rm etl python scripts/03_integrar.py        --cenario aula1
-
-# 3) Aula 2 - qualidade e padronizacao (copia de laboratorio)
-docker compose run --rm etl python scripts/01_extrair_balanco.py --cenario aula2
-docker compose run --rm etl python scripts/02_extrair_curva.py   --cenario aula2
-# checkpoint: a integracao INGENUA de aula2 deve ser REJEITADA (exit 2),
-# ANTES de tratar. E o que mostra por que 03 exige unicidade/cardinalidade:
-docker compose run --rm etl python scripts/03_integrar.py --cenario aula2   # exit 2 esperado
-docker compose run --rm etl python scripts/04_diagnosticar.py
-docker compose run --rm etl python scripts/05_tratar.py
-docker compose run --rm etl python scripts/06_avaliar.py
 ```
 
-Observacao sobre `--imputar` (em `05_tratar.py`): preenche **somente as
-lacunas** (horas ausentes), pela mediana da mesma hora-do-dia do subsistema,
-com flag. Ele **nao altera celulas existentes** (vazias/invalidas continuam
-NULL + quarentena). O limite min/max registrado e o intervalo dos **valores**
-observados do grupo, nao um limite de tamanho da lacuna: nao existe parametro
-de tamanho maximo de lacuna.
-
-Cada script imprime um resumo e grava um JSON em `resultados/`. O pipeline e
-idempotente: rodar de novo nao duplica dados.
-
-## Exercicios (aluno)
-
-Preencha primeiro as consultas dos arquivos do aluno. Em Linux/macOS, os
-comandos abaixo passam o arquivo preenchido pelo stdin ao PostgreSQL. No
-PowerShell, use o terminal SQL interativo mostrado abaixo e execute as consultas.
-
-```sh
-# rodar as consultas da Aula 1 (no destino)
-docker compose exec -T destino psql -U ons_lab -d analytics < aluno/exercicios_aula1.sql
-
-# rodar as consultas da Aula 2
-docker compose exec -T destino psql -U ons_lab -d analytics < aluno/exercicios_aula2.sql
-
-# exercicio de parametro: edite aluno/parametros_aula2.json e reprocesse
-# registre a hipotese e compare os efeitos, sem presumir melhora automatica
-docker compose run --rm etl python scripts/04_diagnosticar.py
-docker compose run --rm etl python scripts/05_tratar.py
-docker compose run --rm etl python scripts/06_avaliar.py
-```
-
-Para inspecionar os resultados:
-
-```sh
-docker compose exec destino psql -U ons_lab -d analytics
-# dentro do psql: \dt aula1.*   \dt aula2.*
-```
-
-Credenciais locais de exercicio (nao use em producao): usuario `ons_lab`,
-senha `ons_lab`, bancos `balanco`, `curva` e `analytics`.
+`scripts/00_carregar_fontes.py` recria as fontes e, por padrao, **apaga os
+schemas de resultado do destino**; use `--sem-reset` para preservar.
 
 ## Testes
 
 ```sh
 bash tests/run_tests.sh
-# unidade puros, sem Docker (nao precisam de psycopg):
-python3 tests/test_unit_sem_docker.py
+python3 tests/test_unit_sem_docker.py   # unidade, sem Docker
 ```
 
-`run_tests.sh` roda o pipeline duas vezes (checando idempotencia), confirma a
-rejeicao da integracao ingenua do cenario sujo e executa os invariantes com
-`pytest`; `test_unit_sem_docker.py` testa parsing finito e classificacao de
-duplicatas por chave normalizada.
+`run_tests.sh` sobe os servicos, roda o pipeline de integracao duas vezes
+(checando idempotencia) e executa com `pytest` os invariantes das fontes e os
+testes das aulas: defeitos da API local, pipeline componivel da aula 1 sem
+internet, solucao da aula 2 em CSV e em Parquet no S3.
 
 ## Estrutura
 
 ```
-compose.yaml            Servicos fonte-balanco, fonte-curva, destino, etl
-docker/etl/             Dockerfile (Python 3.12 + psycopg3) e dependencias
-scripts/                Pipeline 00..06 e utilitarios em scripts/tools/
-data/oficial/           Snapshot (+ PROVENIENCIA.json com URL/hash)
+compose.yaml            Servicos (fontes, destino, api-clima, rustfs, etl)
+preparar.sh             Setup completo e idempotente
+docker/etl/             Dockerfile e dependencias Python
+servicos/api_clima.py   API local de clima com defeitos (aula 2)
+scripts/                Carga das fontes, pipeline de integracao, verificacao
+data/oficial/           Recorte oficial do ONS (+ PROVENIENCIA.json)
 data/laboratorio/       Copia didatica com defeitos deterministicos
-data/clean_ref/         Referencia limpa (oracle de avaliacao)
-aluno/                  Roteiros e exercicios (SQL e parametros)
-gabarito/              Roteiro, manifesto e gabaritos
-tests/                  Invariantes e runner do pipeline
-resultados/             Saidas geradas pelos scripts
+aluno/                  Codigo inicial e roteiros das aulas
+gabarito/               Solucoes, manifesto de defeitos e roteiros do professor
+tests/                  Testes e runner
+saida/, resultados/     Saidas geradas
 ```
 
 ## Encerrar
 
 ```sh
-docker compose stop                 # para os containers, preserva volumes/saidas
-docker compose down                 # remove containers e rede, preserva volumes
-docker compose down -v              # remove tambem os volumes (reset total)
+docker compose stop        # para os containers, preserva dados
+docker compose down        # remove containers e rede, preserva volumes
+docker compose down -v     # remove tambem os volumes (reset total)
 ```
-
-## Solucao de problemas
-
-- **Internet caiu**: o snapshot local e suficiente; nao rode
-  `scripts/tools/baixar_snapshot.py`.
-- **Container `etl` nao conecta**: rode `docker compose up -d --wait` primeiro;
-  o `connect` tem retry.
-- **Imagens ausentes**: `docker compose pull` (bancos) e `docker compose build`.
-- **Windows**: use PowerShell; os mesmos comandos `docker compose ...` valem.

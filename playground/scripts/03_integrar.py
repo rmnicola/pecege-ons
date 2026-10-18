@@ -298,7 +298,7 @@ CREATE TABLE {schema}.integracao_rejeitada (
                   {"script": "03_integrar", "cenario": "aula2", **detalhe,
                    "duracao_s": round(time.time() - inicio, 2)})
     LOG.error("aula2: integracao ingenua REJEITADA. %s", detalhe)
-    LOG.error("Aplique 04_diagnosticar.py e 05_tratar.py antes de integrar o cenario sujo.")
+    LOG.error("O cenario aula2 tem defeitos de proposito: trate-os antes de integrar (veja aluno/aula2/).")
     return 2
 
 

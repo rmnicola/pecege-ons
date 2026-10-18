@@ -1,0 +1,49 @@
+{
+  "titulo": "Atualizar o ambiente",
+  "resumo": "Faça antes da aula, na mesma máquina da aula 1. Leva poucos minutos: o script baixa a versão nova da imagem e dois serviços novos.",
+  "contexto": "Na aula 2, as fontes trazem problemas para corrigir e o resultado vai para um armazenamento de objetos compatível com S3 (RustFS).",
+  "passos": [
+    {
+      "titulo": "Baixe a versão nova do material",
+      "comandos": "cd pecege-ons\ngit pull",
+      "depois": [
+        "Se o `git pull` reclamar de alterações locais nos seus arquivos da aula 1, guarde uma cópia deles fora da pasta e rode `git checkout -- .` antes de repetir."
+      ]
+    },
+    {
+      "titulo": "Prepare o laboratório",
+      "texto": [
+        "O mesmo script da aula 1. Agora ele também sobe a API de clima local e o RustFS, e cria o bucket da aula."
+      ],
+      "comandos": "cd playground\n./preparar.sh",
+      "saida": "[OK] bibliotecas: psycopg, httpx, pandas, pyarrow e boto3 disponiveis\n[OK] PostgreSQL: oficial.curva_horaria com … linhas\n[OK] Open-Meteo: 24 horas recebidas para um dia\n[OK] API de clima local: 24 horas recebidas para um dia\n[OK] armazenamento S3: bucket aula2 disponivel no RustFS\n[OK] pasta saida/: gravacao permitida\n\nTudo pronto para trabalhar."
+    },
+    {
+      "titulo": "Abra o console do armazenamento",
+      "texto": [
+        "No navegador, abra http://localhost:9001/rustfs/console/ e entre com usuário `ons_lab` e senha `ons_lab_s3`. O bucket `aula2` deve aparecer vazio.",
+        "Na máquina remota, o VS Code encaminha a porta 9001 automaticamente; se não abrir, use a aba **Ports** do VS Code."
+      ]
+    }
+  ],
+  "problemas": [
+    [
+      "`port is already allocated` … `9001`",
+      "Outra coisa usa a porta 9001. Crie a linha `RUSTFS_CONSOLE_PORT=19001` no arquivo `.env` da pasta `playground` e rode `./preparar.sh` de novo."
+    ],
+    [
+      "`[FALHA] API de clima local`",
+      "Rode `./preparar.sh` de novo."
+    ],
+    [
+      "`[FALHA] armazenamento S3`",
+      "Rode `./preparar.sh` de novo; ele cria o bucket."
+    ],
+    [
+      "`[FALHA] bibliotecas`",
+      "Rode `./preparar.sh` de novo; ele reconstrói a imagem."
+    ]
+  ],
+  "fechamento": "Se o problema continuar, anote o comando e a mensagem completa e traga para o início da aula.",
+  "dia_da_aula": "cd pecege-ons/playground\n./preparar.sh"
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Prepara o laboratório: registra seu usuário, constrói a imagem Python,
-# sobe os bancos, carrega os dados (só na primeira vez) e verifica tudo.
+# sobe os bancos, a API de clima local e o armazenamento S3, carrega os
+# dados (só na primeira vez), cria o bucket e verifica tudo.
 # Pode ser executado de novo a qualquer momento: não apaga dados.
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -23,8 +24,8 @@ fi
 etapa "Construindo a imagem Python (na primeira vez, leva alguns minutos)"
 docker compose build etl
 
-etapa "Subindo os bancos"
-docker compose up -d --wait fonte-balanco fonte-curva destino
+etapa "Subindo os bancos, a API de clima local e o armazenamento"
+docker compose up -d --wait fonte-balanco fonte-curva destino api-clima rustfs
 
 etapa "Carregando os dados"
 linhas=$(docker compose exec -T fonte-curva psql -U ons_lab -d curva -tAc \
@@ -34,6 +35,9 @@ if [ "${linhas:-0}" -gt 0 ] 2>/dev/null; then
 else
   docker compose run --rm etl python scripts/00_carregar_fontes.py --sem-reset
 fi
+
+etapa "Preparando o armazenamento"
+docker compose run --rm etl python scripts/preparar_armazenamento.py
 
 etapa "Verificando o ambiente"
 docker compose run --rm etl python scripts/verificar_ambiente.py
