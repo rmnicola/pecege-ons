@@ -26,6 +26,22 @@
   --respiro-x: 5rem;
   --respiro-y: 4rem;
   --raio: 4px;
+
+  /* Código: paleta inspirada no Night Owl (Starlight / Expressive Code) */
+  --codigo-fundo: #fbfbfb;
+  --codigo-barra: #f0efef;
+  --codigo-borda: #e2e0e0;
+  --codigo-texto: #403f53;
+  --codigo-titulo: #6a6a7c;
+  --sx-cmd: #2f62c9;
+  --sx-kw: #8a3fb8;
+  --sx-flag: #08787c;
+  --sx-str: #a8473f;
+  --sx-var: #a10a7f;
+  --sx-op: #8a3fb8;
+  --sx-num: #a10a7f;
+  --sx-com: #8d93a5;
+  --sx-ok: #08805e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,6 +58,20 @@
     --borda-fraca: #3d3838;
     --destaque: #ff4d6d;
     --selecao: #4a4a1f;
+    --codigo-fundo: #1c1919;
+    --codigo-barra: #242020;
+    --codigo-borda: #3d3838;
+    --codigo-texto: #d6deeb;
+    --codigo-titulo: #a09a9a;
+    --sx-cmd: #82aaff;
+    --sx-kw: #c792ea;
+    --sx-flag: #7fdbca;
+    --sx-str: #ecc48d;
+    --sx-var: #f78c6c;
+    --sx-op: #c792ea;
+    --sx-num: #f78c6c;
+    --sx-com: #7a8b8b;
+    --sx-ok: #addb67;
   }
 }
 
@@ -90,7 +120,7 @@ a:hover { text-decoration-thickness: 2px; }
 /* Tipografia */
 h1, h2, h3 { color: var(--texto-forte); font-weight: 500; margin: 0; }
 h1 { font-size: var(--t-titulo); line-height: 1.5; }
-h2 { font-size: var(--t-base); margin-bottom: 1.5rem; }
+h2 { font-size: 1.25rem; line-height: 1.5; margin-bottom: 1.25rem; }
 h3 { font-size: var(--t-base); line-height: 1.6; }
 p { margin: 0.75rem 0 0; }
 .rotulo { color: var(--texto-fraco); font-size: var(--t-pequeno); }
@@ -127,39 +157,45 @@ p { margin: 0.75rem 0 0; }
 .arquivos li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid var(--borda-fraca); }
 .arquivos li:first-child { border-top: 1px solid var(--borda-fraca); }
 
-/* Comandos */
-.comando {
-  position: relative; margin: 1rem 0 0; padding: 2.75rem 1.25rem 1rem;
-  background: var(--fundo-forte); color: var(--texto-invertido); border-radius: var(--raio);
-  font: var(--t-pequeno)/1.8 var(--fonte); overflow-x: auto; white-space: pre;
-}
-.copiar {
-  position: absolute; top: 0.6rem; right: 0.6rem; padding: 0.15rem 0.6rem;
-  border: 1px solid var(--texto-fraco); border-radius: var(--raio); background: transparent;
-  color: var(--texto-invertido); font: var(--t-pequeno) var(--fonte); cursor: pointer;
-}
-.copiar:hover { border-color: var(--texto-invertido); }
-
 /* Rodapé */
 .rodape { padding: 2rem var(--respiro-x); border-top: 1px solid var(--borda-fraca); font-size: var(--t-pequeno); color: var(--texto-fraco); line-height: 1.8; }
 .rodape p { margin: 0.25rem 0 0; }
 
 /* Passo a passo */
-.passo h2 { display: flex; gap: 1rem; align-items: baseline; }
-.passo h2 .num { color: var(--texto-fraco); font-size: var(--t-pequeno); }
+.passo h2 { display: flex; gap: 1rem; align-items: baseline; font-size: 1.25rem; line-height: 1.5; margin-bottom: 1.25rem; }
+.passo h2 .num { color: var(--texto-fraco); }
 .lista { margin: 0; padding-left: 1.25rem; }
 .lista li { margin: 0.25rem 0; }
 code { font-family: var(--fonte); color: var(--texto-forte); }
 p code, li code, td code { background: var(--fundo-fraco); border: 1px solid var(--borda-fraca); border-radius: var(--raio); padding: 0 0.3rem; font-size: 0.9em; }
-.saida {
-  margin: 0.5rem 0 0; padding: 1rem 1.25rem; border: 1px dashed var(--borda); border-radius: var(--raio);
-  font: var(--t-pequeno)/1.8 var(--fonte); color: var(--texto); overflow-x: auto; white-space: pre;
-}
-.saida code { color: inherit; }
 .aviso { padding: 0.75rem 1rem; border-left: 2px solid var(--destaque); background: var(--fundo-fraco); }
 .tabela { width: 100%; border-collapse: collapse; font-size: var(--t-pequeno); line-height: 1.7; }
 .tabela th, .tabela td { text-align: left; vertical-align: top; padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--borda-fraca); }
 .tabela th { color: var(--texto-forte); font-weight: 500; }
 .tabela td:first-child { width: 40%; }
 @media (max-width: 40rem) { .tabela, .tabela tbody, .tabela tr, .tabela td { display: block; width: 100% !important; } .tabela thead { display: none; } .tabela td:first-child { border-bottom: 0; padding-bottom: 0; } }
-.comando code { color: inherit; }
+
+/* Blocos de código: moldura de terminal com realce */
+.codigo { position: relative; margin: 1rem 0 0; border: 1px solid var(--codigo-borda); border-radius: 6px; background: var(--codigo-fundo); overflow: hidden; }
+.codigo-barra { position: relative; display: flex; justify-content: center; align-items: center; min-height: 2rem; padding: 0.25rem 4rem; background: var(--codigo-barra); border-bottom: 1px solid var(--codigo-borda); color: var(--codigo-titulo); font-size: 0.75rem; line-height: 1.5; }
+.terminal .pontos { position: absolute; left: 0.9rem; top: 50%; width: 0.55rem; height: 0.55rem; margin-top: -0.275rem; border-radius: 50%; background: var(--codigo-borda); box-shadow: 0.9rem 0 0 var(--codigo-borda), 1.8rem 0 0 var(--codigo-borda); }
+.codigo pre { margin: 0; padding: 1rem 1.25rem; overflow-x: auto; font: var(--t-pequeno)/1.75 var(--fonte); color: var(--codigo-texto); }
+.codigo code { color: inherit; background: none; border: 0; padding: 0; font: inherit; }
+.saida { border-style: dashed; }
+.saida .codigo-barra { border-bottom-style: dashed; }
+.sx-cmd { color: var(--sx-cmd); } .sx-kw { color: var(--sx-kw); } .sx-flag { color: var(--sx-flag); }
+.sx-str { color: var(--sx-str); } .sx-var { color: var(--sx-var); } .sx-op { color: var(--sx-op); }
+.sx-num { color: var(--sx-num); } .sx-com { color: var(--sx-com); font-style: italic; } .sx-ok { color: var(--sx-ok); }
+.copiar {
+  position: absolute; top: 2.55rem; right: 0.6rem; display: grid; place-items: center; width: 2rem; height: 2rem;
+  border: 1px solid var(--codigo-borda); border-radius: 4px; background: var(--codigo-fundo); color: var(--codigo-titulo);
+  cursor: pointer; opacity: 0; transition: opacity .15s, color .15s;
+}
+.codigo:hover .copiar, .copiar:focus-visible, .copiar.copiado { opacity: 1; }
+.copiar:hover { color: var(--codigo-texto); }
+@media (hover: none) { .copiar { opacity: 1; } }
+.copiar.copiado::after {
+  content: "Copiado!"; position: absolute; right: calc(100% + 0.5rem); top: 50%; transform: translateY(-50%);
+  padding: 0.1rem 0.5rem; border-radius: 4px; background: var(--fundo-forte); color: var(--texto-invertido);
+  font: var(--t-pequeno)/1.6 var(--fonte); white-space: nowrap;
+}

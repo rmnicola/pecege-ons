@@ -37,6 +37,16 @@ docker compose up -d --wait fonte-balanco fonte-curva destino
 Os tres bancos ficam `healthy`. Nenhuma porta e publicada no host, entao nao
 ha conflito com um PostgreSQL que ja esteja rodando.
 
+## Preparar tudo de uma vez (aula ETL I)
+
+```sh
+./preparar.sh
+```
+
+Registra seu usuario em `.env`, constroi a imagem, sobe os bancos, carrega os
+dados se ainda nao estiverem carregados (sem apagar resultados) e roda a
+verificacao abaixo. Pode ser executado de novo a qualquer momento.
+
 ## Verificar o ambiente (aula ETL I)
 
 ```sh

@@ -25,10 +25,18 @@ FONTES = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
           '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">')
 COPIAR = """<script>
 document.querySelectorAll('.copiar').forEach(b => b.addEventListener('click', () => {
-  const texto = b.parentElement.querySelector('code').innerText;
-  navigator.clipboard.writeText(texto).then(() => { b.textContent = 'copiado'; setTimeout(() => b.textContent = 'copiar', 1500); });
+  const texto = b.closest('.codigo').querySelector('code').innerText;
+  navigator.clipboard.writeText(texto).then(() => {
+    b.classList.add('copiado'); setTimeout(() => b.classList.remove('copiado'), 1600);
+  });
 }));
 </script>"""
+ICONE_COPIAR = ('<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" '
+                'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/>'
+                '<path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>')
+TOKEN_SHELL = re.compile(r"""(?P<esp>\s+)|(?P<com>\#.*$)|(?P<str>"(?:[^"\\]|\\.)*"|'[^']*')"""
+                         r"""|(?P<var>\$\([^)]*\)|\$\{?\w+\}?)|(?P<op>&&|\|\||2>|[|;>])|(?P<pal>[^\s"'|;>&$]+)|(?P<outro>.)""")
+PREFIXOS = {"sudo"}
 
 
 # Tela de senha: apenas reduz a exposição casual. O conteúdo continua
@@ -121,8 +129,49 @@ def inline(texto: str) -> str:
     return re.sub(r"\*([^*]+)\*", r"<em>\1</em>", t)
 
 
-def comando(texto: str) -> str:
-    return f'<pre class="comando"><code>{escape(texto)}</code><button class="copiar" type="button">copiar</button></pre>'
+def realcar_shell(texto: str) -> str:
+    """Realce mínimo de shell: comando, prefixo (sudo), opções, textos, variáveis, operadores e comentários."""
+    linhas = []
+    for linha in texto.split("\n"):
+        partes, espera_comando = [], True
+        for m in TOKEN_SHELL.finditer(linha):
+            tipo, t = m.lastgroup, m.group()
+            classe = None
+            if tipo == "esp":
+                partes.append(t)
+                continue
+            if tipo == "com":
+                classe = "sx-com"
+            elif tipo == "str":
+                classe = "sx-str"
+            elif tipo == "var":
+                classe = "sx-var"
+            elif tipo == "op":
+                classe, espera_comando = "sx-op", t not in (">", "2>")
+            elif tipo == "pal":
+                if espera_comando:
+                    classe = "sx-kw" if t in PREFIXOS else "sx-cmd"
+                    espera_comando = t in PREFIXOS
+                elif t.startswith("-"):
+                    classe = "sx-flag"
+                elif re.fullmatch(r"\d+(\.\d+)?", t):
+                    classe = "sx-num"
+            partes.append(f'<span class="{classe}">{escape(t)}</span>' if classe else escape(t))
+        linhas.append("".join(partes))
+    return "\n".join(linhas)
+
+
+def comando(texto: str, titulo: str = "Terminal") -> str:
+    return (f'<figure class="codigo terminal"><figcaption class="codigo-barra"><span class="pontos" aria-hidden="true"></span>'
+            f'<span class="codigo-titulo">{escape(titulo)}</span></figcaption>'
+            f'<pre><code>{realcar_shell(texto)}</code></pre>'
+            f'<button class="copiar" type="button" aria-label="Copiar" title="Copiar">{ICONE_COPIAR}</button></figure>')
+
+
+def saida(texto: str, titulo: str = "Saída esperada") -> str:
+    corpo = re.sub(r"\[OK\]", '<span class="sx-ok">[OK]</span>', escape(texto))
+    return (f'<figure class="codigo saida"><figcaption class="codigo-barra"><span class="codigo-titulo">{escape(titulo)}</span>'
+            f'</figcaption><pre><code>{corpo}</code></pre></figure>')
 
 
 def tem_material(aula: dict) -> bool:
@@ -197,7 +246,7 @@ def gerar_preparacao(curso: dict, aula: dict, prep: dict) -> str:
         if passo.get("comandos"):
             miolo.append(comando(passo["comandos"]))
         if passo.get("saida"):
-            miolo.append(f'<p class="rotulo">Resultado esperado</p><pre class="saida"><code>{escape(passo["saida"])}</code></pre>')
+            miolo.append(saida(passo["saida"]))
         miolo += [f"<p>{inline(t)}</p>" for t in passo.get("depois", [])]
         if passo.get("aviso"):
             miolo.append(f'<p class="aviso">{inline(passo["aviso"])}</p>')
