@@ -7,11 +7,11 @@
   --fundo-fraco: #f8f7f7;
   --fundo-fraco-hover: #f0eeee;
   --fundo-forte: #201d1d;
-  --texto: #646262;
-  --texto-fraco: #9a9898;
+  --texto: #555454;
+  --texto-fraco: #6d6b6b;
   --texto-forte: #201d1d;
   --texto-invertido: #fdfcfc;
-  --borda: #d0cfcd;
+  --borda: #8f8e8d;
   --borda-fraca: rgba(15, 0, 0, 0.12);
   --destaque: #cd0028;
   --selecao: #f8f6c2;
@@ -33,6 +33,7 @@
   --codigo-borda: #e2e0e0;
   --codigo-texto: #403f53;
   --codigo-titulo: #6a6a7c;
+  --codigo-controle: #919090;
   --sx-cmd: #2f62c9;
   --sx-kw: #8a3fb8;
   --sx-flag: #08787c;
@@ -40,7 +41,7 @@
   --sx-var: #a10a7f;
   --sx-op: #8a3fb8;
   --sx-num: #a10a7f;
-  --sx-com: #8d93a5;
+  --sx-com: #6f7381;
   --sx-ok: #08805e;
 }
 
@@ -51,10 +52,10 @@
     --fundo-fraco-hover: #282424;
     --fundo-forte: #f1eded;
     --texto: #b7b1b1;
-    --texto-fraco: #7f7b7b;
+    --texto-fraco: #8f8b8b;
     --texto-forte: #f1eded;
     --texto-invertido: #131010;
-    --borda: #4a4545;
+    --borda: #696565;
     --borda-fraca: #3d3838;
     --destaque: #ff4d6d;
     --selecao: #4a4a1f;
@@ -63,6 +64,7 @@
     --codigo-borda: #3d3838;
     --codigo-texto: #d6deeb;
     --codigo-titulo: #a09a9a;
+    --codigo-controle: #6a6666;
     --sx-cmd: #82aaff;
     --sx-kw: #c792ea;
     --sx-flag: #7fdbca;
@@ -167,7 +169,7 @@ p { margin: 0.75rem 0 0; }
 .lista { margin: 0; padding-left: 1.25rem; }
 .lista li { margin: 0.25rem 0; }
 code { font-family: var(--fonte); color: var(--texto-forte); }
-p code, li code, td code { background: var(--fundo-fraco); border: 1px solid var(--borda-fraca); border-radius: var(--raio); padding: 0 0.3rem; font-size: 0.9em; }
+p code, li code, td code { background: var(--fundo-fraco); border: 1px solid var(--borda-fraca); border-radius: var(--raio); padding: 0 0.3rem; font-size: max(0.9em, var(--t-pequeno)); }
 .aviso { padding: 0.75rem 1rem; border-left: 2px solid var(--destaque); background: var(--fundo-fraco); }
 .tabela { width: 100%; border-collapse: collapse; font-size: var(--t-pequeno); line-height: 1.7; }
 .tabela th, .tabela td { text-align: left; vertical-align: top; padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--borda-fraca); }
@@ -177,7 +179,7 @@ p code, li code, td code { background: var(--fundo-fraco); border: 1px solid var
 
 /* Blocos de código: moldura de terminal com realce */
 .codigo { position: relative; margin: 1rem 0 0; border: 1px solid var(--codigo-borda); border-radius: 6px; background: var(--codigo-fundo); overflow: hidden; }
-.codigo-barra { position: relative; display: flex; justify-content: center; align-items: center; min-height: 2rem; padding: 0.25rem 4rem; background: var(--codigo-barra); border-bottom: 1px solid var(--codigo-borda); color: var(--codigo-titulo); font-size: 0.75rem; line-height: 1.5; }
+.codigo-barra { position: relative; display: flex; justify-content: center; align-items: center; min-height: 2rem; padding: 0.25rem 4rem; background: var(--codigo-barra); border-bottom: 1px solid var(--codigo-borda); color: var(--codigo-titulo); font-size: var(--t-pequeno); line-height: 1.5; }
 .terminal .pontos { position: absolute; left: 0.9rem; top: 50%; width: 0.55rem; height: 0.55rem; margin-top: -0.275rem; border-radius: 50%; background: var(--codigo-borda); box-shadow: 0.9rem 0 0 var(--codigo-borda), 1.8rem 0 0 var(--codigo-borda); }
 .codigo pre { margin: 0; padding: 1rem 1.25rem; overflow-x: auto; font: var(--t-pequeno)/1.75 var(--fonte); color: var(--codigo-texto); }
 .codigo code { color: inherit; background: none; border: 0; padding: 0; font: inherit; }
@@ -188,7 +190,7 @@ p code, li code, td code { background: var(--fundo-fraco); border: 1px solid var
 .sx-num { color: var(--sx-num); } .sx-com { color: var(--sx-com); font-style: italic; } .sx-ok { color: var(--sx-ok); }
 .copiar {
   position: absolute; top: 2.55rem; right: 0.6rem; display: grid; place-items: center; width: 2rem; height: 2rem;
-  border: 1px solid var(--codigo-borda); border-radius: 4px; background: var(--codigo-fundo); color: var(--codigo-titulo);
+  border: 1px solid var(--codigo-controle); border-radius: 4px; background: var(--codigo-fundo); color: var(--codigo-titulo);
   cursor: pointer; opacity: 0; transition: opacity .15s, color .15s;
 }
 .codigo:hover .copiar, .copiar:focus-visible, .copiar.copiado { opacity: 1; }

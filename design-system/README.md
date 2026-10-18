@@ -51,7 +51,7 @@ design-system/
 └── USO.md / uso.json              registro gerado pelo build
 ```
 
-Skill: `.claude/skills/apresentacao-pecege-ons/SKILL.md`. Contexto do curso e exigências em seu `references/curso.md`.
+Skill: `.agents/skills/apresentacao-pecege-ons/SKILL.md`. Contexto do curso e exigências em seu `references/curso.md`.
 
 ## Fluxo
 
@@ -93,7 +93,7 @@ O JS insere o rodapé legal e o símbolo Pecege em cada slide de conteúdo. Capa
 
 ### Blocos de código
 
-Carregue `js/codigo.js` antes do script que monta os exemplos e de `js/deck.js`. O build embute tudo no HTML offline. O botão de copiar fica no canto da barra do bloco e copia o texto original, preservando indentação e quebras. Se houver ajuda, o botão `?` também ocupa essa barra.
+Os blocos seguem o padrão do Expressive Code (Starlight), com paleta derivada da identidade (fundo cinza-escuro, destaques em tons do vermelho, secundários em cinzas): `linguagem: 'Python'` gera a moldura de editor, com aba do arquivo e realce de palavras-chave, funções, strings, números, constantes, embutidos, parâmetros e atributos; `linguagem: 'Terminal'` (ou `bash`, `shell`) gera a moldura de terminal, com três pontos, título e realce de comando, opções, strings e variáveis. Todas as cores têm contraste mínimo de 5.5:1 sobre o fundo do código. Carregue `js/codigo.js` antes do script que monta os exemplos e de `js/deck.js`. O build embute tudo no HTML offline. O botão de copiar fica no canto da barra do bloco e copia o texto original, preservando indentação e quebras. Se houver ajuda, o botão `?` também ocupa essa barra.
 
 ```html
 <div id="codigo-exemplo"></div>
@@ -116,9 +116,9 @@ Os intervalos de ajuda são inclusivos, começam em zero e devem estar ordenados
 
 `.passo` + `data-passo="N"` faz entrar; `data-sai="N"` faz sair; `data-passo="0"` começa visível. `data-estado` permite CSS por estado. Conteúdo repetido deve vir de uma única estrutura JS. PDF mostra o estado final; reveja as capturas intermediárias se houver substituições.
 
-Para ajuda em simuladores, marque controles com `data-ajuda` e, se necessário, `data-ajuda-ordem`. Explique siglas em cada balão via `window.notasAjuda`. A ajuda é removida da impressão.
+Para ajuda em simuladores, marque controles com `data-ajuda` e, se necessário, `data-ajuda-ordem`. Explique siglas em cada balão via `window.notasAjuda`. Durante a ajuda, o elemento em foco fica no retângulo vermelho e o restante do slide é desfocado. A ajuda é removida da impressão.
 
-Trechos de código também podem receber `data-ajuda`. Use `data-ajuda-largura="420"` no slide quando houver uma coluna lateral estreita para os balões (padrão: 560px; limites: 320–900px). `data-ajuda-posicao="direita"` prioriza a coluna lateral antes de tentar acima/abaixo. Botões preservam Enter/espaço para ativação pelo teclado.
+Trechos de código também podem receber `data-ajuda`. Em slides de código, a ajuda substitui colunas laterais explicativas: deixe o código ocupar a largura. Use `data-ajuda-largura="420"` no slide quando houver uma coluna lateral estreita para os balões (padrão: 560px; limites: 320–900px). `data-ajuda-posicao="direita"` prioriza a coluna lateral antes de tentar acima/abaixo. Botões preservam Enter/espaço para ativação pelo teclado.
 
 Com a ajuda aberta, →/↓ avançam e ←/↑ voltam entre as explicações. Avançar na última fecha a ajuda sem mudar de slide; Esc também fecha. Home/End vão à primeira/última explicação. Os botões possuem hover, cursor de clique e foco visível.
 

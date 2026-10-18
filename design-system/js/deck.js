@@ -41,8 +41,17 @@
     return { itens, marcos };
   };
 
+  /* Avançar rápido não pode embaralhar a ordem: antes de um novo estado, as transições
+     ainda em curso (inclusive as que esperam um atraso) saltam para o fim. */
+  function concluirTransicoes(s) {
+    s.classList.add("sem-transicao");
+    void s.offsetWidth;
+    s.classList.remove("sem-transicao");
+  }
+
   /* Mostra o slide no estado n (0 = inicial; Infinity = último estado). */
   function mostrarPassos(s, n) {
+    concluirTransicoes(s);
     const { itens, marcos } = passosDe(s);
     const k = Math.min(n, marcos.length);
     const limite = k === 0 ? 0 : marcos[k - 1];
@@ -148,7 +157,18 @@
     camada.replaceChildren();
     const foco = document.createElement("div");
     foco.className = "ajuda-foco";
-    Object.assign(foco.style, { left: x - 10 + "px", top: y - 10 + "px", width: w + 20 + "px", height: h + 20 + "px" });
+    /* Em código, as linhas são próximas: margem vertical mínima para o foco não invadir a linha vizinha. */
+    const mx = 10, my = el.closest(".bloco-codigo") ? 0 : 10;
+    const fx = x - mx, fy = y - my, fw = w + 2 * mx, fh = h + 2 * my;
+    Object.assign(foco.style, { left: fx + "px", top: fy + "px", width: fw + "px", height: fh + "px" });
+    /* Véu desfocado em quatro faixas ao redor do foco: só o retângulo vermelho fica nítido. */
+    const veus = [[0, 0, 1600, fy], [0, fy + fh, 1600, 900 - fy - fh], [0, fy, fx, fh], [fx + fw, fy, 1600 - fx - fw, fh]]
+      .filter(([, , vw, vh]) => vw > 0 && vh > 0).map(([vx, vy, vw, vh]) => {
+        const v = document.createElement("div");
+        v.className = "ajuda-veu";
+        Object.assign(v.style, { left: vx + "px", top: vy + "px", width: vw + "px", height: vh + "px" });
+        return v;
+      });
     const balao = document.createElement("div");
     balao.className = "ajuda-balao";
     balao.innerHTML = `<p></p><div class="ajuda-acoes"><span class="ajuda-conta">${i + 1}/${itens.length}</span>` +
@@ -169,7 +189,7 @@
       }
       balao.querySelector("p").after(rod);
     }
-    camada.append(foco, balao);
+    camada.append(...veus, foco, balao);
     /* abaixo do elemento se couber; senão, acima; sempre dentro do slide */
     /* a largura vem antes da medida da altura; depois, tenta abaixo, acima, à direita e à esquerda do
        elemento, e por fim o canto em que menos o cobre. O balão nunca sai da área do slide (margem de 40px). */

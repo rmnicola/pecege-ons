@@ -10,7 +10,7 @@ Decks registrados: `apresentacoes/2026-10-20-etl-fontes-integracao/deck.html`, `
 |---|---|
 | `capa` | 2 |
 | `legal` | 2 |
-| `agenda` | 3 |
+| `agenda` | 6 |
 | `capitulo-slide` | 0 (nunca usado) |
 | `ideia` | 0 (nunca usado) |
 | `painel` | 0 (nunca usado) |
@@ -19,8 +19,8 @@ Decks registrados: `apresentacoes/2026-10-20-etl-fontes-integracao/deck.html`, `
 | `imagem` | 0 (nunca usado) |
 | `citacao` | 0 (nunca usado) |
 | `atividade` | 0 (nunca usado) |
-| `encerramento` | 0 (nunca usado) |
-| `referencias` | 1 |
+| `encerramento` | 1 |
+| `referencias` | 2 |
 
 ## Slides sob medida
 
@@ -28,6 +28,8 @@ Um nome que aparece 2 vezes ou mais é **candidato a virar template**. A decisã
 
 | Modelo | Usos | Onde |
 |---|---|---|
+| kata-codigo ⭐ | 4 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #22<br>apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #23<br>apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #25<br>apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #26 |
+| comando-tarefa ⭐ | 3 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #15<br>apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #16<br>apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #17 |
 | fonte-evento-captura ⭐ | 2 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #9<br>apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #11 |
 | fonte-codigo-python ⭐ | 2 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #10<br>apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #12 |
 | notebook-origem-animada | 1 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #4 |
@@ -35,6 +37,8 @@ Um nome que aparece 2 vezes ou mais é **candidato a virar template**. A decisã
 | dados-pergunta-origem | 1 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #6 |
 | etl-tres-etapas | 1 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #8 |
 | duas-fontes-um-csv | 1 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #14 |
+| desafio-fluxo | 1 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #20 |
+| pipeline-encaixes | 1 | apresentacoes/2026-10-20-etl-fontes-integracao/deck.html #24 |
 | fronteira-aceitacao | 1 | apresentacoes/2026-10-22-etl-qualidade-padronizacao/deck.html #3 |
 | ciclo-qualidade | 1 | apresentacoes/2026-10-22-etl-qualidade-padronizacao/deck.html #4 |
 | contrato-entrada | 1 | apresentacoes/2026-10-22-etl-qualidade-padronizacao/deck.html #5 |

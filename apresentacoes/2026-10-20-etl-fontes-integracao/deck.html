@@ -30,24 +30,19 @@
   #etl1 .arquitetura .meio .caixa { font:28px/1.3 var(--f-codigo); color:var(--cinza-escuro); }
   #intervalo .conteudo { align-items:center; justify-content:center; }
   #etl1 .cena-notebook { height:490px; position:relative; }
-  #etl1 .notebook { background:var(--cinza-escuro); color:var(--branco); border-radius:16px; width:700px; overflow:hidden; flex:none; }
-  #etl1 .barra-notebook { padding:18px 28px; border-bottom:2px solid var(--cinza-texto); font-size:28px; }
   #etl1 .celula { display:flex; gap:20px; padding:32px 28px; align-items:baseline; }
   #etl1 .prompt { font:28px var(--f-codigo); color:var(--branco); }
-  #etl1 .notebook code { font:30px/1.6 var(--f-codigo); white-space:nowrap; }
   #etl1 .arquivo-csv { width:230px; height:230px; border:2px solid var(--cinza-claro); border-radius:12px; background:var(--branco); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; color:var(--cinza-escuro); font:32px var(--f-codigo); flex:none; }
   #etl1 .arquivo-csv svg { width:70px; height:84px; color:var(--vermelho-marca); }
   #mundo-notebooks .origem-incognita { position:absolute; left:0; top:130px; width:180px; height:230px; border:3px dashed var(--cinza-texto); border-radius:12px; display:grid; place-items:center; color:var(--vermelho-marca); font-size:100px; }
-  #mundo-notebooks .notebook { position:absolute; top:30px; right:254px; width:880px; transition:right .6s,width .6s; }
-  #mundo-notebooks .notebook code { font-size:30px; line-height:1.35; white-space:pre; }
-  #mundo-notebooks .notebook-codigo { padding:16px 28px; font:30px/1.35 var(--f-codigo); white-space:pre; }
+  #mundo-notebooks .notebook { position:absolute; top:30px; right:254px; width:880px; transition:right .35s,width .35s; --codigo-fonte:30px; --codigo-entrelinha:1.35; --codigo-padding:16px 28px; }
   #mundo-notebooks[data-estado="1"] .notebook, #mundo-notebooks[data-estado="2"] .notebook { right:0; width:700px; }
   #mundo-notebooks .arquivo-csv { position:absolute; left:290px; top:130px; }
   #mundo-notebooks .seta { position:absolute; top:218px; }
   #mundo-notebooks .seta-origem { left:220px; }
   #mundo-notebooks .seta-notebook { left:590px; }
-  #mundo-notebooks .arquivo-csv.visivel, #mundo-notebooks .seta-notebook.visivel { transition:opacity .2s .6s,visibility 0s .6s; }
-  #definicao-etl .etl-detalhes[data-passo="1"].visivel { transition:opacity .25s .6s,visibility 0s .6s; }
+  #mundo-notebooks .arquivo-csv.visivel, #mundo-notebooks .seta-notebook.visivel { transition:opacity .2s .3s,visibility 0s .3s; }
+  #definicao-etl .etl-detalhes[data-passo="1"].visivel { transition:opacity .2s .35s,visibility 0s .35s; }
   #crisp-revisao .conteudo { gap:18px; }
   #crisp-revisao .crisp-layout { display:grid; grid-template-columns:820px 1fr; gap:52px; align-items:center; min-height:540px; }
   #crisp-revisao .crisp-diagrama { position:relative; height:540px; }
@@ -81,7 +76,7 @@
   #definicao-etl .etl-icone { width:80px; height:80px; color:var(--cinza-escuro); flex:none; }
   #definicao-etl h3 { font-size:38px; color:var(--cinza-escuro); }
   #definicao-etl .etl-sigla { position:absolute; inset:0; z-index:2; pointer-events:none; }
-  #definicao-etl .etl-letra { position:absolute; top:180px; width:96px; text-align:center; font-size:128px; line-height:1; font-weight:bold; color:var(--vermelho-marca); transition:left .6s cubic-bezier(.22,.61,.36,1),top .6s cubic-bezier(.22,.61,.36,1),font-size .6s; }
+  #definicao-etl .etl-letra { position:absolute; top:180px; width:96px; text-align:center; font-size:128px; line-height:1; font-weight:bold; color:var(--vermelho-marca); transition:left .4s cubic-bezier(.22,.61,.36,1),top .4s cubic-bezier(.22,.61,.36,1),font-size .4s; }
   #definicao-etl .etl-e { left:calc(50% - 144px); }
   #definicao-etl .etl-t { left:calc(50% - 48px); }
   #definicao-etl .etl-l { left:calc(50% + 48px); }
@@ -89,8 +84,6 @@
   #definicao-etl[data-estado]:not([data-estado="0"]) .etl-e { left:calc((100% - 120px) / 6 - 48px); }
   #definicao-etl[data-estado]:not([data-estado="0"]) .etl-l { left:calc(100% - (100% - 120px) / 6 - 48px); }
   #definicao-etl .etl-card p { font-size:34px; line-height:1.3; }
-  #definicao-etl .etl-fontes { display:flex; justify-content:center; gap:24px; margin-top:auto; }
-  #definicao-etl .etl-fontes .icone-fonte { width:48px; height:48px; }
   #definicao-etl .etl-ligacao { position:absolute; top:205px; width:60px; text-align:center; font-size:44px; line-height:1; color:var(--vermelho-marca); }
   #definicao-etl .etl-ligacao.primeira { left:calc((100% - 120px) / 3); }
   #definicao-etl .etl-ligacao.segunda { right:calc((100% - 120px) / 3); }
@@ -110,33 +103,14 @@
   #etl1 .script-fonte code { font:28px var(--f-codigo); }
   #etl1 .destino-fonte { left:1060px; width:328px; border:2px solid var(--cinza-claro); background:var(--branco); color:var(--cinza-escuro); }
   #etl1 .destino-fonte p { font-size:30px; }
-  #etl1 .mapa-legenda { position:absolute; left:570px; right:0; bottom:32px; font-size:28px; color:var(--cinza-texto); }
   #etl1 .fonte-referencia { font-size:28px; color:var(--cinza-texto); }
   #etl1 [id^="captura-"] .conteudo { gap:12px; }
-  #etl1 .captura-layout { display:grid; grid-template-columns:1000px 1fr; grid-template-rows:570px; gap:34px; height:570px; flex:none; }
-  #etl1 .captura-codigo { --codigo-fonte:30px; --codigo-entrelinha:1.12; --codigo-padding:4px 24px; }
-  #etl1 .captura-leitura { display:flex; flex-direction:column; justify-content:center; gap:18px; min-height:0; }
-  #etl1 .captura-leitura .icone-fonte { width:58px; height:58px; }
-  #etl1 .captura-leitura h3 { color:var(--cinza-escuro); font-size:30px; }
-  #etl1 .captura-leitura p { font-size:28px; line-height:1.2; }
-  #etl1 .captura-leitura .ponto-captura { border-left:4px solid var(--vermelho-marca); padding-left:18px; }
-  #crisp-revisao[data-estado="7"] [data-fase="2"], #crisp-revisao[data-estado="7"] [data-fase="3"] { background:var(--cinza-escuro); color:var(--branco); opacity:1; }
-  #etl1 .codigo-grupo.em-foco { background:var(--cinza-escuro); position:relative; }
-  #etl1 .codigo-grupo.em-foco::before { content:""; position:absolute; left:-24px; top:3px; bottom:3px; width:4px; background:var(--vermelho); border-radius:2px; }
+  #etl1 .captura-codigo { --codigo-fonte:32px; --codigo-entrelinha:1.12; --codigo-padding:8px 34px; }
   #etl1 .captura-codigo { --codigo-padding:4px 34px; }
   #etl1 .solucao .conteudo { gap:24px; }
   #etl1 .solucao .bloco-codigo { --codigo-fonte:32px; --codigo-entrelinha:1.18; --codigo-padding:18px 30px; }
   #etl1 .solucao .referencia { font-size:28px; }
   #etl1 .solucao .titulo { font-size:58px; }
-  #definicao-etl[data-estado="4"] .etl-card:nth-of-type(2), #definicao-etl[data-estado="4"] .etl-card:nth-of-type(4) { border-color:var(--vermelho-marca); border-width:4px; }
-  #definicao-etl[data-estado="4"] .etl-card:nth-of-type(3) { border-color:var(--cinza-claro); border-width:2px; }
-  #definicao-etl[data-estado="4"] .etl-t { color:var(--cinza-texto); }
-  #definicao-etl .etl-foco { text-align:center; font-size:30px; color:var(--vermelho-marca); }
-  #etl1 .ponto-captura.em-foco { background:var(--branco); }
-  #etl1 .mapa-legenda { left:0; bottom:0; display:flex; gap:40px; justify-content:flex-start; align-items:center; }
-  #etl1 .amostra-linha { display:inline-block; width:60px; border-top:3px solid var(--cinza-texto); vertical-align:middle; margin-right:12px; }
-  #etl1 .amostra-linha.tracejada { border-top-style:dashed; }
-  #etl1 .carga-seguinte { position:absolute; left:1060px; top:420px; width:328px; font-size:28px; text-align:center; }
   #etl1 .origem-fonte .rotulo-termo { font-size:28px; }
   #etl1 .lab .conteudo { gap:36px; }
   #etl1 .lab .caixa { border:2px solid var(--cinza-claro); border-radius:14px; }
@@ -158,6 +132,45 @@
   #cenario-fontes .resultado-csv .arquivo-csv { width:280px; height:240px; }
   #cenario-fontes .resultado-csv p { font-size:30px; }
   #cenario-fontes .operacao { position:absolute; left:680px; top:182px; width:300px; text-align:center; font-size:30px; color:var(--cinza-escuro); }
+  #etl1 .tarefa .conteudo { gap:28px; }
+  #captura-postgres .captura-codigo { --codigo-fonte:28px; --codigo-entrelinha:1.15; }
+  #etl1 .tarefa-layout { display:grid; grid-template-columns:900px 1fr; gap:56px; align-items:center; margin:auto 0; }
+  #etl1 .tarefa-layout.so-terminal { grid-template-columns:1000px; justify-content:center; }
+  #etl1 .tarefa-terminal { --codigo-fonte:34px; --codigo-entrelinha:1.45; --codigo-padding:30px 34px; }
+  #etl1 .tarefa-confira { display:flex; flex-direction:column; gap:20px; }
+  #etl1 .tarefa-confira h3 { color:var(--cinza-escuro); font-size:34px; }
+  #etl1 .tarefa-confira p { font-size:30px; line-height:1.3; border-left:4px solid var(--vermelho-marca); padding-left:18px; }
+  #etl1 .tarefa .texto { font-size:30px; }
+  #etl1 [data-modelo="kata-codigo"] .conteudo { gap:20px; }
+  #etl1 [data-modelo="kata-codigo"] .kata-codigo { --codigo-fonte:28px; --codigo-entrelinha:1.2; --codigo-padding:14px 34px; }
+  #etl1 #kata-carga-clima .kata-codigo { --codigo-entrelinha:1.12; }
+  #referencias .lista-referencias { gap:20px; }
+  #desafio .conteudo { gap:20px; }
+  #desafio .desafio-fluxo { display:flex; flex-direction:column; align-items:center; gap:8px; margin:auto 0; }
+  #desafio .kata-codigo { width:900px; --codigo-fonte:30px; --codigo-entrelinha:1.35; --codigo-padding:18px 30px; }
+  #desafio .desafio-seta { display:flex; align-items:center; gap:18px; font-size:48px; line-height:1; color:var(--vermelho-marca); }
+  #desafio .desafio-seta span { font-size:28px; color:var(--cinza-texto); }
+  #desafio .planilha { width:1180px; background:var(--branco); border:2px solid var(--cinza-claro); border-radius:14px; overflow:hidden; box-shadow:0 10px 28px rgba(47,46,73,.10); }
+  #desafio .planilha-aba { display:flex; align-items:center; gap:14px; padding:12px 24px; background:var(--fundo); border-bottom:2px solid var(--cinza-claro); font:28px var(--f-codigo); color:var(--cinza-escuro); }
+  #desafio .planilha-aba svg { width:26px; height:32px; color:var(--vermelho-marca); }
+  #desafio table { width:100%; border-collapse:collapse; font:28px/1.2 var(--f-codigo); }
+  #desafio th, #desafio td { white-space:nowrap; }
+  #desafio th { text-align:left; padding:12px 24px; color:var(--branco); background:var(--cinza-escuro); font-weight:bold; }
+  #desafio td { padding:8px 24px; color:var(--cinza-escuro); border-top:1px solid var(--cinza-claro); }
+  #desafio td:nth-child(n+3), #desafio th:nth-child(n+3) { text-align:right; }
+  #desafio .reticencias td { color:var(--cinza-texto); }
+  #kata-pecas .encaixes { display:flex; flex-direction:column; margin:auto 0; }
+  #kata-pecas .encaixe-barra { display:flex; justify-content:center; align-items:baseline; gap:14px; padding:26px; background:var(--cinza-escuro); color:var(--branco); border-radius:14px; }
+  #kata-pecas .encaixe-barra strong { font:bold 40px var(--f-codigo); }
+  #kata-pecas .encaixe-barra code { font:32px var(--f-codigo); color:var(--cinza-claro); }
+  #kata-pecas .encaixe-slots { display:grid; grid-template-columns:repeat(3,1fr); gap:48px; padding:0 30px; }
+  #kata-pecas .slot { position:relative; display:flex; flex-direction:column; align-items:center; gap:10px; padding-top:56px; }
+  #kata-pecas .slot::before { content:""; position:absolute; top:0; left:50%; height:44px; border-left:4px solid var(--vermelho-marca); }
+  #kata-pecas .contrato { font:28px var(--f-codigo); color:var(--cinza-escuro); }
+  #kata-pecas .soquete { position:relative; width:100%; height:112px; border:3px dashed var(--cinza-texto); border-radius:16px; }
+  #kata-pecas .soquete .peca { position:absolute; inset:10px; display:grid; place-items:center; background:var(--branco); border:2px solid var(--cinza-escuro); border-radius:10px; font:bold 30px var(--f-codigo); color:var(--cinza-escuro); }
+  #kata-pecas .soquete .peca.nova { border-color:var(--vermelho-marca); color:var(--vermelho-marca); }
+  #kata-pecas .troca { font-size:28px; color:var(--vermelho-marca); }
   @media (prefers-reduced-motion:reduce) { #mundo-notebooks .notebook, #crisp-revisao .crisp-etapa, #definicao-etl .etl-letra, #etl1 .passo { transition:none !important; } }
 </style>
 </head>
@@ -177,17 +190,7 @@
   <div class="conteudo">
     <h2 class="titulo">O mundo dos notebooks</h2>
     <div class="cena-notebook">
-      <div class="notebook">
-        <div class="barra-notebook">análise.ipynb</div>
-        <pre class="notebook-codigo"><code>import pandas as pd
-
-df = pd.read_csv("dados.csv")
-print(df.shape)
-print(df.head(3))
-sub = df.groupby("id_subsistema")
-print(sub["carga_mwmed"].mean())
-print(sub["temperatura_c"].mean())</code></pre>
-      </div>
+      <div class="notebook kata-codigo" data-codigo="notebook" data-arquivo="análise.ipynb" data-linguagem="Python"></div>
       <div class="arquivo-csv passo" data-passo="1"><svg viewBox="0 0 70 84" aria-hidden="true"><path d="M8 3 H44 L62 21 V80 H8 Z M44 3 V21 H62 M19 38 H51 M19 50 H51 M19 62 H51" fill="none" stroke="currentColor" stroke-width="4"/></svg><span>dados.csv</span></div>
       <span class="seta seta-notebook passo" data-passo="1" aria-hidden="true">→</span>
       <div class="origem-incognita passo" data-passo="2" aria-label="Origem desconhecida">?</div>
@@ -242,7 +245,6 @@ print(sub["temperatura_c"].mean())</code></pre>
         <svg class="etl-icone" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="35" cy="19" rx="24" ry="9"/><path d="M11 19 V64 C11 77 59 77 59 64 V19 M11 40 C11 53 59 53 59 40 M44 87 H88 M74 73 L88 87 L74 99"/></svg>
         <h3>Extrair</h3>
         <p>Obter dados<br>das fontes</p>
-        <div class="etl-fontes" aria-label="PostgreSQL e API externa"></div>
         </div>
       </div>
       <span class="etl-ligacao primeira passo" data-passo="1" aria-hidden="true">→</span>
@@ -264,7 +266,6 @@ print(sub["temperatura_c"].mean())</code></pre>
         </div>
       </div>
     </div>
-    <p class="etl-foco passo" data-passo="4">Nesta aula: extrair e carregar</p>
     <p class="referencia passo" data-passo="1">Kimball e Caserta · The Data Warehouse ETL Toolkit, 2004</p>
   </div>
 </section>
@@ -283,6 +284,110 @@ print(sub["temperatura_c"].mean())</code></pre>
     <p class="referencia">Fontes: <a href="https://dados.ons.org.br/dataset/curva-carga">ONS · Curva de Carga</a> e <a href="https://open-meteo.com/en/docs/historical-weather-api">Open-Meteo · Historical Weather</a>.</p>
   </div>
 </section>
+<section class="slide tarefa" id="ambiente-lab" data-modelo="comando-tarefa" data-max-palavras="40">
+  <div class="conteudo"><h2 class="titulo">Ambiente</h2>
+    <div class="tarefa-layout so-terminal"><div class="tarefa-terminal" data-comando="cd pecege-ons/playground
+./preparar.sh" data-arquivo="Terminal"></div></div>
+    <p class="referencia">Passo a passo: <a href="https://rmnicola.github.io/pecege-ons/aulas/2026-10-20-etl-i/preparacao/">rmnicola.github.io/pecege-ons</a></p>
+  </div>
+</section>
+<section class="slide tarefa" id="pratica-carga" data-modelo="comando-tarefa" data-max-palavras="60">
+  <div class="conteudo"><h2 class="titulo">Extrair a carga</h2>
+    <div class="tarefa-layout"><div class="tarefa-terminal" data-comando="docker compose run --rm etl \
+  python aluno/aula1/extrair_carga.py" data-arquivo="Terminal"></div>
+      <div class="tarefa-confira"><h3>Confira</h3><p>Quantas linhas por subsistema?</p><p>Que tipos chegam no instante e na carga?</p><p>Cobre de 01 a 07/01/2025?</p></div>
+    </div>
+  </div>
+</section>
+<section class="slide tarefa" id="pratica-clima" data-modelo="comando-tarefa" data-max-palavras="60">
+  <div class="conteudo"><h2 class="titulo">Extrair o clima</h2>
+    <div class="tarefa-layout"><div class="tarefa-terminal" data-comando="docker compose run --rm etl \
+  python aluno/aula1/extrair_clima.py" data-arquivo="Terminal"></div>
+      <div class="tarefa-confira"><h3>Confira</h3><p>Quantas horas por cidade?</p><p>Batem com as horas de carga? Por quê?</p><p>Onde vem a unidade?</p></div>
+    </div>
+  </div>
+</section>
+<section class="slide agenda" id="agenda-intervalo" data-agora="3">
+  <div class="conteudo"><div class="itens"></div></div>
+</section>
+<section class="slide agenda" id="agenda-desafio" data-agora="4">
+  <div class="conteudo"><div class="itens"></div></div>
+</section>
+<section class="slide" id="desafio" data-modelo="desafio-fluxo" data-max-palavras="60">
+  <div class="conteudo"><h2 class="titulo">Desafio · carga + temperatura</h2>
+    <div class="desafio-fluxo">
+      <div class="kata-codigo" data-codigo="rodar" data-arquivo="playground" data-linguagem="Terminal"></div>
+      <div class="desafio-seta" aria-hidden="true">↓<span>gera</span></div>
+      <div class="planilha">
+        <div class="planilha-aba"><svg viewBox="0 0 70 84" aria-hidden="true"><path d="M8 3 H44 L62 21 V80 H8 Z M44 3 V21 H62 M19 38 H51 M19 50 H51 M19 62 H51" fill="none" stroke="currentColor" stroke-width="5"/></svg>saida/dados.csv</div>
+        <table>
+          <thead><tr><th>id_subsistema</th><th>instante</th><th>carga_mwmed</th><th>temperatura_c</th></tr></thead>
+          <tbody>
+            <tr><td>N</td><td>2025-01-01 00:00:00</td><td>7097.75099999</td><td>24.0</td></tr>
+            <tr><td>N</td><td>2025-01-01 01:00:00</td><td>7053.337</td><td>23.9</td></tr>
+            <tr class="reticencias"><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="referencia">Comece por aluno/aula1/combinar.py · 60 min</p>
+  </div>
+</section>
+<section class="slide agenda" id="agenda-solucao" data-agora="5">
+  <div class="conteudo"><div class="itens"></div></div>
+</section>
+<section class="slide" id="kata-carga-clima" data-modelo="kata-codigo" data-max-palavras="120">
+  <div class="conteudo"><h2 class="titulo">Solução · carga e clima</h2><div class="kata-codigo" data-codigo="solucao1" data-arquivo="combinar.py" data-linguagem="Python"></div></div>
+</section>
+<section class="slide" id="kata-juntar" data-modelo="kata-codigo" data-max-palavras="120">
+  <div class="conteudo"><h2 class="titulo">Solução · juntar e gravar</h2><div class="kata-codigo" data-codigo="solucao2" data-arquivo="combinar.py" data-linguagem="Python"></div></div>
+</section>
+<section class="slide" id="kata-pecas" data-modelo="pipeline-encaixes" data-max-palavras="50">
+  <div class="conteudo"><h2 class="titulo">Peças que se encaixam</h2>
+    <div class="encaixes">
+      <div class="encaixe-barra"><strong>executar</strong><code>(fontes, destino, período)</code></div>
+      <div class="encaixe-slots">
+        <div class="slot">
+          <span class="rotulo-termo">Fonte</span><code class="contrato">extrair(inicio, fim)</code>
+          <div class="soquete"><div class="peca">CargaPostgres</div></div>
+        </div>
+        <div class="slot">
+          <span class="rotulo-termo">Fonte</span><code class="contrato">extrair(inicio, fim)</code>
+          <div class="soquete"><div class="peca passo" data-passo="0" data-sai="1">ClimaOpenMeteo</div><div class="peca nova passo" data-passo="1">ClimaArquivo</div></div>
+          <p class="troca passo" data-passo="1">respostas salvas, sem internet</p>
+        </div>
+        <div class="slot">
+          <span class="rotulo-termo">Destino</span><code class="contrato">gravar(dados)</code>
+          <div class="soquete"><div class="peca passo" data-passo="0" data-sai="2">CsvLocal</div><div class="peca nova passo" data-passo="2">MinIO</div></div>
+          <p class="troca passo" data-passo="2">próxima aula</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide" id="kata-pipeline" data-modelo="kata-codigo" data-max-palavras="120">
+  <div class="conteudo"><h2 class="titulo">O pipeline só conhece contratos</h2><div class="kata-codigo" data-codigo="pipeline" data-arquivo="pipeline.py" data-linguagem="Python"></div></div>
+</section>
+<section class="slide" id="kata-montar" data-modelo="kata-codigo" data-max-palavras="120">
+  <div class="conteudo"><h2 class="titulo">Trocar a peça, não o pipeline</h2><div class="kata-codigo" data-codigo="montar" data-arquivo="executar.py" data-linguagem="Python"></div>
+    <p class="referencia">Código completo: playground/gabarito/aula1/componivel/</p>
+  </div>
+</section>
+<section class="slide encerramento sem-numero" id="encerramento">
+  <div class="conteudo"><h2 class="titulo">Obrigado!</h2><p class="contato">Rodrigo Nicola</p></div>
+  <img class="edificio" src="../../design-system/assets/img/edificio-pecege.svg" alt="">
+  <img class="simbolo-edificio" src="../../design-system/assets/img/simbolo-pecege.svg" alt="Pecege">
+</section>
+<section class="slide referencias" id="referencias" data-max-palavras="140">
+  <div class="conteudo"><h2 class="titulo">Referências e dados</h2><div class="lista-referencias">
+    <p>Chapman, P. et al. (2000). <a href="https://www.the-modeling-agency.com/crisp-dm.pdf">CRISP-DM 1.0: Step-by-step data mining guide</a></p>
+    <p>Kimball, R.; Caserta, J. (2004). The Data Warehouse ETL Toolkit. Wiley.</p>
+    <p>ONS — <a href="https://dados.ons.org.br/dataset/curva-carga">Curva de Carga Horária</a> e dicionário de dados</p>
+    <p><a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a> (CC BY 4.0) — Zippenfenig, P. (2023), <a href="https://doi.org/10.5281/ZENODO.7970649">doi:10.5281/ZENODO.7970649</a></p>
+    <p>Hersbach, H. et al. (2023). ERA5 hourly data on single levels. ECMWF. <a href="https://doi.org/10.24381/cds.adbb2d47">doi:10.24381/cds.adbb2d47</a></p>
+    <p>Documentação: <a href="https://www.psycopg.org/psycopg3/docs/">Psycopg 3</a> · <a href="https://www.python-httpx.org/">HTTPX</a> · <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.merge.html">pandas.DataFrame.merge</a></p>
+  </div></div>
+</section>
 <script src="../../design-system/js/codigo.js"></script>
 <script>
   window.PECEGE_DS = '../../design-system';
@@ -294,14 +399,14 @@ print(sub["temperatura_c"].mean())</code></pre>
   const iconeFonte = tipo => '<svg class="icone-fonte" viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONES_FONTES[tipo] + '</svg>';
   const AJUDA_CODIGOS = {
     postgres: [
-      { inicio:4, fim:4, texto:'O orquestrador chama extrair e entrega um dicionário evento com inicio e fim. A função não detecta sozinha a conclusão da carga.' },
-      { inicio:5, fim:7, texto:'A conexão usa PG_DSN, configurada no ambiente. dict_row faz cada linha virar um dicionário. O bloco with fecha a conexão ao terminar.' },
-      { inicio:8, fim:12, texto:'A consulta SQL recebe inicio e fim como parâmetros. O intervalo inclui o início e exclui o fim, evitando sobrepor recortes consecutivos.' },
-      { inicio:13, fim:13, texto:'fetchall obtém as linhas do recorte. O retorno segue para a etapa de carga: retornar dados ainda não significa gravá-los na staging.' }
+      { inicio:4, fim:8, texto:'A consulta lê oficial.curva_horaria, a cópia da Curva de Carga no laboratório. inicio e fim entram como parâmetros: o intervalo inclui o início e exclui o fim.' },
+      { inicio:10, fim:10, texto:'O orquestrador chama extrair e entrega um dicionário evento com inicio e fim. A função não detecta sozinha a conclusão da carga.' },
+      { inicio:11, fim:13, texto:'A conexão usa PG_DSN, configurada no ambiente. dict_row faz cada linha virar um dicionário. O bloco with fecha a conexão ao terminar.' },
+      { inicio:14, fim:15, texto:'execute envia a consulta com o evento; fetchall obtém as linhas do recorte. Retornar dados ainda não significa gravá-los.' }
     ],
     api: [
-      { inicio:2, fim:5, texto:'URL aponta o arquivo histórico da Open-Meteo. O agendador chama extrair com um evento de início e fim; httpx.get envia a requisição HTTP.' },
-      { inicio:6, fim:10, texto:'params define coordenadas, período, temperatura horária e horário UTC. Aqui end_date inclui o último dia, diferente do fim exclusivo do PostgreSQL.' },
+      { inicio:2, fim:5, texto:'URL aponta o arquivo histórico da Open-Meteo. extrair recebe o período e as coordenadas de um ponto; httpx.get envia a requisição HTTP.' },
+      { inicio:6, fim:10, texto:'params define o ponto, o período, a temperatura horária e o horário de Brasília. Atenção: aqui end_date inclui o último dia.' },
       { inicio:11, fim:11, texto:'timeout limita o tempo de espera nas operações de rede. Ele evita que a extração fique aguardando indefinidamente.' },
       { inicio:12, fim:13, texto:'raise_for_status sinaliza erros HTTP. json interpreta a resposta como JSON; a etapa seguinte deve preservar também unidades e metadados.' }
     ]
@@ -310,7 +415,6 @@ print(sub["temperatura_c"].mean())</code></pre>
     ['SQL', 'Linguagem de consulta a bancos relacionais.'],
     ['HTTP', 'Protocolo de requisição e resposta na web.'],
     ['JSON', 'Formato textual para objetos e listas.'],
-    ['UTC', 'Tempo Universal Coordenado.'],
     ['DSN', 'Configuração de conexão à fonte de dados.']
   ].filter(([termo]) => new RegExp('\\b' + termo + '\\b').test(texto.replace('PG_DSN', 'DSN')));
   function prepararCodigo(slide, fonte) {
@@ -319,46 +423,45 @@ print(sub["temperatura_c"].mean())</code></pre>
       codigo:fonte.codigo, arquivo:arquivos[fonte.id], linguagem:'Python', ajudas:AJUDA_CODIGOS[fonte.id]
     });
   }
-  document.querySelector('#definicao-etl .etl-fontes').innerHTML = ['postgres', 'api'].map(iconeFonte).join('');
   const FONTES_MUNDO_REAL = [
     {
       id:'postgres', nome:'PostgreSQL', perfil:'Exemplo: fonte interna', detalhe:'Tabelas de um sistema interno',
       gatilho:'Carga concluída', executor:'orquestrador', chamada:'extrair(evento)', saida:'Linhas selecionadas',
       legenda:'O evento fornece o recorte; a consulta busca os dados.',
       biblioteca:'Psycopg 3', url:'https://www.psycopg.org/psycopg3/docs/basic/usage.html',
-      pontos:[['Conectar','PG_DSN vem do ambiente.'],['Consultar','O evento fornece início e fim.'],['Entregar','Retornar as linhas para a carga.']],
       codigo:`import os
 import psycopg
 from psycopg.rows import dict_row
+
+SQL = """SELECT id_subsistema, din_instante,
+       val_cargaenergiahomwmed
+FROM oficial.curva_horaria
+WHERE din_instante >= %(inicio)s
+  AND din_instante < %(fim)s"""
 
 def extrair(evento):
     with psycopg.connect(
         os.environ["PG_DSN"], row_factory=dict_row
     ) as conexao:
-        cursor = conexao.execute(
-            """SELECT instante, valor FROM medicoes
-               WHERE instante >= %(inicio)s
-                 AND instante < %(fim)s""", evento
-        )
+        cursor = conexao.execute(SQL, evento)
         return cursor.fetchall()`
     },
     {
       id:'api', nome:'API externa', perfil:'Exemplo: fonte externa', detalhe:'Histórico do tempo<br><span style="white-space:nowrap">Open-Meteo</span>',
-      gatilho:'Horário programado', executor:'agendador', chamada:'extrair(evento)', saida:'JSON da resposta',
+      gatilho:'Horário programado', executor:'agendador', chamada:'extrair(evento, …)', saida:'JSON da resposta',
       legenda:'O agendador inicia a consulta ao serviço externo.',
       biblioteca:'Open-Meteo + HTTPX', url:'https://open-meteo.com/en/docs/historical-weather-api',
-      pontos:[['Solicitar','Definir local, período e variável.'],['Conferir','Falha HTTP interrompe a extração.'],['Entregar','Preservar o JSON e suas unidades.']],
       codigo:`import httpx
 
 URL = "https://archive-api.open-meteo.com/v1/archive"
 
-def extrair(evento):
+def extrair(evento, lat, lon):
     resposta = httpx.get(URL, params={
-        "latitude": -15.79, "longitude": -47.88,
+        "latitude": lat, "longitude": lon,
         "start_date": evento["inicio"],
         "end_date": evento["fim"],
         "hourly": "temperature_2m",
-        "timezone": "UTC",
+        "timezone": "America/Sao_Paulo",
     }, timeout=30.0)
     resposta.raise_for_status()
     return resposta.json()`
@@ -381,34 +484,16 @@ def extrair(evento):
       '<div class="gatilho-fonte passo" data-passo="1"><strong>' + fonte.gatilho + '</strong><p>' + fonte.executor + '</p></div>' +
       '<div class="script-fonte passo" data-passo="1"><strong>Python</strong><code>' + fonte.chamada + '</code></div>' +
       '<div class="destino-fonte passo" data-passo="2"><strong>Retorno</strong><p>' + fonte.saida + '</p></div>' +
-      '<p class="carga-seguinte passo" data-passo="2">Depois: carga na staging,<br>a área de chegada</p>' +
-      '<p class="mapa-legenda passo" data-passo="1"><span><i class="amostra-linha"></i>Dados</span><span><i class="amostra-linha tracejada"></i>Acionamento</span></p></div>' +
-      '<p class="fonte-referencia">Exemplo didático · <a href="' + fonte.url + '">' + fonte.biblioteca + '</a></p></div>';
+      '</div></div>';
     referenciaFontes.before(contexto);
     const captura = document.createElement('section');
     captura.className = 'slide fonte-etl';
     captura.id = 'captura-' + fonte.id;
     captura.dataset.modelo = 'fonte-codigo-python';
     captura.dataset.maxPalavras = '160';
-    captura.dataset.ajudaLargura = '420';
-    captura.dataset.ajudaPosicao = 'direita';
     captura.innerHTML = '<div class="conteudo"><h2 class="titulo">' + fonte.nome + ' · extração</h2>' +
-      '<div class="captura-layout"><div class="captura-codigo"></div><div class="captura-leitura">' +
-      iconeFonte(fonte.id) + '<h3>' + fonte.biblioteca + '</h3>' +
-      fonte.pontos.map((ponto, i) => '<div class="ponto-captura passo" data-passo="' + (i + 1) + '"><h3>' + ponto[0] + '</h3><p>' + ponto[1] + '</p></div>').join('') +
-      '</div></div><p class="fonte-referencia">Recorte de extração · o retorno alimenta a carga · <a href="' + fonte.url + '">documentação</a></p></div>';
+      '<div class="captura-codigo"></div></div>';
     prepararCodigo(captura, fonte);
-    // A mesma estrutura de ajuda define os trechos de leitura; não duplicar intervalos.
-    const grupos = [...captura.querySelectorAll('.codigo-grupo')];
-    const pontos = [...captura.querySelectorAll('.ponto-captura')];
-    const mapaFoco = fonte.id !== 'api' ? [[0, 1], [2], [3]] : [[0, 1], [2, 3], [3]];
-    const atualizarFoco = () => {
-      const estado = Number(captura.dataset.estado || 0);
-      grupos.forEach((grupo, i) => grupo.classList.toggle('em-foco', (mapaFoco[estado - 1] || []).includes(i)));
-      pontos.forEach((ponto, i) => ponto.classList.toggle('em-foco', estado === i + 1));
-    };
-    new MutationObserver(atualizarFoco).observe(captura, { attributes:true, attributeFilter:['data-estado'] });
-    atualizarFoco();
     referenciaFontes.before(captura);
   });
   // Uma fonte de conteúdo para as caixas e as explicações de cada fase.
@@ -430,16 +515,109 @@ def extrair(evento):
     const explicacao = document.createElement('div');
     explicacao.className = 'crisp-explicacao passo';
     explicacao.dataset.passo = passo;
-    explicacao.dataset.sai = passo + 1;
+    if (passo < FASES_CRISP.length) explicacao.dataset.sai = passo + 1;
     explicacao.innerHTML = '<span class="rotulo-termo">Etapa ' + passo + ' de 6</span><h3>' + fase.titulo + '</h3><p>' + fase.texto + '</p>';
     document.querySelector('#crisp-revisao .crisp-detalhes').append(explicacao);
   });
-  const sintese = document.createElement('div');
-  sintese.className = 'crisp-explicacao passo';
-  sintese.dataset.passo = '7';
-  sintese.innerHTML = '<span class="rotulo-termo">Foco desta aula</span><h3>Entender e preparar os dados</h3><p>Investigar a origem, obter os dados e organizar sua chegada para a análise.</p>';
-  document.querySelector('#crisp-revisao .crisp-detalhes').append(sintese);
-  const AGENDA = ['O mundo dos notebooks', 'O mundo real', 'O laboratório', 'Intervalo', 'Desafios'];
+  document.querySelectorAll('.tarefa-terminal').forEach(alvo => {
+    window.PECEGE_CODIGO.montar(alvo, { codigo:alvo.dataset.comando, arquivo:'playground', linguagem:'Terminal' });
+  });
+  // Trechos do desafio e da demonstração; espelham playground/gabarito/aula1/.
+  const KATA = {
+    notebook: `import pandas as pd
+
+df = pd.read_csv("dados.csv")
+print(df.shape)
+print(df.head(3))
+sub = df.groupby("id_subsistema")
+print(sub["carga_mwmed"].mean())
+print(sub["temperatura_c"].mean())`,
+    rodar: `docker compose run --rm etl \\
+  python aluno/aula1/combinar.py`,
+    solucao1: `# end_date inclui o último dia: o mesmo período é 01 a 07
+EVENTO_CLIMA = {"inicio": "2025-01-01", "fim": "2025-01-07"}
+
+carga = pd.DataFrame(extrair_carga(EVENTO)).rename(columns={
+    "din_instante": "instante", "val_cargaenergiahomwmed": "carga_mwmed"})
+carga["carga_mwmed"] = carga["carga_mwmed"].astype(float)
+
+partes = []
+for sub, (cidade, lat, lon) in CIDADES.items():
+    resposta = extrair_clima(EVENTO_CLIMA, lat, lon)
+    partes.append(pd.DataFrame({
+        "id_subsistema": sub,
+        "instante": pd.to_datetime(resposta["hourly"]["time"]),
+        "temperatura_c": resposta["hourly"]["temperature_2m"],
+    }))
+clima = pd.concat(partes, ignore_index=True)`,
+    solucao2: `dados = carga.merge(clima, on=["id_subsistema", "instante"],
+                    how="left", validate="one_to_one")
+
+assert len(dados) == len(carga), "a junção mudou o número de linhas"
+assert dados["temperatura_c"].notna().all(), "há horas sem temperatura"
+
+dados.sort_values(["id_subsistema", "instante"]).to_csv(
+    "saida/dados.csv", index=False)`,
+    pipeline: `class Fonte(Protocol):
+    nome: str
+    def extrair(self, inicio, fim) -> pd.DataFrame: ...
+
+class Destino(Protocol):
+    def gravar(self, dados: pd.DataFrame) -> None: ...
+
+def executar(fontes, destino, inicio, fim):
+    dados = None
+    for fonte in fontes:
+        tabela = fonte.extrair(inicio, fim)
+        tabela = tabela.rename(columns={"valor": fonte.nome})
+        dados = tabela if dados is None else dados.merge(
+            tabela, on=CHAVE, how="left", validate="one_to_one")
+    destino.gravar(dados.sort_values(CHAVE))`,
+    montar: `from destinos import CsvLocal
+from fontes import CargaPostgres, ClimaArquivo, ClimaOpenMeteo
+from pipeline import executar
+
+clima = ClimaOpenMeteo()          # ou ClimaArquivo("aluno/aula1/dados")
+
+executar(
+    fontes=[CargaPostgres(), clima],
+    destino=CsvLocal("saida/dados.csv"),
+    inicio="2025-01-01",
+    fim="2025-01-08",
+)`
+  };
+  // Explicações da interrogação (?) para consulta depois da aula; linhas contadas a partir de 0.
+  const KATA_AJUDAS = {
+    solucao1: [
+      { inicio:0, fim:1, texto:'A Open-Meteo inclui end_date. Para cobrir o mesmo período da carga, de 01/01 até antes de 08/01, o clima vai até 07/01. Sem isso, cada cidade traz 192 horas e a carga, 168.' },
+      { inicio:3, fim:4, texto:'pd.DataFrame monta a tabela a partir da lista de dicionários do psycopg. rename troca os nomes do banco pelos nomes do formato esperado.' },
+      { inicio:5, fim:5, texto:'O PostgreSQL entrega numeric como Decimal. astype(float) converte para o número do pandas, que o CSV e as contas esperam.' },
+      { inicio:7, fim:9, texto:'Uma chamada por cidade: CIDADES associa cada subsistema às coordenadas da cidade escolhida para representá-lo.' },
+      { inicio:10, fim:14, texto:'Cada resposta vira uma tabela com o subsistema, o instante e a temperatura. pd.to_datetime converte o horário, que chega como texto, para o mesmo tipo do instante da carga.' },
+      { inicio:15, fim:15, texto:'pd.concat empilha as quatro tabelas de clima; ignore_index refaz a numeração das linhas.' }
+    ],
+    solucao2: [
+      { inicio:0, fim:1, texto:'merge junta pela chave subsistema + instante. how="left" mantém todas as horas de carga; validate="one_to_one" falha se a chave se repetir em algum dos lados.' },
+      { inicio:3, fim:4, texto:'Conferências antes de gravar: a junção não pode criar nem perder linhas, e toda hora de carga precisa ter temperatura. Se algo falhar, o script para.' },
+      { inicio:6, fim:7, texto:'Ordena por subsistema e hora e grava o CSV. index=False evita uma coluna extra com o número da linha.' }
+    ],
+    pipeline: [
+      { inicio:0, fim:2, texto:'Fonte é um contrato: qualquer objeto com nome e extrair(inicio, fim) que devolva id_subsistema, instante e valor serve. Protocol só descreve o formato; ninguém precisa herdar dele.' },
+      { inicio:4, fim:5, texto:'Destino é qualquer objeto com gravar(dados). Hoje, CsvLocal; na próxima aula, o MinIO.' },
+      { inicio:7, fim:8, texto:'executar recebe as peças prontas, de fora. Ele não sabe se os dados vêm de um banco, de uma API ou de um arquivo.' },
+      { inicio:9, fim:13, texto:'Para cada fonte: extrai o período, renomeia valor para o nome da fonte e junta pela chave, com a mesma validação da solução.' },
+      { inicio:14, fim:14, texto:'Entrega o resultado ao destino, seja ele qual for.' }
+    ],
+    montar: [
+      { inicio:0, fim:2, texto:'Só aqui o código conhece as implementações concretas: este é o ponto de montagem do pipeline.' },
+      { inicio:4, fim:4, texto:'Trocar a fonte de clima é trocar esta linha. ClimaArquivo lê as respostas salvas em aluno/aula1/dados e funciona sem internet.' },
+      { inicio:6, fim:11, texto:'As peças entram como argumentos. O período usa fim exclusivo; cada fonte cuida das particularidades da sua origem, como o end_date inclusivo da Open-Meteo.' }
+    ]
+  };
+  document.querySelectorAll('.kata-codigo').forEach(alvo => {
+    window.PECEGE_CODIGO.montar(alvo, { codigo:KATA[alvo.dataset.codigo], arquivo:alvo.dataset.arquivo, linguagem:alvo.dataset.linguagem, ajudas:KATA_AJUDAS[alvo.dataset.codigo] || [] });
+  });
+  const AGENDA = ['O mundo dos notebooks', 'O mundo real', 'O laboratório', 'Intervalo', 'Desafio', 'Solução'];
   document.querySelectorAll('.agenda').forEach(slide => {
     const atual = Number(slide.dataset.agora);
     const itens = slide.querySelector('.itens');

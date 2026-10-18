@@ -1,46 +1,37 @@
-# Aula 1 — roteiro operacional do aluno
+# Aula 1 — roteiro do aluno
 
-## Preparação antes da aula
+Preparação do ambiente: https://rmnicola.github.io/pecege-ons/aulas/2026-10-20-etl-i/preparacao/ (resumo: `./preparar.sh` dentro de `playground/`).
 
-Instale Docker Desktop (Windows/macOS) ou Docker Engine com Compose (Linux). Leia `../README.md`. A partir de `playground/`, com internet para preparar as imagens:
+Todos os comandos abaixo rodam dentro de `playground/`.
 
-```sh
-docker compose build etl
-docker compose up -d --wait fonte-balanco fonte-curva destino
-docker compose run --rm etl python scripts/00_carregar_fontes.py
-```
-
-O `00` carrega as fontes e reinicia resultados por padrão; execute apenas no setup/reset intencional. Os snapshots locais permitem trabalhar sem internet depois da preparação.
-
-## 1. Identificar fontes e contratos
-
-Localize no Compose `fonte-balanco`, `fonte-curva` e `destino`. Consulte os dicionários em `data/oficial/`. Registre tabelas, campos, tipos, identidade de uma linha, unidades e cobertura; verifique isso, não assuma equivalência pelo nome.
-
-## 2. Extrair separadamente
+## 1. Extrair a carga
 
 ```sh
-docker compose run --rm etl python scripts/01_extrair_balanco.py --cenario aula1
-docker compose run --rm etl python scripts/02_extrair_curva.py --cenario aula1
+docker compose run --rm etl python aluno/aula1/extrair_carga.py
 ```
 
-Antes de executar, identifique conexão, recorte e tabela escrita. Depois consulte `aula1.stg_balanco`, `aula1.stg_curva` e os registros em `resultados/`. Explique como demonstrar origem e repetir a extração.
+Confira quantas linhas chegam por subsistema, que tipos chegam no instante e na carga e se o período cobre 01 a 07/01/2025.
 
-## 3. Inspecionar e propor integração
+## 2. Extrair o clima
 
 ```sh
-docker compose exec destino psql -U ons_lab -d analytics
+docker compose run --rm etl python aluno/aula1/extrair_clima.py
 ```
 
-Escreva as consultas em `aluno/exercicios_aula1.sql` e execute-as no terminal SQL. Investigue unicidade, tipos, períodos e grupos. Justifique a chave e a política de junção, incluindo registros sem correspondência. Não substitua medidas ausentes por zero nem combine cargas sem verificar suas definições.
+Uma cidade por subsistema (Belém, Recife, São Paulo, Porto Alegre), uma simplificação: a temperatura de uma cidade não representa a região inteira. Confira quantas horas chegam por cidade, se batem com as horas de carga e onde vem a unidade.
 
-## 4. Integrar e carregar
+## 3. Desafio: carga + temperatura
+
+Complete `aluno/aula1/combinar.py` e gere `saida/dados.csv`, uma linha por subsistema e hora:
+
+```
+id_subsistema,instante,carga_mwmed,temperatura_c
+```
 
 ```sh
-docker compose run --rm etl python scripts/03_integrar.py --cenario aula1
+docker compose run --rm etl python aluno/aula1/combinar.py
 ```
 
-Consulte `aula1.integrado`. Compare leitura e escrita, examine registros sem par e explique o efeito da junção. Reexecute e confira o efeito na saída.
+Use pandas. Fuso assumido: America/Sao_Paulo. Antes de gravar, confira quantas linhas o CSV deve ter, se a junção mudou o número de linhas e se sobrou alguma hora sem temperatura.
 
-## Entrega
-
-Consultas e breve descrição de fontes, chave, granularidade, recorte, metadados, política de escrita e verificações. Os comandos estão prontos; a investigação e as justificativas são o trabalho da dupla. Não há respostas nem contagens de gabarito neste roteiro.
+Sem internet? As respostas da Open-Meteo para o período estão salvas em `aluno/aula1/dados/` (veja o README da pasta).

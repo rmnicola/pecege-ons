@@ -22,6 +22,8 @@ from datetime import date
 from html import escape
 from pathlib import Path
 
+from verificar_contraste import temas
+
 RAIZ = Path(__file__).resolve().parents[1]
 PREVIA = False  # --previa: inclui rascunhos
 SAIDA = RAIZ / "_site"
@@ -49,15 +51,16 @@ PREFIXOS = {"sudo"}
 # acessível pelo repositório público e pelos links diretos dos arquivos.
 PORTAO = """<div id="portao" role="dialog" aria-modal="true" aria-labelledby="portao-titulo">
 <style>
-#portao { position: fixed; inset: 0; z-index: 2147483647; display: grid; place-items: center;
-  background: #fdfcfc; color: #646262; font: 400 15px/1.8 "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace; }
-@media (prefers-color-scheme: dark) { #portao { background: #131010; color: #b7b1b1; } #portao input { background: #1b1818; color: #f1eded; } #portao h1, #portao button { color: #f1eded; } }
+#portao { __VARS__ position: fixed; inset: 0; z-index: 2147483647; display: grid; place-items: center;
+  background: var(--p-fundo); color: var(--p-texto); font: 400 15px/1.8 "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace; }
+@media (prefers-color-scheme: dark) { #portao { __VARS_ESCURO__ } }
 #portao form { width: min(22rem, calc(100vw - 3rem)); display: flex; flex-direction: column; gap: 0.75rem; }
-#portao h1 { margin: 0; font: 500 1rem/1.5 inherit; color: #201d1d; }
+#portao h1 { margin: 0; font: 500 1rem/1.5 inherit; color: var(--p-forte); }
 #portao label { font-size: 13px; }
-#portao input { font: inherit; padding: 0.5rem 0.75rem; border: 1px solid #d0cfcd; border-radius: 4px; background: #fff; color: #201d1d; }
-#portao button { align-self: flex-start; font: inherit; padding: 0.25rem 0; border: 0; background: none; color: #201d1d; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
-#portao .erro { min-height: 1.8em; margin: 0; font-size: 13px; color: #cd0028; }
+#portao input { font: inherit; padding: 0.5rem 0.75rem; border: 1px solid var(--p-borda); border-radius: 4px; background: var(--p-fundo); color: var(--p-forte); }
+#portao button { align-self: flex-start; font: inherit; padding: 0.25rem 0; border: 0; background: none; color: var(--p-forte); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+#portao input:focus-visible, #portao button:focus-visible { outline: 2px solid var(--p-forte); outline-offset: 2px; }
+#portao .erro { min-height: 1.8em; margin: 0; font-size: 13px; color: var(--p-erro); }
 html.liberado #portao { display: none; }
 </style>
 <form>
@@ -90,10 +93,20 @@ html.liberado #portao { display: none; }
 </div>"""
 
 
+def variaveis_portao(cores: dict[str, str]) -> str:
+    """Cores da tela de senha vêm dos tokens do site, para seguir as mesmas regras de contraste."""
+    mapa = {"--p-fundo": "--fundo", "--p-texto": "--texto", "--p-forte": "--texto-forte",
+            "--p-borda": "--borda", "--p-erro": "--destaque"}
+    return " ".join(f"{p}: {cores[t]};" for p, t in mapa.items())
+
+
 def com_portao(html: str, curso: dict) -> str:
     if not curso.get("senha_sha256"):
         return html
-    portao = PORTAO.replace("__HASH__", curso["senha_sha256"])
+    tema = temas((RAIZ / "site" / "estilo.css").read_text(encoding="utf-8"))
+    portao = (PORTAO.replace("__HASH__", curso["senha_sha256"])
+              .replace("__VARS__", variaveis_portao(tema["claro"]))
+              .replace("__VARS_ESCURO__", variaveis_portao(tema["escuro"])))
     return re.sub(r"(<body[^>]*>)", lambda m: m.group(1) + portao, html, count=1)
 
 

@@ -1,12 +1,11 @@
 ---
 name: apresentacao-pecege-ons
-description: "Cria, edita e revisa apresentações HTML interativas de arquivo único para slides, aulas e workshops do curso Treinamento em Análise de Dados – Analytics, Pecege–ONS. Use sempre que o pedido envolver apresentações deste curso. Aplica a identidade visual extraída do template enviado, revisão visual e exemplos com os datasets de Balanço de Energia e Curva de Carga do ONS."
-argument-hint: "[tema ou pasta do deck]"
+description: "Cria, edita e revisa apresentações HTML interativas de arquivo único para slides, aulas e workshops do curso Treinamento em Análise de Dados – Analytics, Pecege–ONS. Use sempre que o pedido envolver apresentações deste curso. Aplica a identidade visual extraída do template enviado, revisão visual e exemplos com os datasets de Balanço de Energia e Curva de Carga do ONS. Para registrar a aula no site, mostrar a prévia ou publicar, use também a skill curso-site."
 ---
 
 # Apresentações Pecege–ONS
 
-Leia `design-system/README.md` antes de criar o primeiro slide e `references/curso.md` para escopo, datas e datasets. Os caminhos são relativos à raiz deste projeto. Pedido do professor, se fornecido: $ARGUMENTS.
+Leia `design-system/README.md` antes de criar o primeiro slide e `references/curso.md` para escopo, datas e datasets. Os caminhos são relativos à raiz deste projeto.
 
 Esta adaptação deriva de `../exec-inteli-ai-for-business/.claude/skills/apresentacao-inteli/SKILL.md`. Mantém o fluxo didático, a navegação, os passos e a revisão; a identidade vem exclusivamente de `Template ONS.pptx`.
 
@@ -15,7 +14,7 @@ Esta adaptação deriva de `../exec-inteli-ai-for-business/.claude/skills/aprese
 - O professor guia o conteúdo. Quando faltar direção, proponha uma ou duas opções curtas. Se ele pedir um deck completo, execute o escopo solicitado; para trabalho iterativo, avance um slide ou pequeno grupo por vez e peça feedback.
 - Uma mensagem por slide. Em cerca de 30 segundos a turma deve consumir a tela e voltar à fala: aproximadamente 30 palavras, até quatro blocos, sem parágrafos longos. Explicações, comandos adicionais e respostas ficam na fala do professor; não escreva notas do professor nos slides.
 - O professor prefere uma sequência curta e lógica de referências, diagramas e estruturas que sustentem a explicação do problema. Evite frases de efeito, máximas óbvias, slides motivacionais e divisórias redundantes. Não há meta de quantidade de slides: cada um precisa servir à condução.
-- Nas aulas de ETL, a primeira parte explica como enfrentar o problema (fontes heterogêneas na aula1; dados de qualidade desconhecida e critérios de uso na aula2). A segunda parte apresenta somente ambiente, enunciado, tarefas e critérios de entrega. Resultados e soluções ficam em material reservado ao professor, não na apresentação.
+- Nas aulas de ETL, a primeira parte explica como enfrentar o problema (fontes heterogêneas na aula1; dados de qualidade desconhecida e critérios de uso na aula2). A segunda parte apresenta ambiente, enunciado, tarefas e critérios de entrega; quando o professor decidir, cada desafio é seguido do slide de solução. Comandos de setup ficam na página de preparação do site (`preparacao.json`, skill curso-site), não em slides nem em PDF.
 - Introduza termos dentro do exemplo ou diagrama em que fazem sentido, com `.rotulo-termo`; evite glossários isolados.
 - Não invente resultados, falhas nos dados oficiais, unidades, chaves, definições, datas de extração ou fontes. Identifique exemplos sintéticos e alterações didáticas. Consulte os dicionários antes de integrar as duas bases.
 
@@ -50,7 +49,8 @@ O professor definiu **HTML como único formato de apresentação e entrega**. `T
 2. Abra `qa/slide-NN.png` e os estados `qa/slide-NN-passo-K.png`: revise alinhamento, respiro, hierarquia, rodapé, contraste, legibilidade e consistência das unidades.
 3. Para revisão incremental, mostre o slide ao professor e diga em uma linha sua função e composição.
 4. Ao terminar, rode o build completo. Ele gera HTML autocontido offline, capturas e `qa/relatorio.json`; registra os layouts em `design-system/USO.md`. Use `--pdf` apenas se uma exportação PDF for solicitada.
-5. Entregue `dist/index.html` ou o HTML nomeado com `--nome`. Confirme funcionamento offline, navegação, interações e referências. Não publique `qa/`, respostas ou dados pessoais dos participantes.
+5. O arquivo publicado é `dist/index.html`. Confirme funcionamento offline, navegação, interações e referências.
+6. Registre ou atualize a aula em `curso.json` como rascunho e mostre a prévia do site, seguindo a skill curso-site. Commit e push publicam: só faça quando o professor pedir. `qa/`, PDFs e dados pessoais de participantes nunca entram no repositório.
 
 ## Evolução
 

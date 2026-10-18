@@ -13,7 +13,7 @@ playground/                   laboratório Docker/PostgreSQL (gabarito/ incluíd
 design-system/                identidade Pecege–ONS dos slides e ferramenta de build
 site/                         design system das páginas do site (ver site/DESIGN.md)
 tools/gerar_site.py           gera _site/ a partir de curso.json
-.claude/skills/               skill de criação das apresentações
+.agents/skills/               skills (Claude Code, Codex, OpenCode, Gemini); .claude/skills é link para cá
 ```
 
 ## Fluxo de trabalho
@@ -30,10 +30,10 @@ Em `curso.json`, cada aula aceita `antes` (links ou arquivos para antes da aula)
 
 ## Referências internas
 
-- Skill de apresentações: [`.claude/skills/apresentacao-pecege-ons/SKILL.md`](.claude/skills/apresentacao-pecege-ons/SKILL.md)
+- Skill de apresentações: [`.agents/skills/apresentacao-pecege-ons/SKILL.md`](.agents/skills/apresentacao-pecege-ons/SKILL.md)
 - Design system dos slides: [`design-system/README.md`](design-system/README.md) · galeria: `node design-system/tools/deck.mjs design-system/exemplos/exemplo.html`
 - Playground: [`playground/README.md`](playground/README.md)
-- Contexto e cronograma: [`.claude/skills/apresentacao-pecege-ons/references/curso.md`](.claude/skills/apresentacao-pecege-ons/references/curso.md)
+- Contexto e cronograma: [`.agents/skills/apresentacao-pecege-ons/references/curso.md`](.agents/skills/apresentacao-pecege-ons/references/curso.md)
 
 ## Reaproveitar em outra matéria
 

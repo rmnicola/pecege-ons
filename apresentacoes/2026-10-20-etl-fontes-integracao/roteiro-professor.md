@@ -17,3 +17,19 @@ Decisão: o laboratório usará PostgreSQL (Curva de Carga) + Open-Meteo e grava
 ETL I: extração e transformação de um fluxo de extração em código componível (padrão Strategy com dependências injetadas). Prática: setup do ambiente → extrair carga (PostgreSQL) → extrair clima (Open-Meteo) → desafio de combinar e salvar `dados.csv` numa pasta → desafio de tornar o código componível. Sem MinIO.
 
 ETL II: correções típicas de dados extraídos e carga no MinIO. Playground equivalente ao da ETL I, agora com defeitos deliberados nos dados; refazer o fluxo corrigindo e adequando ao padrão definido.
+
+## Bloco do laboratório até o intervalo (18/10/2026)
+
+Slides 15–18: ambiente (`./preparar.sh`), extração da carga e do clima com os arquivos de `playground/aluno/aula1/` (mesmo código dos slides 10 e 12) e agenda do intervalo. O formato do `dados.csv` (colunas `id_subsistema`, `instante`, `carga_mwmed`, `temperatura_c`; período 01–07/01/2025; fuso America/Sao_Paulo assumido; uma cidade por subsistema: Belém, Recife, São Paulo, Porto Alegre) entra no enunciado do Desafio 1. Com `evento` de 01/01 a 08/01, a carga traz 168 horas por subsistema e a Open-Meteo 192 por cidade, porque `end_date` é inclusivo: a pergunta "batem com as horas de carga? Por quê?" leva a turma a descobrir isso antes do Desafio 1.
+
+## Revisão minimalista (18/10/2026)
+
+Retirados: síntese "Foco desta aula" do CRISP-DM; "Nesta aula: extrair e carregar", destaque de E/L e miniícones do ETL; legenda, "Depois: carga na staging" e rodapé dos diagramas de fonte; coluna lateral e passos dos slides de código (a ajuda `?` percorre o código, com o restante do slide desfocado); slide do contrato; coluna "Pronto quando" do ambiente. Os links de documentação (Psycopg 3, Open-Meteo Historical Weather, HTTPX) vão para o slide final de referências.
+
+## Depois do intervalo: desafio e solução (18/10/2026)
+
+10h30–11h30 · Desafio (slide 20): completar `playground/aluno/aula1/combinar.py` (esqueleto com cinco passos e dicas, sem a resposta) e gerar `saida/dados.csv`. Armadilhas a descobrir: 168 × 192 horas (`end_date` inclusivo), `Decimal` e `datetime` × texto, tipo de junção.
+
+11h30–11h55 · Solução, o professor programando com a turma: solução em dois slides (22–23), depois as peças que se encaixam (24, com dois avanços: ClimaArquivo e MinIO), o pipeline que só conhece contratos (25) e a troca de fonte sem mexer no pipeline (26). Os slides de código têm a interrogação explicando cada trecho, para consulta depois. Código final em `playground/gabarito/aula1/` (`combinar.py` e `componivel/`); `executar.py --offline` usa `ClimaArquivo` com as respostas salvas em `aluno/aula1/dados/`. As três versões geram o mesmo CSV (672 linhas), conferido em 18/10/2026.
+
+11h55–12h00 · Encerramento e referências.

@@ -101,6 +101,62 @@
     {
       "slide": 14,
       "tipo": "sob medida: duas-fontes-um-csv"
+    },
+    {
+      "slide": 15,
+      "tipo": "sob medida: comando-tarefa"
+    },
+    {
+      "slide": 16,
+      "tipo": "sob medida: comando-tarefa"
+    },
+    {
+      "slide": 17,
+      "tipo": "sob medida: comando-tarefa"
+    },
+    {
+      "slide": 18,
+      "tipo": "agenda"
+    },
+    {
+      "slide": 19,
+      "tipo": "agenda"
+    },
+    {
+      "slide": 20,
+      "tipo": "sob medida: desafio-fluxo"
+    },
+    {
+      "slide": 21,
+      "tipo": "agenda"
+    },
+    {
+      "slide": 22,
+      "tipo": "sob medida: kata-codigo"
+    },
+    {
+      "slide": 23,
+      "tipo": "sob medida: kata-codigo"
+    },
+    {
+      "slide": 24,
+      "tipo": "sob medida: pipeline-encaixes"
+    },
+    {
+      "slide": 25,
+      "tipo": "sob medida: kata-codigo"
+    },
+    {
+      "slide": 26,
+      "tipo": "sob medida: kata-codigo"
+    },
+    {
+      "slide": 27,
+      "tipo": "encerramento"
+    },
+    {
+      "slide": 28,
+      "tipo": "referencias"
     }
   ],
   "apresentacoes/2026-10-22-etl-qualidade-padronizacao/deck.html": [

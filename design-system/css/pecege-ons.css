@@ -104,25 +104,37 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
 .fluxo .etapa strong { display: block; font-size: 40px; color: var(--cinza-escuro); }
 .fluxo .seta { color: var(--vermelho-marca); font-size: 48px; }
 .codigo { white-space: pre-wrap; font: 30px/1.5 var(--f-codigo); padding: 36px; background: var(--branco); color: var(--cinza-escuro); }
-/* Código no estilo documentação; controles integrados, sem dependências externas. */
-.bloco-codigo { background:var(--cinza-escuro); color:var(--branco); border:1px solid var(--cinza-texto); border-radius:14px; display:flex; flex-direction:column; min-width:0; }
-.bloco-codigo .codigo-barra { display:flex; align-items:center; justify-content:space-between; gap:16px; height:56px; flex:none; padding:0 16px 0 24px; border-bottom:1px solid var(--cinza-texto); }
-.bloco-codigo .codigo-arquivo { font:28px/1.2 var(--f-codigo); color:var(--cinza-claro); }
+/* Código no padrão do Expressive Code (Starlight), com paleta derivada da identidade Pecege–ONS:
+   fundo cinza-escuro, texto cinza-claro, destaques em tons do vermelho e secundários em cinzas.
+   Editor: aba com o nome do arquivo. Terminal: barra com três pontos e título central. */
+.bloco-codigo {
+  --cd-fundo:var(--cinza-escuro); --cd-barra:#262539; --cd-borda:#45445e; --cd-texto:var(--cinza-claro); --cd-titulo:#b9bdcb; --cd-aba:var(--vermelho);
+  background:var(--cd-fundo); color:var(--cd-texto); border:1px solid var(--cd-borda); border-radius:10px;
+  display:flex; flex-direction:column; min-width:0; overflow:hidden; box-shadow:0 10px 28px rgba(47,46,73,.18);
+}
+.bloco-codigo .codigo-barra { position:relative; display:flex; align-items:stretch; gap:16px; height:56px; flex:none; padding:0 12px 0 0; background:var(--cd-barra); border-bottom:1px solid var(--cd-borda); }
+.bloco-codigo .codigo-arquivo { display:flex; align-items:center; padding:0 28px; background:var(--cd-fundo); border-top:3px solid var(--cd-aba); border-right:1px solid var(--cd-borda); margin-bottom:-1px; font:28px/1 var(--f-codigo); color:var(--cd-texto); }
+.moldura-terminal .codigo-barra { justify-content:center; padding:0 12px; }
+.bloco-codigo .codigo-pontos { position:absolute; left:22px; top:50%; width:14px; height:14px; margin-top:-7px; border-radius:50%; background:#5b5a74; box-shadow:24px 0 0 #5b5a74, 48px 0 0 #5b5a74; }
+.bloco-codigo .codigo-titulo { align-self:center; font:28px/1 var(--f-codigo); color:var(--cd-titulo); }
 .bloco-codigo .codigo-acoes { display:flex; align-items:center; gap:10px; margin-left:auto; }
-.bloco-codigo .codigo-status { font:28px/1.2 var(--f-texto); color:var(--branco); }
+.moldura-terminal .codigo-acoes { position:absolute; right:12px; top:0; bottom:0; }
+.bloco-codigo .codigo-status { font:28px/1.2 var(--f-texto); color:var(--cd-texto); }
 .bloco-codigo .codigo-status:empty { display:none; }
-.bloco-codigo .copiar-codigo, .bloco-codigo .codigo-acoes .ajuda-botao { position:static; display:grid; place-items:center; width:44px; height:40px; flex:none; border:1px solid var(--cinza-texto); border-radius:6px; padding:4px; background:transparent; color:var(--branco); cursor:pointer; font:28px var(--f-texto); }
+.bloco-codigo .copiar-codigo, .bloco-codigo .codigo-acoes .ajuda-botao { position:static; display:grid; place-items:center; width:44px; height:40px; flex:none; border:1px solid #6c6b85; border-radius:6px; padding:4px; background:transparent; color:var(--cd-texto); cursor:pointer; font:28px var(--f-texto); }
 .bloco-codigo .copiar-codigo svg { width:28px; height:28px; }
-.bloco-codigo .copiar-codigo:hover, .bloco-codigo .codigo-acoes .ajuda-botao:hover { background:var(--cinza-texto); }
-.bloco-codigo button:focus-visible { outline:3px solid var(--branco); outline-offset:3px; }
+.bloco-codigo .copiar-codigo:hover, .bloco-codigo .codigo-acoes .ajuda-botao:hover { background:var(--cd-borda); }
+.bloco-codigo button:focus-visible { outline:3px solid var(--cd-texto); outline-offset:3px; }
 .bloco-codigo .codigo-pre { margin:0; padding:var(--codigo-padding,24px); font:var(--codigo-fonte,30px)/var(--codigo-entrelinha,1.3) var(--f-codigo); white-space:pre; }
 .bloco-codigo .codigo-pre code { font:inherit; }
 .bloco-codigo .codigo-linha { display:block; height:calc(var(--codigo-fonte,30px) * var(--codigo-entrelinha,1.3)); white-space:pre; }
 .bloco-codigo .codigo-grupo { display:block; }
-.bloco-codigo .py-palavra, .bloco-codigo .py-numero { color:var(--vermelho); font-weight:bold; }
-.bloco-codigo .py-string { color:var(--cinza-claro); }
-.bloco-codigo .py-funcao { color:var(--branco); font-weight:bold; }
-.bloco-codigo .py-comentario { color:var(--cinza-claro); font-style:italic; }
+/* Realce: palavras-chave e números em vermelhos clareados; funções em branco; strings em rosa claro;
+   comentários e pontuação em cinzas. Contraste mínimo de 5.5:1 sobre o fundo do código. */
+.tk-palavra { color:#ff8399; font-weight:bold; } .tk-definicao, .tk-funcao { color:#ffffff; font-weight:bold; }
+.tk-string { color:#f7b9c5; } .tk-numero, .tk-constante, .tk-variavel { color:#ff9aac; } .tk-embutido { color:#ffd4dc; }
+.tk-comentario { color:#a9afbf; font-style:italic; } .tk-parametro { color:#c3c7d3; } .tk-atributo { color:var(--cinza-claro); }
+.tk-operador, .tk-pontuacao { color:#b9bdcb; } .tk-self { color:#c3c7d3; font-style:italic; }
 .slide.imagem .conteudo img { max-width: 100%; max-height: 480px; object-fit: contain; }
 .slide.citacao .aspas { font-size: 50px; line-height: 1.25; color: var(--cinza-escuro); }
 .slide.referencias .lista-referencias { display: flex; flex-direction: column; gap: 26px; font-size: 28px; }
@@ -132,7 +144,9 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
 /* Ajuda guiada: comportamento reaproveitado do sistema Inteli, aparência Pecege–ONS. */
 .ajuda-botao { position: absolute; right: 84px; bottom: 82px; width: 48px; height: 48px; z-index: 20; border-radius: 50%; border: 2px solid var(--vermelho-marca); background: var(--branco); color: var(--vermelho-marca); font: bold 28px var(--f-texto); cursor: pointer; }
 .ajuda-camada { position: absolute; inset: 0; z-index: 30; }
-.ajuda-foco { position: absolute; outline: 4px solid var(--vermelho-marca); box-shadow: 0 0 0 3000px rgba(47,46,73,.4); pointer-events: none; }
+.slide.sem-transicao, .slide.sem-transicao * { transition:none !important; }
+.ajuda-veu { position: absolute; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); background: rgba(249,249,249,.35); pointer-events: none; }
+.ajuda-foco { position: absolute; outline: 4px solid var(--vermelho-marca); pointer-events: none; }
 .ajuda-balao { position: absolute; background: var(--branco); color: var(--cinza-escuro); border: 2px solid var(--vermelho-marca); padding: 24px 28px; }
 .ajuda-balao p { font-size: 30px; }
 .ajuda-notas { font-size: 28px; margin-top: 14px; }

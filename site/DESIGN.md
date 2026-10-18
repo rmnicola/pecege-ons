@@ -8,9 +8,10 @@ Minimalista e monoespaçado, inspirado na simplicidade de opencode.ai. Uma colun
 |---|---|---|
 | Fundo | `--fundo`, `--fundo-fraco`, `--fundo-fraco-hover`, `--fundo-forte` | página; cartões e hover; blocos de comando |
 | Texto | `--texto`, `--texto-fraco`, `--texto-forte`, `--texto-invertido` | corpo; rótulos e datas; títulos e links; texto sobre `--fundo-forte` |
-| Linhas | `--borda`, `--borda-fraca` | contorno de cartão; divisórias e moldura |
+| Linhas | `--borda`, `--borda-fraca` | contorno de cartão e campo (≥ 3:1); divisórias decorativas e moldura |
 | Cor | `--destaque`, `--selecao` | acento raro; seleção de texto |
 | Tipo | `--fonte` (IBM Plex Mono), `--t-pequeno`, `--t-base`, `--t-titulo`, `--entrelinha` (2) | uma família, três tamanhos, pesos 400/500 |
+| Código | `--codigo-*`, `--sx-*` | blocos de terminal estilo Starlight, realce de shell; `--codigo-controle` é o contorno do botão copiar |
 | Espaço | `--largura` (60rem), `--respiro-x`, `--respiro-y`, `--raio` (4px) | coluna, margens internas das seções |
 
 Modo escuro automático por `prefers-color-scheme`; `data-tema="claro"` no `<html>` força o claro.
@@ -33,3 +34,22 @@ Modo escuro automático por `prefers-color-scheme`; `data-tema="claro"` no `<htm
 - Links sublinhados com 1px; sem botões coloridos.
 - Títulos em peso 500, nunca negrito pesado.
 - Texto corrido com entrelinha 2.
+
+## Contraste e legibilidade
+
+Regras verificadas por `python tools/verificar_contraste.py`, que roda também no workflow antes de publicar: se uma regra falhar, o site não é publicado. Valem para os dois temas, com cores transparentes compostas sobre o fundo real.
+
+| Regra | Mínimo | Onde | Base |
+|---|---|---|---|
+| C1 · texto principal | 7:1 | corpo, títulos, links, texto em cartões | WCAG 2.2, 1.4.6 (AAA) |
+| C2 · texto secundário | 4.5:1 | rótulos, datas, estados, erros, balões | WCAG 2.2, 1.4.3 (AA) |
+| C3 · código | 4.5:1 | texto e cada cor de realce sobre o fundo do bloco, código em linha, título da barra | WCAG 2.2, 1.4.3 |
+| C4 · componentes | 3:1 | contorno de campos, cartões e botões, ícones, anel de foco, barra do aviso | WCAG 2.2, 1.4.11 |
+| T1 · tamanho | 13px | nenhum texto menor; `em` só com piso `max(…, var(--t-pequeno))` | heurística de legibilidade em telas |
+
+Heurísticas complementares, aplicadas na revisão:
+
+- **Cor nunca é o único sinal.** Links são sublinhados; estados têm texto ("abrir →", "rascunho →", "[OK]"); erro tem mensagem.
+- **Divisórias decorativas** (`--borda-fraca`) podem ser sutis porque não carregam informação. Se uma linha delimita algo clicável ou um campo, use `--borda`.
+- **Estados com cursor** (hover) mantêm os mínimos: o verificador testa texto sobre `--fundo-fraco-hover`.
+- **Toda cor nova** entra como token e ganha um par em `PARES` no verificador antes de ser usada.
