@@ -1,0 +1,76 @@
+{
+  "titulo": "Preparação do ambiente",
+  "resumo": "Faça antes da aula. Leva cerca de 20 minutos, a maior parte esperando downloads. Copie cada bloco, cole no terminal e pressione Enter.",
+  "contexto": "Na aula vamos extrair dados de carga elétrica de um banco PostgreSQL e de temperatura da API Open-Meteo. Tudo roda em contêineres Docker: você não precisa instalar Python nem PostgreSQL na máquina.",
+  "passos": [
+    {
+      "titulo": "Conecte o VS Code à máquina",
+      "texto": [
+        "No VS Code do seu computador, instale a extensão **Remote - SSH** (Microsoft).",
+        "Abra a paleta de comandos (`F1`), escolha **Remote-SSH: Connect to Host…** e informe o acesso da sua máquina na nuvem.",
+        "Abra um terminal no VS Code (**Terminal → New Terminal**). Os próximos comandos são colados nele."
+      ]
+    },
+    {
+      "titulo": "Confira o que já está instalado",
+      "comandos": "git --version\ndocker --version\ndocker compose version\ndocker run --rm hello-world",
+      "depois": [
+        "Os quatro comandos devem responder sem erro; o último imprime *Hello from Docker!*. Se todos funcionarem, pule para o passo 4."
+      ]
+    },
+    {
+      "titulo": "Instale o que faltar (Ubuntu)",
+      "comandos": "sudo apt-get update\nsudo apt-get install -y git docker.io docker-compose-v2 docker-buildx\nsudo usermod -aG docker \"$USER\"",
+      "depois": [
+        "Depois, **feche a conexão e conecte de novo** para usar o Docker sem `sudo`. Repita o passo 2."
+      ],
+      "aviso": "Sem permissão de `sudo`? Avise o suporte da turma e envie a saída do passo 2. Não use `sudo docker` nos passos seguintes: os arquivos criados ficariam com o dono errado."
+    },
+    {
+      "titulo": "Baixe o material",
+      "comandos": "git clone https://github.com/rmnicola/pecege-ons.git\ncd pecege-ons/playground",
+      "depois": [
+        "No VS Code, use **File → Open Folder…** e abra a pasta `pecege-ons/playground`. Todos os comandos seguintes são executados dentro dela."
+      ]
+    },
+    {
+      "titulo": "Informe seu usuário ao Docker",
+      "comandos": "printf \"ETL_UID=%s\\nETL_GID=%s\\n\" \"$(id -u)\" \"$(id -g)\" > .env",
+      "depois": [
+        "Garante que os arquivos gravados em `saida/` pertençam a você."
+      ]
+    },
+    {
+      "titulo": "Construa a imagem e suba os bancos",
+      "comandos": "docker compose build etl\ndocker compose up -d --wait fonte-balanco fonte-curva destino",
+      "depois": [
+        "É a etapa que baixa as imagens (cerca de 1 GB). Ao final, os três bancos aparecem como *Healthy*."
+      ]
+    },
+    {
+      "titulo": "Carregue os dados",
+      "comandos": "docker compose run --rm etl python scripts/00_carregar_fontes.py",
+      "depois": [
+        "Os dados já estão no repositório; não é preciso internet nesta etapa. Execute **uma única vez**: rodar de novo reinicia os bancos."
+      ]
+    },
+    {
+      "titulo": "Verifique o ambiente",
+      "comandos": "docker compose run --rm etl python scripts/verificar_ambiente.py",
+      "saida": "[OK] bibliotecas: psycopg, httpx e pandas disponiveis\n[OK] PostgreSQL: oficial.curva_horaria com … linhas\n[OK] Open-Meteo: 24 horas recebidas para um dia\n[OK] pasta saida/: gravacao permitida\n\nAmbiente pronto para a aula.",
+      "depois": [
+        "Pronto. Você pode desligar a máquina; nada precisa ficar rodando até a aula."
+      ]
+    }
+  ],
+  "problemas": [
+    ["`permission denied` … `docker.sock`", "Seu usuário ainda não está no grupo `docker`. Rode o `usermod` do passo 3 e reconecte."],
+    ["`'compose' is not a docker command`", "Falta o Compose v2: instale `docker-compose-v2` (passo 3)."],
+    ["`[FALHA] PostgreSQL`", "Refaça os passos 6 e 7 e verifique de novo."],
+    ["`[FALHA] Open-Meteo`", "A máquina não alcança `archive-api.open-meteo.com` por HTTPS. Teste com `curl -I https://archive-api.open-meteo.com` e informe o suporte."],
+    ["`[FALHA] pasta saida/`", "Refaça o passo 5 dentro de `playground` e verifique de novo."],
+    ["`[FALHA] bibliotecas`", "Reconstrua a imagem: `docker compose build etl`."]
+  ],
+  "fechamento": "Se o problema continuar, anote o comando e a mensagem completa e traga para o início da aula: há um tempo reservado para resolver o ambiente.",
+  "dia_da_aula": "cd pecege-ons/playground\ndocker compose up -d --wait fonte-balanco fonte-curva destino\ndocker compose run --rm etl python scripts/verificar_ambiente.py"
+}

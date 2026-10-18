@@ -1,0 +1,366 @@
+{
+  "titulo": "Manifesto deterministico da copia de laboratorio",
+  "aviso": "Reservado ao professor. Nao distribuir: os defeitos sao o exercicio.",
+  "base": "snapshot oficial recorte 2025-01-01..2025-01-08 (data/oficial)",
+  "resumo": {
+    "timestamp_utc": "2026-10-13T15:37:08+00:00",
+    "balanco": {
+      "laboratorio_arquivo": "balanco_laboratorio_2025-01-01_2025-01-08.csv",
+      "laboratorio_linhas": 841,
+      "laboratorio_sha256": "22b970970ba39bbc23d256dc1d289454bdf338960bbbe4e02f22225c9722603f",
+      "clean_ref_arquivo": "balanco_clean_ref_2025-01-01_2025-01-08.csv",
+      "oficial_linhas": 840
+    },
+    "curva": {
+      "laboratorio_arquivo": "curva_laboratorio_2025-01-01_2025-01-08.csv",
+      "laboratorio_linhas": 673,
+      "laboratorio_sha256": "15c7cf9c2e96f6378637d0d3f1f455a2a173b63278be7e3e200375d4c7dcc333",
+      "clean_ref_arquivo": "curva_clean_ref_2025-01-01_2025-01-08.csv",
+      "oficial_linhas": 672
+    }
+  },
+  "total_defeitos": 22,
+  "por_tipo": {
+    "categoria_caixa_espaco": 5,
+    "celula_vazia": 2,
+    "conflito_chave": 2,
+    "duplicata_exata": 2,
+    "extremo_suspeito": 2,
+    "formato_data": 2,
+    "formato_decimal": 2,
+    "hora_faltante": 2,
+    "numero_invalido": 3
+  },
+  "defeitos": [
+    {
+      "id": "B01",
+      "arquivo": "balanco",
+      "tipo": "categoria_caixa_espaco",
+      "acao": "alterar",
+      "descricao": "Espaco/caixa em codigo ou nome de subsistema.",
+      "alvo": {
+        "id_subsistema": "S",
+        "din_instante": "2025-01-02 03:00:00"
+      },
+      "campo": "id_subsistema",
+      "valor_oficial": "S",
+      "valor_laboratorio": " s ",
+      "politica_tratamento": "trim + upper -> 'S'; flag padronizacao; chave recuperada"
+    },
+    {
+      "id": "B02",
+      "arquivo": "balanco",
+      "tipo": "categoria_caixa_espaco",
+      "acao": "alterar",
+      "descricao": "Espaco/caixa em codigo ou nome de subsistema.",
+      "alvo": {
+        "id_subsistema": "NE",
+        "din_instante": "2025-01-02 04:00:00"
+      },
+      "campo": "nom_subsistema",
+      "valor_oficial": "NORDESTE",
+      "valor_laboratorio": "nordeste",
+      "politica_tratamento": "trim + upper + canonico -> 'NORDESTE'; flag padronizacao"
+    },
+    {
+      "id": "B03",
+      "arquivo": "balanco",
+      "tipo": "numero_invalido",
+      "acao": "alterar",
+      "descricao": "Texto nao numerico em campo de medida.",
+      "alvo": {
+        "id_subsistema": "SE",
+        "din_instante": "2025-01-03 06:00:00"
+      },
+      "campo": "val_gertermica",
+      "valor_oficial": "4289.267",
+      "valor_laboratorio": "N/A",
+      "politica_tratamento": "nao converter; NULL + flag numero_invalido; quarentena do valor"
+    },
+    {
+      "id": "B04",
+      "arquivo": "balanco",
+      "tipo": "celula_vazia",
+      "acao": "alterar",
+      "descricao": "Celula de medida ausente (vazia).",
+      "alvo": {
+        "id_subsistema": "SE",
+        "din_instante": "2025-01-03 07:00:00"
+      },
+      "campo": "val_gereolica",
+      "valor_oficial": "4.0",
+      "valor_laboratorio": "(vazio)",
+      "politica_tratamento": "manter NULL + flag celula_vazia; sem imputacao por padrao"
+    },
+    {
+      "id": "B05",
+      "arquivo": "balanco",
+      "tipo": "formato_decimal",
+      "acao": "alterar",
+      "descricao": "Numero com virgula decimal.",
+      "alvo": {
+        "id_subsistema": "N",
+        "din_instante": "2025-01-04 08:00:00"
+      },
+      "campo": "val_carga",
+      "valor_oficial": "6705.14699999",
+      "valor_laboratorio": "6705,14699999",
+      "politica_tratamento": "converter virgula decimal -> numero; flag formato_convertido"
+    },
+    {
+      "id": "B06",
+      "arquivo": "balanco",
+      "tipo": "numero_invalido",
+      "acao": "alterar",
+      "descricao": "Texto nao numerico em campo de medida.",
+      "alvo": {
+        "id_subsistema": "NE",
+        "din_instante": "2025-01-04 09:00:00"
+      },
+      "campo": "val_intercambio",
+      "valor_oficial": "6430.214",
+      "valor_laboratorio": "-",
+      "politica_tratamento": "nao converter; NULL + flag numero_invalido; quarentena do valor"
+    },
+    {
+      "id": "B07",
+      "arquivo": "balanco",
+      "tipo": "hora_faltante",
+      "acao": "remover",
+      "descricao": "Linha de uma hora inteira ausente para um subsistema.",
+      "alvo": {
+        "id_subsistema": "N",
+        "din_instante": "2025-01-03 05:00:00"
+      },
+      "campo": "(linha inteira)",
+      "valor_oficial": "linha com val_carga=7433.44699999",
+      "valor_laboratorio": "(linha ausente)",
+      "politica_tratamento": "registrar lacuna; nao fabricar linha; imputacao opcional com flag"
+    },
+    {
+      "id": "B08",
+      "arquivo": "balanco",
+      "tipo": "duplicata_exata",
+      "acao": "duplicar",
+      "descricao": "Linha repetida identica (mesma chave e valores).",
+      "alvo": {
+        "id_subsistema": "NE",
+        "din_instante": "2025-01-02 10:00:00"
+      },
+      "campo": "(linha inteira)",
+      "valor_oficial": "NE;NORDESTE;2025-01-02 10:00:00;2184.50099999;448.648;8116.82199999;9780.717;13200.073;7330.615",
+      "valor_laboratorio": "NE;NORDESTE;2025-01-02 10:00:00;2184.50099999;448.648;8116.82199999;9780.717;13200.073;7330.615",
+      "politica_tratamento": "manter 1 (escolha deterministica), flag duplicata_exata"
+    },
+    {
+      "id": "B09",
+      "arquivo": "balanco",
+      "tipo": "conflito_chave",
+      "acao": "duplicar_alterado",
+      "descricao": "Mesma chave (subsistema, hora) com valores divergentes.",
+      "alvo": {
+        "id_subsistema": "SE",
+        "din_instante": "2025-01-04 12:00:00"
+      },
+      "campo": "val_carga",
+      "valor_oficial": "43125.51299999",
+      "valor_laboratorio": "43125.51299999 + 48125.513 (2 versoes)",
+      "politica_tratamento": "quarentena de toda a chave; nao escolher valor arbitrariamente"
+    },
+    {
+      "id": "B10",
+      "arquivo": "balanco",
+      "tipo": "extremo_suspeito",
+      "acao": "alterar",
+      "descricao": "Valor muito fora do padrao do subsistema.",
+      "alvo": {
+        "id_subsistema": "SE",
+        "din_instante": "2025-01-05 18:00:00"
+      },
+      "campo": "val_carga",
+      "valor_oficial": "43529.24399999",
+      "valor_laboratorio": "2176462.2",
+      "politica_tratamento": "flag extremo e quarentena didatica (criterio >fator_mediana ou negativo); NAO remover automaticamente valores presentes no snapshot original"
+    },
+    {
+      "id": "B11",
+      "arquivo": "balanco",
+      "tipo": "formato_data",
+      "acao": "alterar",
+      "descricao": "Data/hora em formato alternativo (ISO com T).",
+      "alvo": {
+        "id_subsistema": "SIN",
+        "din_instante": "2025-01-06 07:00:00"
+      },
+      "campo": "din_instante",
+      "valor_oficial": "2025-01-06 07:00:00",
+      "valor_laboratorio": "2025-01-06T07:00:00",
+      "politica_tratamento": "aceitar ISO com 'T'; flag formato_data_convertido"
+    },
+    {
+      "id": "B12",
+      "arquivo": "balanco",
+      "tipo": "categoria_caixa_espaco",
+      "acao": "alterar",
+      "descricao": "Espaco/caixa em codigo ou nome de subsistema.",
+      "alvo": {
+        "id_subsistema": "N",
+        "din_instante": "2025-01-06 08:00:00"
+      },
+      "campo": "id_subsistema",
+      "valor_oficial": "N",
+      "valor_laboratorio": "n",
+      "politica_tratamento": "trim + upper -> 'N'; flag padronizacao; chave recuperada"
+    },
+    {
+      "id": "C13",
+      "arquivo": "curva",
+      "tipo": "categoria_caixa_espaco",
+      "acao": "alterar",
+      "descricao": "Espaco/caixa em codigo ou nome de subsistema.",
+      "alvo": {
+        "id_subsistema": "S",
+        "din_instante": "2025-01-02 03:00:00"
+      },
+      "campo": "id_subsistema",
+      "valor_oficial": "S",
+      "valor_laboratorio": " s ",
+      "politica_tratamento": "trim + upper -> 'S'; flag padronizacao; chave recuperada"
+    },
+    {
+      "id": "C14",
+      "arquivo": "curva",
+      "tipo": "categoria_caixa_espaco",
+      "acao": "alterar",
+      "descricao": "Espaco/caixa em codigo ou nome de subsistema.",
+      "alvo": {
+        "id_subsistema": "NE",
+        "din_instante": "2025-01-02 04:00:00"
+      },
+      "campo": "nom_subsistema",
+      "valor_oficial": "NORDESTE",
+      "valor_laboratorio": "nordeste",
+      "politica_tratamento": "trim + upper + canonico -> 'NORDESTE'; flag padronizacao"
+    },
+    {
+      "id": "C15",
+      "arquivo": "curva",
+      "tipo": "numero_invalido",
+      "acao": "alterar",
+      "descricao": "Texto nao numerico em campo de medida.",
+      "alvo": {
+        "id_subsistema": "SE",
+        "din_instante": "2025-01-03 06:00:00"
+      },
+      "campo": "val_cargaenergiahomwmed",
+      "valor_oficial": "38863.981",
+      "valor_laboratorio": "N/A",
+      "politica_tratamento": "nao converter; NULL + flag numero_invalido; quarentena do valor"
+    },
+    {
+      "id": "C16",
+      "arquivo": "curva",
+      "tipo": "celula_vazia",
+      "acao": "alterar",
+      "descricao": "Celula de medida ausente (vazia).",
+      "alvo": {
+        "id_subsistema": "SE",
+        "din_instante": "2025-01-03 07:00:00"
+      },
+      "campo": "val_cargaenergiahomwmed",
+      "valor_oficial": "41380.67499999",
+      "valor_laboratorio": "(vazio)",
+      "politica_tratamento": "manter NULL + flag celula_vazia; sem imputacao por padrao"
+    },
+    {
+      "id": "C17",
+      "arquivo": "curva",
+      "tipo": "formato_decimal",
+      "acao": "alterar",
+      "descricao": "Numero com virgula decimal.",
+      "alvo": {
+        "id_subsistema": "N",
+        "din_instante": "2025-01-04 08:00:00"
+      },
+      "campo": "val_cargaenergiahomwmed",
+      "valor_oficial": "6705.14699999",
+      "valor_laboratorio": "6705,14699999",
+      "politica_tratamento": "converter virgula decimal -> numero; flag formato_convertido"
+    },
+    {
+      "id": "C18",
+      "arquivo": "curva",
+      "tipo": "hora_faltante",
+      "acao": "remover",
+      "descricao": "Linha de uma hora inteira ausente para um subsistema.",
+      "alvo": {
+        "id_subsistema": "N",
+        "din_instante": "2025-01-03 05:00:00"
+      },
+      "campo": "(linha inteira)",
+      "valor_oficial": "linha com val=7433.44699999",
+      "valor_laboratorio": "(linha ausente)",
+      "politica_tratamento": "registrar lacuna; nao fabricar linha; imputacao opcional com flag"
+    },
+    {
+      "id": "C19",
+      "arquivo": "curva",
+      "tipo": "duplicata_exata",
+      "acao": "duplicar",
+      "descricao": "Linha repetida identica (mesma chave e valores).",
+      "alvo": {
+        "id_subsistema": "NE",
+        "din_instante": "2025-01-02 10:00:00"
+      },
+      "campo": "(linha inteira)",
+      "valor_oficial": "NE;NORDESTE;2025-01-02 10:00:00;13200.073",
+      "valor_laboratorio": "NE;NORDESTE;2025-01-02 10:00:00;13200.073",
+      "politica_tratamento": "manter 1 (escolha deterministica), flag duplicata_exata"
+    },
+    {
+      "id": "C20",
+      "arquivo": "curva",
+      "tipo": "conflito_chave",
+      "acao": "duplicar_alterado",
+      "descricao": "Mesma chave (subsistema, hora) com valores divergentes.",
+      "alvo": {
+        "id_subsistema": "SE",
+        "din_instante": "2025-01-04 12:00:00"
+      },
+      "campo": "val_cargaenergiahomwmed",
+      "valor_oficial": "43125.51299999",
+      "valor_laboratorio": "43125.51299999 + 48125.513 (2 versoes)",
+      "politica_tratamento": "quarentena de toda a chave; nao escolher valor arbitrariamente"
+    },
+    {
+      "id": "C21",
+      "arquivo": "curva",
+      "tipo": "extremo_suspeito",
+      "acao": "alterar",
+      "descricao": "Valor muito fora do padrao do subsistema.",
+      "alvo": {
+        "id_subsistema": "SE",
+        "din_instante": "2025-01-05 18:00:00"
+      },
+      "campo": "val_cargaenergiahomwmed",
+      "valor_oficial": "43529.24399999",
+      "valor_laboratorio": "2176462.2",
+      "politica_tratamento": "flag extremo e quarentena didatica (criterio >fator_mediana ou negativo); NAO remover automaticamente valores presentes no snapshot original"
+    },
+    {
+      "id": "C22",
+      "arquivo": "curva",
+      "tipo": "formato_data",
+      "acao": "alterar",
+      "descricao": "Data/hora em formato alternativo (ISO com T).",
+      "alvo": {
+        "id_subsistema": "SE",
+        "din_instante": "2025-01-06 07:00:00"
+      },
+      "campo": "din_instante",
+      "valor_oficial": "2025-01-06 07:00:00",
+      "valor_laboratorio": "2025-01-06T07:00:00",
+      "politica_tratamento": "aceitar ISO com 'T'; flag formato_data_convertido"
+    }
+  ]
+}

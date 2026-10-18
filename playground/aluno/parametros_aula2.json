@@ -1,0 +1,10 @@
+{
+  "mult_iqr": 8.0,
+  "fator_mediana": 10.0,
+  "imputar": false,
+  "_ajuda": {
+    "mult_iqr": "Distancia em IQRs a partir de Q1/Q3 para marcar extremo suspeito (apenas 'revisar'). Menor = mais linhas marcadas.",
+    "fator_mediana": "Carga acima de (fator * mediana do subsistema) e tratada como suspeito grave pelo criterio DIDATICO e vai para quarentena. Nao e prova de impossibilidade fisica.",
+    "imputar": "Se true (ou com --imputar), preenche SOMENTE lacunas (horas ausentes) pela mediana da mesma hora-do-dia, sempre com flag. Nao altera celulas existentes."
+  }
+}

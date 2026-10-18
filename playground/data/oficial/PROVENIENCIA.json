@@ -1,0 +1,56 @@
+{
+  "gerado_em_utc": "2026-10-13T15:12:35+00:00",
+  "gerador": "scripts/tools/baixar_snapshot.py",
+  "observacao": "sha256_arquivo_origem cobre o CSV anual completo, obtido em streaming e descartado; recorte_sha256 cobre somente o arquivo de recorte gravado. Valores preservados byte-a-byte do original.",
+  "fontes": {
+    "balanco": {
+      "csv_url": "https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/balanco_energia_subsistema_ho/BALANCO_ENERGIA_SUBSISTEMA_2025.csv",
+      "http_last_modified": "Sat, 31 Jan 2026 22:01:09 GMT",
+      "http_content_length": 4077517,
+      "linhas_arquivo_anual": 43800,
+      "sha256_arquivo_origem": "69c163bca9c02c3ad256dca4ca390fc17922040ce7bb1341f85f0d0e770d2eac",
+      "recorte_arquivo": "balanco_oficial_2025-01-01_2025-01-08.csv",
+      "recorte_inicio_inclusive": "2025-01-01 00:00:00",
+      "recorte_fim_exclusive": "2025-01-08 00:00:00",
+      "recorte_linhas": 840,
+      "recorte_sha256": "cc625b2715d2bc4c4c266cb772f1815acf46c82a78b6d9c97dd768fe4ad4a849",
+      "recorte_subsistemas": [
+        "N",
+        "NE",
+        "S",
+        "SE",
+        "SIN"
+      ],
+      "recorte_horas_distintas": 168,
+      "recorte_bytes": 77270,
+      "json_url": "https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/balanco_energia_subsistema_ho/DicionarioDados_Balanco_Energia_Subsistema.json",
+      "json_arquivo": "DicionarioDados_Balanco_Energia_Subsistema.json",
+      "json_bytes": 1286,
+      "json_sha256": "b9a2e1ae184e9945b5ecf564ba7bd2407fe44a7bd70e7fda98acb25cfac9464f"
+    },
+    "curva": {
+      "csv_url": "https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/curva-carga-ho/CURVA_CARGA_2025.csv",
+      "http_last_modified": "Sat, 31 Jan 2026 22:01:31 GMT",
+      "http_content_length": 1416029,
+      "linhas_arquivo_anual": 35040,
+      "sha256_arquivo_origem": "69a3d2560bf111e46d1fa356ee4be7c917ca89bf53ae16ab1af9f9e7477ff4c4",
+      "recorte_arquivo": "curva_oficial_2025-01-01_2025-01-08.csv",
+      "recorte_inicio_inclusive": "2025-01-01 00:00:00",
+      "recorte_fim_exclusive": "2025-01-08 00:00:00",
+      "recorte_linhas": 672,
+      "recorte_sha256": "9a99e6557dbea2f0ec12943f04ae13fb4981351550572271a74297ea65616047",
+      "recorte_subsistemas": [
+        "N",
+        "NE",
+        "S",
+        "SE"
+      ],
+      "recorte_horas_distintas": 168,
+      "recorte_bytes": 27275,
+      "json_url": "https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/curva-carga-ho/DicionarioDados_CurvaCarga.json",
+      "json_arquivo": "DicionarioDados_CurvaCarga.json",
+      "json_bytes": 560,
+      "json_sha256": "4dc6b8166eae279ccc3aef96beed0a57636c5b0551708e22e84fa334e6fe48b4"
+    }
+  }
+}

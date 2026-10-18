@@ -18,8 +18,8 @@
       "antes": [
         {
           "rotulo": "Preparação do ambiente",
-          "arquivo": "preparacao-ambiente.pdf",
-          "tipo": "PDF"
+          "link": "preparacao/",
+          "tipo": "passo a passo"
         }
       ],
       "laboratorio": true

@@ -143,3 +143,23 @@ p { margin: 0.75rem 0 0; }
 /* Rodapé */
 .rodape { padding: 2rem var(--respiro-x); border-top: 1px solid var(--borda-fraca); font-size: var(--t-pequeno); color: var(--texto-fraco); line-height: 1.8; }
 .rodape p { margin: 0.25rem 0 0; }
+
+/* Passo a passo */
+.passo h2 { display: flex; gap: 1rem; align-items: baseline; }
+.passo h2 .num { color: var(--texto-fraco); font-size: var(--t-pequeno); }
+.lista { margin: 0; padding-left: 1.25rem; }
+.lista li { margin: 0.25rem 0; }
+code { font-family: var(--fonte); color: var(--texto-forte); }
+p code, li code, td code { background: var(--fundo-fraco); border: 1px solid var(--borda-fraca); border-radius: var(--raio); padding: 0 0.3rem; font-size: 0.9em; }
+.saida {
+  margin: 0.5rem 0 0; padding: 1rem 1.25rem; border: 1px dashed var(--borda); border-radius: var(--raio);
+  font: var(--t-pequeno)/1.8 var(--fonte); color: var(--texto); overflow-x: auto; white-space: pre;
+}
+.saida code { color: inherit; }
+.aviso { padding: 0.75rem 1rem; border-left: 2px solid var(--destaque); background: var(--fundo-fraco); }
+.tabela { width: 100%; border-collapse: collapse; font-size: var(--t-pequeno); line-height: 1.7; }
+.tabela th, .tabela td { text-align: left; vertical-align: top; padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--borda-fraca); }
+.tabela th { color: var(--texto-forte); font-weight: 500; }
+.tabela td:first-child { width: 40%; }
+@media (max-width: 40rem) { .tabela, .tabela tbody, .tabela tr, .tabela td { display: block; width: 100% !important; } .tabela thead { display: none; } .tabela td:first-child { border-bottom: 0; padding-bottom: 0; } }
+.comando code { color: inherit; }

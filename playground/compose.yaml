@@ -1,0 +1,101 @@
+name: pecege-ons-etl
+
+# Laboratorio didatico Pecege-ONS: duas fontes PostgreSQL independentes
+# (balanco e curva), um destino (analytics) e um ambiente Python de ETL.
+#
+# * Nenhuma porta e publicada no host de proposito: os servicos se falam
+#   pela rede interna do Compose pelos nomes DNS fonte-balanco / fonte-curva /
+#   destino. Assim nao conflitamos com um PostgreSQL ja instalado.
+# * Credenciais locais de exercicio (nao use em producao).
+
+x-postgres-common: &postgres-common
+  image: postgres:16-alpine
+  restart: unless-stopped
+  environment: &postgres-env
+    POSTGRES_USER: ons_lab
+    POSTGRES_PASSWORD: ons_lab
+    TZ: UTC
+    PGTZ: UTC
+  healthcheck:
+    test: ["CMD-SHELL", "pg_isready -U ons_lab -h 127.0.0.1"]
+    interval: 5s
+    timeout: 5s
+    retries: 30
+    start_period: 10s
+
+services:
+  fonte-balanco:
+    <<: *postgres-common
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: balanco
+    volumes:
+      - balanco_data:/var/lib/postgresql/data
+    networks: [etl-net]
+
+  fonte-curva:
+    <<: *postgres-common
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: curva
+    volumes:
+      - curva_data:/var/lib/postgresql/data
+    networks: [etl-net]
+
+  destino:
+    <<: *postgres-common
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: analytics
+    volumes:
+      - destino_data:/var/lib/postgresql/data
+    networks: [etl-net]
+
+  etl:
+    build:
+      context: ./docker/etl
+    image: pecege-ons-etl:local
+    # Executa como o seu usuario para os arquivos gravados em ./resultados
+    # nao ficarem como root no Linux. Sobrescreva com ETL_UID/ETL_GID se
+    # o seu id de usuario no host for diferente.
+    user: "${ETL_UID:-1000}:${ETL_GID:-1000}"
+    working_dir: /work
+    environment:
+      FONTE_BALANCO_HOST: fonte-balanco
+      FONTE_BALANCO_PORT: "5432"
+      FONTE_BALANCO_DB: balanco
+      FONTE_BALANCO_USER: ons_lab
+      FONTE_BALANCO_PASSWORD: ons_lab
+      FONTE_CURVA_HOST: fonte-curva
+      FONTE_CURVA_PORT: "5432"
+      FONTE_CURVA_DB: curva
+      FONTE_CURVA_USER: ons_lab
+      FONTE_CURVA_PASSWORD: ons_lab
+      # Conexao unica usada nos exemplos da aula ETL I (extracao da carga).
+      PG_DSN: postgresql://ons_lab:ons_lab@fonte-curva:5432/curva
+      DESTINO_HOST: destino
+      DESTINO_PORT: "5432"
+      DESTINO_DB: analytics
+      DESTINO_USER: ons_lab
+      DESTINO_PASSWORD: ons_lab
+      PYTHONUNBUFFERED: "1"
+    depends_on:
+      fonte-balanco:
+        condition: service_healthy
+      fonte-curva:
+        condition: service_healthy
+      destino:
+        condition: service_healthy
+    volumes:
+      - ./:/work
+    networks: [etl-net]
+    command: ["python", "--version"]
+
+volumes:
+  balanco_data:
+  curva_data:
+  destino_data:
+
+networks:
+  etl-net:
+    driver: bridge

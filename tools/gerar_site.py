@@ -113,6 +113,14 @@ def pagina(curso: dict, titulo: str, corpo: str, raiz: str) -> str:
 """
 
 
+def inline(texto: str) -> str:
+    """Formatação mínima: `código`, **forte**, *ênfase*."""
+    t = escape(texto)
+    t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
+    t = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", t)
+    return re.sub(r"\*([^*]+)\*", r"<em>\1</em>", t)
+
+
 def comando(texto: str) -> str:
     return f'<pre class="comando"><code>{escape(texto)}</code><button class="copiar" type="button">copiar</button></pre>'
 
@@ -157,6 +165,8 @@ def gerar_aula(curso: dict, aula: dict) -> str:
 </section>""")
     if aula.get("antes"):
         itens = "".join(
+            f'<li><a href="{escape(a["link"])}">{escape(a["rotulo"])}</a><span class="rotulo">{escape(a["tipo"])}</span></li>'
+            if a.get("link") else
             f'<li><a href="{escape(a["arquivo"])}" download>{escape(a["rotulo"])}</a><span class="rotulo">{escape(a["tipo"])}</span></li>'
             for a in aula["antes"])
         partes.append(f'<section class="secao"><h2>Antes da aula</h2><ul class="arquivos">{itens}</ul></section>')
@@ -165,10 +175,40 @@ def gerar_aula(curso: dict, aula: dict) -> str:
         pasta = repo.rstrip("/").rsplit("/", 1)[-1]
         partes.append(f"""<section class="secao">
 <h2>Laboratório</h2>
-<p>Clone o repositório na sua máquina e entre na pasta do laboratório. Os próximos passos estão no PDF de preparação.</p>
+<p>Clone o repositório na sua máquina e entre na pasta do laboratório. Os próximos passos estão na preparação do ambiente.</p>
 {comando(f"git clone {repo}.git{chr(10)}cd {pasta}/playground")}
 </section>""")
     return pagina(curso, f"{aula['titulo']} · {curso['instituicao']}", "\n".join(partes), "../../")
+
+
+def gerar_preparacao(curso: dict, aula: dict, prep: dict) -> str:
+    partes = [f"""<section class="secao">
+<p class="rotulo"><a href="../">{escape(aula['titulo'])}</a> · {data_curta(aula['data'])}</p>
+<h1>{escape(prep['titulo'])}</h1>
+<p>{inline(prep['resumo'])}</p>
+{f"<p>{inline(prep['contexto'])}</p>" if prep.get('contexto') else ''}
+</section>"""]
+    for n, passo in enumerate(prep["passos"], 1):
+        miolo = [f'<h2><span class="num">{n:02d}</span>{escape(passo["titulo"])}</h2>']
+        textos = passo.get("texto", [])
+        if len(textos) > 1:
+            miolo.append("<ol class=\"lista\">" + "".join(f"<li>{inline(t)}</li>" for t in textos) + "</ol>")
+        miolo += [f"<p>{inline(t)}</p>" for t in textos[:1] if len(textos) == 1]
+        if passo.get("comandos"):
+            miolo.append(comando(passo["comandos"]))
+        if passo.get("saida"):
+            miolo.append(f'<p class="rotulo">Resultado esperado</p><pre class="saida"><code>{escape(passo["saida"])}</code></pre>')
+        miolo += [f"<p>{inline(t)}</p>" for t in passo.get("depois", [])]
+        if passo.get("aviso"):
+            miolo.append(f'<p class="aviso">{inline(passo["aviso"])}</p>')
+        partes.append(f'<section class="secao passo" id="passo-{n}">{"".join(miolo)}</section>')
+    if prep.get("problemas"):
+        linhas = "".join(f"<tr><td>{inline(a)}</td><td>{inline(b)}</td></tr>" for a, b in prep["problemas"])
+        fecho = f"<p>{inline(prep['fechamento'])}</p>" if prep.get("fechamento") else ""
+        partes.append(f'<section class="secao"><h2>Se algo der errado</h2><table class="tabela"><thead><tr><th>Mensagem</th><th>O que fazer</th></tr></thead><tbody>{linhas}</tbody></table>{fecho}</section>')
+    if prep.get("dia_da_aula"):
+        partes.append(f'<section class="secao"><h2>No dia da aula</h2>{comando(prep["dia_da_aula"])}</section>')
+    return pagina(curso, f"{prep['titulo']} · {aula['titulo']}", "\n".join(partes), "../../../")
 
 
 def main() -> None:
@@ -185,6 +225,12 @@ def main() -> None:
         origem = RAIZ / "aulas" / aula["slug"]
         destino = SAIDA / "aulas" / aula["slug"]
         shutil.copytree(origem, destino)
+        prep_json = destino / "preparacao.json"
+        if prep_json.exists():
+            prep = json.loads(prep_json.read_text(encoding="utf-8"))
+            (destino / "preparacao").mkdir()
+            (destino / "preparacao" / "index.html").write_text(gerar_preparacao(curso, aula, prep), encoding="utf-8")
+            prep_json.unlink()
         for html in destino.rglob("*.html"):
             html.write_text(com_portao(html.read_text(encoding="utf-8"), curso), encoding="utf-8")
         (destino / "index.html").write_text(com_portao(gerar_aula(curso, aula), curso), encoding="utf-8")
