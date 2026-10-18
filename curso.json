@@ -1,0 +1,49 @@
+{
+  "titulo": "Treinamento em Análise de Dados — Analytics",
+  "instituicao": "Pecege · ONS",
+  "professor": "Rodrigo Nicola",
+  "descricao": "Materiais das aulas: apresentações, preparação do ambiente e laboratório.",
+  "repositorio": "https://github.com/rmnicola/pecege-ons",
+  "senha_sha256": "b490707fb5586fcf5e47e3fa6a4dd5eabce0ba6d23bedb520c190fd57a9f3c3d",
+  "aviso": "A responsabilidade pela idoneidade, originalidade e licitude dos conteúdos didáticos apresentados é do professor. Proibida a reprodução, total ou parcial, sem autorização. Lei nº 9610/98.",
+  "aulas": [
+    {
+      "slug": "2026-10-20-etl-i",
+      "data": "2026-10-20",
+      "horario": "09h–12h · Zoom",
+      "titulo": "ETL e Limpeza de Dados I",
+      "subtitulo": "Fontes e Integração",
+      "resumo": "Extração de dados de carga elétrica (PostgreSQL) e de temperatura (API Open-Meteo), e como transformar esse fluxo em código reutilizável.",
+      "apresentacao": "apresentacao.html",
+      "antes": [
+        {
+          "rotulo": "Preparação do ambiente",
+          "arquivo": "preparacao-ambiente.pdf",
+          "tipo": "PDF"
+        }
+      ],
+      "laboratorio": true
+    },
+    {
+      "slug": "2026-10-22-etl-ii",
+      "data": "2026-10-22",
+      "horario": "09h–12h · Zoom",
+      "titulo": "ETL e Limpeza de Dados II",
+      "subtitulo": "Qualidade e Padronização"
+    },
+    {
+      "slug": "2026-10-29-storytelling",
+      "data": "2026-10-29",
+      "horario": "09h–12h · Zoom",
+      "titulo": "Storytelling e Boas Práticas",
+      "subtitulo": "Comunicação com dados"
+    },
+    {
+      "slug": "2026-11-05-engenharia-de-dados",
+      "data": "2026-11-05",
+      "horario": "09h–12h · Zoom",
+      "titulo": "Introdução à Engenharia de Dados",
+      "subtitulo": "Versionamento e Ambientes"
+    }
+  ]
+}

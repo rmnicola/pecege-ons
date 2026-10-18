@@ -1,0 +1,145 @@
+/* Design system das páginas de curso — Rodrigo Nicola.
+   Minimalista, monoespaçado, coluna emoldurada por linhas finas.
+   Tokens primeiro; componentes usam apenas tokens. Ver site/DESIGN.md. */
+
+:root {
+  --fundo: #fdfcfc;
+  --fundo-fraco: #f8f7f7;
+  --fundo-fraco-hover: #f0eeee;
+  --fundo-forte: #201d1d;
+  --texto: #646262;
+  --texto-fraco: #9a9898;
+  --texto-forte: #201d1d;
+  --texto-invertido: #fdfcfc;
+  --borda: #d0cfcd;
+  --borda-fraca: rgba(15, 0, 0, 0.12);
+  --destaque: #cd0028;
+  --selecao: #f8f6c2;
+
+  --fonte: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --t-pequeno: 0.8125rem;
+  --t-base: 0.9375rem;
+  --t-titulo: 1.375rem;
+  --entrelinha: 2;
+
+  --largura: 60rem;
+  --respiro-x: 5rem;
+  --respiro-y: 4rem;
+  --raio: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --fundo: #131010;
+    --fundo-fraco: #1b1818;
+    --fundo-fraco-hover: #282424;
+    --fundo-forte: #f1eded;
+    --texto: #b7b1b1;
+    --texto-fraco: #7f7b7b;
+    --texto-forte: #f1eded;
+    --texto-invertido: #131010;
+    --borda: #4a4545;
+    --borda-fraca: #3d3838;
+    --destaque: #ff4d6d;
+    --selecao: #4a4a1f;
+  }
+}
+
+@media (max-width: 60rem) {
+  :root { --respiro-x: 1.5rem; --respiro-y: 3rem; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+::selection { background: var(--selecao); color: var(--texto-forte); }
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 400 var(--t-base)/var(--entrelinha) var(--fonte);
+}
+
+a { color: var(--texto-forte); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--texto-forte); outline-offset: 3px; }
+
+/* Moldura: coluna central delimitada por linhas finas */
+.moldura {
+  max-width: var(--largura);
+  margin: 0 auto;
+  min-height: 100vh;
+  border-left: 1px solid var(--borda-fraca);
+  border-right: 1px solid var(--borda-fraca);
+}
+.secao { padding: var(--respiro-y) var(--respiro-x); border-top: 1px solid var(--borda-fraca); }
+.secao:first-child { border-top: 0; }
+
+/* Topo */
+.topo {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  padding: 1.25rem var(--respiro-x);
+  border-bottom: 1px solid var(--borda-fraca);
+  font-size: var(--t-pequeno);
+}
+.topo .marca { color: var(--texto-forte); text-decoration: none; font-weight: 500; }
+.topo nav { display: flex; gap: 1.5rem; }
+.topo nav a { color: var(--texto); text-decoration: none; }
+.topo nav a:hover { color: var(--texto-forte); }
+
+/* Tipografia */
+h1, h2, h3 { color: var(--texto-forte); font-weight: 500; margin: 0; }
+h1 { font-size: var(--t-titulo); line-height: 1.5; }
+h2 { font-size: var(--t-base); margin-bottom: 1.5rem; }
+h3 { font-size: var(--t-base); line-height: 1.6; }
+p { margin: 0.75rem 0 0; }
+.rotulo { color: var(--texto-fraco); font-size: var(--t-pequeno); }
+
+/* Lista de aulas */
+.aulas { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--borda-fraca); }
+.aula { border-bottom: 1px solid var(--borda-fraca); }
+.aula > a, .aula > div {
+  display: grid; grid-template-columns: 7rem 1fr auto; gap: 1.5rem; align-items: baseline;
+  padding: 1.25rem 0.75rem; text-decoration: none; color: var(--texto);
+}
+.aula > a:hover { background: var(--fundo-fraco-hover); }
+.aula .data { color: var(--texto-fraco); font-size: var(--t-pequeno); }
+.aula .estado { font-size: var(--t-pequeno); color: var(--texto-fraco); }
+.aula > a .estado { color: var(--texto-forte); }
+.aula .sub { display: block; color: var(--texto); }
+@media (max-width: 40rem) {
+  .aula > a, .aula > div { grid-template-columns: 1fr; gap: 0.25rem; }
+}
+
+/* Cartão principal: leva à apresentação */
+.cartao {
+  display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
+  padding: 1.75rem 2rem; border: 1px solid var(--borda); border-radius: var(--raio);
+  background: var(--fundo-fraco); color: var(--texto-forte); text-decoration: none;
+  transition: background .15s;
+}
+.cartao:hover { background: var(--fundo-fraco-hover); text-decoration: none; }
+.cartao .seta { font-size: var(--t-titulo); line-height: 1; }
+.cartao p { margin: 0.25rem 0 0; color: var(--texto); font-size: var(--t-pequeno); }
+
+/* Lista de arquivos */
+.arquivos { list-style: none; margin: 0; padding: 0; }
+.arquivos li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid var(--borda-fraca); }
+.arquivos li:first-child { border-top: 1px solid var(--borda-fraca); }
+
+/* Comandos */
+.comando {
+  position: relative; margin: 1rem 0 0; padding: 2.75rem 1.25rem 1rem;
+  background: var(--fundo-forte); color: var(--texto-invertido); border-radius: var(--raio);
+  font: var(--t-pequeno)/1.8 var(--fonte); overflow-x: auto; white-space: pre;
+}
+.copiar {
+  position: absolute; top: 0.6rem; right: 0.6rem; padding: 0.15rem 0.6rem;
+  border: 1px solid var(--texto-fraco); border-radius: var(--raio); background: transparent;
+  color: var(--texto-invertido); font: var(--t-pequeno) var(--fonte); cursor: pointer;
+}
+.copiar:hover { border-color: var(--texto-invertido); }
+
+/* Rodapé */
+.rodape { padding: 2rem var(--respiro-x); border-top: 1px solid var(--borda-fraca); font-size: var(--t-pequeno); color: var(--texto-fraco); line-height: 1.8; }
+.rodape p { margin: 0.25rem 0 0; }
