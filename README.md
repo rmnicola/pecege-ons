@@ -26,7 +26,7 @@ tools/gerar_site.py           gera _site/ a partir de curso.json
 
 Aulas com `"rascunho": true` ficam fora do site publicado, mesmo que seus arquivos estejam no repositório. A senha das páginas (hash em `senha_sha256`) é só uma barreira visual: o repositório é público.
 
-Em `curso.json`, cada aula aceita `antes` (links ou arquivos para antes da aula) e `laboratorio` (mostra o comando de clone). Um `preparacao.json` na pasta da aula vira a página de passo a passo.
+Em `curso.json`, cada aula aceita `proposito` e `objetivos` (objetivos de aprendizagem), `antes` (links ou arquivos para antes da aula) e `laboratorio` (mostra o comando de clone). Um `preparacao.json` na pasta da aula vira a página de passo a passo.
 
 ## Referências internas
 

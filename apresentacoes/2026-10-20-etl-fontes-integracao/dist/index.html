@@ -1007,6 +1007,12 @@ executar(
     rodape.append(marca, texto);
     s.append(rodape);
   }
+  /* Links para fora do deck abrem em outra aba, para não tirar ninguém da apresentação. */
+  for (const link of document.querySelectorAll(".slide a[href]")) {
+    if (link.getAttribute("href").startsWith("#") || link.hasAttribute("target")) continue;
+    link.target = "_blank";
+    link.rel = "noopener";
+  }
   let atual = 0;
 
   slides.forEach((s, i) => s.setAttribute("data-numero", i + 1));

@@ -7,19 +7,21 @@
   --fundo-fraco: #f8f7f7;
   --fundo-fraco-hover: #f0eeee;
   --fundo-forte: #201d1d;
+  --fundo-forte-hover: #3a3434;
   --texto: #555454;
   --texto-fraco: #6d6b6b;
   --texto-forte: #201d1d;
   --texto-invertido: #fdfcfc;
+  --texto-invertido-fraco: #c9c3c3;
   --borda: #8f8e8d;
   --borda-fraca: rgba(15, 0, 0, 0.12);
   --destaque: #cd0028;
   --selecao: #f8f6c2;
 
   --fonte: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  --t-pequeno: 0.8125rem;
-  --t-base: 0.9375rem;
-  --t-titulo: 1.375rem;
+  --t-pequeno: 0.9375rem;
+  --t-base: 1rem;
+  --t-titulo: 1.75rem;
   --entrelinha: 2;
 
   --largura: 60rem;
@@ -51,10 +53,12 @@
     --fundo-fraco: #1b1818;
     --fundo-fraco-hover: #282424;
     --fundo-forte: #f1eded;
+    --fundo-forte-hover: #ddd8d8;
     --texto: #b7b1b1;
     --texto-fraco: #8f8b8b;
     --texto-forte: #f1eded;
     --texto-invertido: #131010;
+    --texto-invertido-fraco: #5a5555;
     --borda: #696565;
     --borda-fraca: #3d3838;
     --destaque: #ff4d6d;
@@ -122,7 +126,7 @@ a:hover { text-decoration-thickness: 2px; }
 /* Tipografia */
 h1, h2, h3 { color: var(--texto-forte); font-weight: 500; margin: 0; }
 h1 { font-size: var(--t-titulo); line-height: 1.5; }
-h2 { font-size: 1.25rem; line-height: 1.5; margin-bottom: 1.25rem; }
+h2 { font-size: 1.375rem; line-height: 1.5; margin-bottom: 1.25rem; }
 h3 { font-size: var(--t-base); line-height: 1.6; }
 p { margin: 0.75rem 0 0; }
 .rotulo { color: var(--texto-fraco); font-size: var(--t-pequeno); }
@@ -143,16 +147,23 @@ p { margin: 0.75rem 0 0; }
   .aula > a, .aula > div { grid-template-columns: 1fr; gap: 0.25rem; }
 }
 
-/* Cartão principal: leva à apresentação */
+/* Cartão principal: a ação mais importante da página, em destaque */
 .cartao {
   display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
-  padding: 1.75rem 2rem; border: 1px solid var(--borda); border-radius: var(--raio);
-  background: var(--fundo-fraco); color: var(--texto-forte); text-decoration: none;
-  transition: background .15s;
+  padding: 2.25rem 2.5rem; border-radius: 8px; background: var(--fundo-forte); color: var(--texto-invertido);
+  text-decoration: none; transition: background .15s;
 }
-.cartao:hover { background: var(--fundo-fraco-hover); text-decoration: none; }
-.cartao .seta { font-size: var(--t-titulo); line-height: 1; }
-.cartao p { margin: 0.25rem 0 0; color: var(--texto); font-size: var(--t-pequeno); }
+.cartao:hover { background: var(--fundo-forte-hover); text-decoration: none; }
+.cartao h3 { color: var(--texto-invertido); font-size: var(--t-titulo); line-height: 1.3; }
+.cartao p { margin: 0.4rem 0 0; color: var(--texto-invertido-fraco); font-size: var(--t-pequeno); }
+.cartao .seta { font-size: 2.25rem; line-height: 1; transition: transform .15s; }
+.cartao:hover .seta { transform: translateX(6px); }
+.cartao:focus-visible { outline-offset: 4px; }
+
+/* Objetivos de aprendizagem: discretos, dentro da introdução */
+.objetivos { margin: 0.5rem 0 0; padding-left: 1.1rem; font-size: var(--t-pequeno); line-height: 1.75; }
+.objetivos li { margin: 0.2rem 0; }
+.objetivos li::marker { color: var(--texto-fraco); }
 
 /* Lista de arquivos */
 .arquivos { list-style: none; margin: 0; padding: 0; }
@@ -163,23 +174,36 @@ p { margin: 0.75rem 0 0; }
 .rodape { padding: 2rem var(--respiro-x); border-top: 1px solid var(--borda-fraca); font-size: var(--t-pequeno); color: var(--texto-fraco); line-height: 1.8; }
 .rodape p { margin: 0.25rem 0 0; }
 
-/* Passo a passo */
-.passo h2 { display: flex; gap: 1rem; align-items: baseline; font-size: 1.25rem; line-height: 1.5; margin-bottom: 1.25rem; }
-.passo h2 .num { color: var(--texto-fraco); }
+/* Passo a passo (padrão Steps do Starlight) */
+.etapas { list-style: none; margin: 0; padding: 0; counter-reset: etapa; }
+.etapa { position: relative; counter-increment: etapa; padding: 0 0 2.75rem 3.75rem; }
+.etapa::before {
+  content: counter(etapa); position: absolute; left: 0; top: 0.1rem; width: 2.25rem; height: 2.25rem;
+  display: grid; place-items: center; border-radius: 50%; background: var(--fundo-forte); color: var(--texto-invertido);
+  font: 500 var(--t-pequeno)/1 var(--fonte);
+}
+.etapa::after { content: ""; position: absolute; left: calc(1.125rem - 1px); top: 2.85rem; bottom: 0.6rem; border-left: 2px solid var(--borda-fraca); }
+.etapa:last-child { padding-bottom: 0; }
+.etapa:last-child::after { display: none; }
+.etapa > h2 { font-size: 1.375rem; line-height: 2.25rem; margin: 0 0 0.5rem; }
+.etapa > * + * { margin-top: 1rem; }
+.etapa > .codigo + p, .etapa > .codigo + .codigo { margin-top: 1rem; }
 .lista { margin: 0; padding-left: 1.25rem; }
-.lista li { margin: 0.25rem 0; }
+.lista li { margin: 0.35rem 0; }
 code { font-family: var(--fonte); color: var(--texto-forte); }
-p code, li code, td code { background: var(--fundo-fraco); border: 1px solid var(--borda-fraca); border-radius: var(--raio); padding: 0 0.3rem; font-size: max(0.9em, var(--t-pequeno)); }
-.aviso { padding: 0.75rem 1rem; border-left: 2px solid var(--destaque); background: var(--fundo-fraco); }
-.tabela { width: 100%; border-collapse: collapse; font-size: var(--t-pequeno); line-height: 1.7; }
-.tabela th, .tabela td { text-align: left; vertical-align: top; padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--borda-fraca); }
-.tabela th { color: var(--texto-forte); font-weight: 500; }
-.tabela td:first-child { width: 40%; }
-@media (max-width: 40rem) { .tabela, .tabela tbody, .tabela tr, .tabela td { display: block; width: 100% !important; } .tabela thead { display: none; } .tabela td:first-child { border-bottom: 0; padding-bottom: 0; } }
+p code, li code { background: var(--fundo-fraco); border: 1px solid var(--borda-fraca); border-radius: var(--raio); padding: 0 0.3rem; font-size: max(0.9em, var(--t-pequeno)); }
+.aviso { padding: 0.9rem 1.1rem; border-left: 3px solid var(--destaque); background: var(--fundo-fraco); }
+.aviso strong { display: block; color: var(--destaque); font-size: var(--t-pequeno); }
+
+/* Problemas comuns: sintoma em cima, solução embaixo */
+.problemas { list-style: none; margin: 0 0 1.25rem; padding: 0; border-top: 1px solid var(--borda-fraca); }
+.problemas li { padding: 1rem 0; border-bottom: 1px solid var(--borda-fraca); }
+.problemas p { margin: 0; }
+.problemas .sintoma { margin-bottom: 0.35rem; }
 
 /* Blocos de código: moldura de terminal com realce */
 .codigo { position: relative; margin: 1rem 0 0; border: 1px solid var(--codigo-borda); border-radius: 6px; background: var(--codigo-fundo); overflow: hidden; }
-.codigo-barra { position: relative; display: flex; justify-content: center; align-items: center; min-height: 2rem; padding: 0.25rem 4rem; background: var(--codigo-barra); border-bottom: 1px solid var(--codigo-borda); color: var(--codigo-titulo); font-size: var(--t-pequeno); line-height: 1.5; }
+.codigo-barra { position: relative; display: flex; justify-content: center; align-items: center; min-height: 2.5rem; padding: 0.25rem 4rem; background: var(--codigo-barra); border-bottom: 1px solid var(--codigo-borda); color: var(--codigo-titulo); font-size: var(--t-pequeno); line-height: 1.5; }
 .terminal .pontos { position: absolute; left: 0.9rem; top: 50%; width: 0.55rem; height: 0.55rem; margin-top: -0.275rem; border-radius: 50%; background: var(--codigo-borda); box-shadow: 0.9rem 0 0 var(--codigo-borda), 1.8rem 0 0 var(--codigo-borda); }
 .codigo pre { margin: 0; padding: 1rem 1.25rem; overflow-x: auto; font: var(--t-pequeno)/1.75 var(--fonte); color: var(--codigo-texto); }
 .codigo code { color: inherit; background: none; border: 0; padding: 0; font: inherit; }
@@ -189,9 +213,9 @@ p code, li code, td code { background: var(--fundo-fraco); border: 1px solid var
 .sx-str { color: var(--sx-str); } .sx-var { color: var(--sx-var); } .sx-op { color: var(--sx-op); }
 .sx-num { color: var(--sx-num); } .sx-com { color: var(--sx-com); font-style: italic; } .sx-ok { color: var(--sx-ok); }
 .copiar {
-  position: absolute; top: 2.55rem; right: 0.6rem; display: grid; place-items: center; width: 2rem; height: 2rem;
-  border: 1px solid var(--codigo-controle); border-radius: 4px; background: var(--codigo-fundo); color: var(--codigo-titulo);
-  cursor: pointer; opacity: 0; transition: opacity .15s, color .15s;
+  position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); display: grid; place-items: center;
+  width: 1.9rem; height: 1.9rem; border: 1px solid var(--codigo-controle); border-radius: 4px; background: var(--codigo-fundo);
+  color: var(--codigo-titulo); cursor: pointer; opacity: 0; transition: opacity .15s, color .15s;
 }
 .codigo:hover .copiar, .copiar:focus-visible, .copiar.copiado { opacity: 1; }
 .copiar:hover { color: var(--codigo-texto); }

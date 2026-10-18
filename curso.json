@@ -5,7 +5,6 @@
   "descricao": "Materiais das aulas: apresentações, preparação do ambiente e laboratório.",
   "repositorio": "https://github.com/rmnicola/pecege-ons",
   "senha_sha256": "8ac03abaa9b2d1d0c3205d8ae5cb6db81ca90191e66c5f083bbf3f119289fafb",
-  "aviso": "A responsabilidade pela idoneidade, originalidade e licitude dos conteúdos didáticos apresentados é do professor. Proibida a reprodução, total ou parcial, sem autorização. Lei nº 9610/98.",
   "aulas": [
     {
       "slug": "2026-10-20-etl-i",
@@ -14,7 +13,13 @@
       "horario": "09h–12h · Zoom",
       "titulo": "ETL e Limpeza de Dados I",
       "subtitulo": "Fontes e Integração",
-      "resumo": "Extração de dados de carga elétrica (PostgreSQL) e de temperatura (API Open-Meteo), e como transformar esse fluxo em código reutilizável.",
+      "proposito": "Entender os conceitos por trás de ETL na prática.",
+      "objetivos": [
+        "Distinguir extração, transformação e carga e saber onde cada etapa entra num fluxo de dados.",
+        "Extrair dados de fontes diferentes, um banco relacional e uma API, com Python.",
+        "Combinar fontes por uma chave explícita e conferir o resultado antes de gravar.",
+        "Organizar o código em peças substituíveis, trocando fontes e destinos sem reescrever o pipeline."
+      ],
       "apresentacao": "dist/index.html",
       "antes": [
         {
@@ -22,8 +27,7 @@
           "link": "preparacao/",
           "tipo": "passo a passo"
         }
-      ],
-      "laboratorio": true
+      ]
     },
     {
       "slug": "2026-10-22-etl-ii",
@@ -32,7 +36,13 @@
       "horario": "09h–12h · Zoom",
       "titulo": "ETL e Limpeza de Dados II",
       "subtitulo": "Qualidade e Padronização",
-      "resumo": "Os problemas que a transformação corrige (ausentes, duplicatas, formatos, unidades, extremos), um desafio com fontes defeituosas e um destino novo: Parquet num armazenamento S3. No fim, data warehouse, data lake e lakehouse.",
+      "proposito": "Tratar dados de qualidade desconhecida e guardar o resultado de forma durável.",
+      "objetivos": [
+        "Reconhecer os problemas que a transformação corrige: ausentes, duplicatas, formatos, unidades e extremos.",
+        "Escolher e justificar regras de correção, preservando o original e marcando o que mudou.",
+        "Gravar o resultado em Parquet num armazenamento de objetos compatível com S3.",
+        "Diferenciar data warehouse, data lake e lakehouse."
+      ],
       "apresentacao": "dist/index.html",
       "antes": [
         {
@@ -40,8 +50,7 @@
           "link": "preparacao/",
           "tipo": "passo a passo"
         }
-      ],
-      "laboratorio": true
+      ]
     },
     {
       "slug": "2026-10-29-storytelling",

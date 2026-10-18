@@ -28,6 +28,8 @@ RAIZ = Path(__file__).resolve().parents[1]
 PREVIA = False  # --previa: inclui rascunhos
 SAIDA = RAIZ / "_site"
 MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
+# Links do conteúdo da aula abrem em outra aba; a navegação entre páginas do site, não.
+NOVA_ABA = ' target="_blank" rel="noopener"'
 FONTES = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
           '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
           '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">')
@@ -52,15 +54,15 @@ PREFIXOS = {"sudo"}
 PORTAO = """<div id="portao" role="dialog" aria-modal="true" aria-labelledby="portao-titulo">
 <style>
 #portao { __VARS__ position: fixed; inset: 0; z-index: 2147483647; display: grid; place-items: center;
-  background: var(--p-fundo); color: var(--p-texto); font: 400 15px/1.8 "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace; }
+  background: var(--p-fundo); color: var(--p-texto); font: 400 16px/1.8 "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace; }
 @media (prefers-color-scheme: dark) { #portao { __VARS_ESCURO__ } }
 #portao form { width: min(22rem, calc(100vw - 3rem)); display: flex; flex-direction: column; gap: 0.75rem; }
-#portao h1 { margin: 0; font: 500 1rem/1.5 inherit; color: var(--p-forte); }
-#portao label { font-size: 13px; }
+#portao h1 { margin: 0; font: 500 1.25rem/1.5 inherit; color: var(--p-forte); }
+#portao label { font-size: 15px; }
 #portao input { font: inherit; padding: 0.5rem 0.75rem; border: 1px solid var(--p-borda); border-radius: 4px; background: var(--p-fundo); color: var(--p-forte); }
 #portao button { align-self: flex-start; font: inherit; padding: 0.25rem 0; border: 0; background: none; color: var(--p-forte); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
 #portao input:focus-visible, #portao button:focus-visible { outline: 2px solid var(--p-forte); outline-offset: 2px; }
-#portao .erro { min-height: 1.8em; margin: 0; font-size: 13px; color: var(--p-erro); }
+#portao .erro { min-height: 1.8em; margin: 0; font-size: 15px; color: var(--p-erro); }
 html.liberado #portao { display: none; }
 </style>
 <form>
@@ -128,11 +130,11 @@ def pagina(curso: dict, titulo: str, corpo: str, raiz: str) -> str:
 </head>
 <body>
 <div class="moldura">
-<header class="topo"><a class="marca" href="{raiz}">{escape(curso['instituicao'])}</a><nav><a href="{raiz}">aulas</a><a href="{repo}">github</a></nav></header>
+<header class="topo"><a class="marca" href="{raiz}">{escape(curso['instituicao'])}</a><nav><a href="{raiz}">aulas</a><a href="{repo}"{NOVA_ABA}>github</a></nav></header>
 <main>
 {corpo}
 </main>
-<footer class="rodape"><p>{escape(curso['professor'])} · {escape(curso['titulo'])}</p><p>{escape(curso['aviso'])}</p></footer>
+<footer class="rodape"><p>{escape(curso['professor'])} · {escape(curso['titulo'])}</p></footer>
 </div>
 {COPIAR}
 </body>
@@ -180,11 +182,12 @@ def realcar_shell(texto: str) -> str:
     return "\n".join(linhas)
 
 
-def comando(texto: str, titulo: str = "Terminal") -> str:
+def comando(texto: str, titulo: str = "") -> str:
+    """Bloco de terminal: três pontos e botão de copiar na barra, título opcional."""
+    rotulo = f'<span class="codigo-titulo">{escape(titulo)}</span>' if titulo else ""
     return (f'<figure class="codigo terminal"><figcaption class="codigo-barra"><span class="pontos" aria-hidden="true"></span>'
-            f'<span class="codigo-titulo">{escape(titulo)}</span></figcaption>'
-            f'<pre><code>{realcar_shell(texto)}</code></pre>'
-            f'<button class="copiar" type="button" aria-label="Copiar" title="Copiar">{ICONE_COPIAR}</button></figure>')
+            f'{rotulo}<button class="copiar" type="button" aria-label="Copiar comandos" title="Copiar">{ICONE_COPIAR}</button>'
+            f'</figcaption><pre><code>{realcar_shell(texto)}</code></pre></figure>')
 
 
 def saida(texto: str, titulo: str = "Saída esperada") -> str:
@@ -225,22 +228,32 @@ def gerar_indice(curso: dict) -> str:
     return pagina(curso, curso["titulo"], corpo, "")
 
 
+def objetivos(aula: dict) -> str:
+    """Objetivos de aprendizagem como lista discreta dentro da introdução da aula."""
+    if not aula.get("objetivos"):
+        return ""
+    itens = "".join(f"<li>{inline(o)}</li>" for o in aula["objetivos"])
+    return f'<ul class="objetivos" aria-label="Objetivos de aprendizagem">{itens}</ul>'
+
+
 def gerar_aula(curso: dict, aula: dict) -> str:
     partes = [f"""<section class="secao">
 <p class="rotulo">{data_curta(aula['data'])} · {escape(aula['horario'])}</p>
 <h1>{escape(aula['titulo'])}</h1>
 <p>{escape(aula['subtitulo'])}</p>
+{f"<p>{escape(aula['proposito'])}</p>" if aula.get('proposito') else ''}
 {f"<p>{escape(aula['resumo'])}</p>" if aula.get('resumo') else ''}
+{objetivos(aula)}
 </section>"""]
     if aula.get("apresentacao"):
         partes.append(f"""<section class="secao">
-<a class="cartao" href="apresentacao.html"><span><h3>Apresentação</h3><p>Abre no navegador · setas do teclado para navegar</p></span><span class="seta">→</span></a>
+<a class="cartao" href="apresentacao.html"{NOVA_ABA}><span><h3>Apresentação</h3><p>Abre no navegador · setas do teclado para navegar</p></span><span class="seta">→</span></a>
 </section>""")
     if aula.get("antes"):
         itens = "".join(
-            f'<li><a href="{escape(a["link"])}">{escape(a["rotulo"])}</a><span class="rotulo">{escape(a["tipo"])}</span></li>'
+            f'<li><a href="{escape(a["link"])}"{NOVA_ABA}>{escape(a["rotulo"])}</a><span class="rotulo">{escape(a["tipo"])}</span></li>'
             if a.get("link") else
-            f'<li><a href="{escape(a["arquivo"])}" download>{escape(a["rotulo"])}</a><span class="rotulo">{escape(a["tipo"])}</span></li>'
+            f'<li><a href="{escape(a["arquivo"])}" download{NOVA_ABA}>{escape(a["rotulo"])}</a><span class="rotulo">{escape(a["tipo"])}</span></li>'
             for a in aula["antes"])
         partes.append(f'<section class="secao"><h2>Antes da aula</h2><ul class="arquivos">{itens}</ul></section>')
     if aula.get("laboratorio"):
@@ -255,30 +268,34 @@ def gerar_aula(curso: dict, aula: dict) -> str:
 
 
 def gerar_preparacao(curso: dict, aula: dict, prep: dict) -> str:
-    partes = [f"""<section class="secao">
+    """Passo a passo no padrão Steps do Starlight: círculos numerados ligados por uma linha."""
+    topo = f"""<section class="secao">
 <p class="rotulo"><a href="../">{escape(aula['titulo'])}</a> · {data_curta(aula['data'])}</p>
 <h1>{escape(prep['titulo'])}</h1>
 <p>{inline(prep['resumo'])}</p>
 {f"<p>{inline(prep['contexto'])}</p>" if prep.get('contexto') else ''}
-</section>"""]
+</section>"""
+    etapas = []
     for n, passo in enumerate(prep["passos"], 1):
-        miolo = [f'<h2><span class="num">{n:02d}</span>{escape(passo["titulo"])}</h2>']
+        miolo = [f'<h2>{escape(passo["titulo"])}</h2>']
         textos = passo.get("texto", [])
         if len(textos) > 1:
-            miolo.append("<ol class=\"lista\">" + "".join(f"<li>{inline(t)}</li>" for t in textos) + "</ol>")
-        miolo += [f"<p>{inline(t)}</p>" for t in textos[:1] if len(textos) == 1]
+            miolo.append('<ul class="lista">' + "".join(f"<li>{inline(t)}</li>" for t in textos) + "</ul>")
+        elif textos:
+            miolo.append(f"<p>{inline(textos[0])}</p>")
         if passo.get("comandos"):
             miolo.append(comando(passo["comandos"]))
         if passo.get("saida"):
             miolo.append(saida(passo["saida"]))
         miolo += [f"<p>{inline(t)}</p>" for t in passo.get("depois", [])]
         if passo.get("aviso"):
-            miolo.append(f'<p class="aviso">{inline(passo["aviso"])}</p>')
-        partes.append(f'<section class="secao passo" id="passo-{n}">{"".join(miolo)}</section>')
+            miolo.append(f'<p class="aviso"><strong>Atenção</strong> {inline(passo["aviso"])}</p>')
+        etapas.append(f'<li class="etapa" id="passo-{n}">{"".join(miolo)}</li>')
+    partes = [topo, f'<section class="secao"><ol class="etapas">{"".join(etapas)}</ol></section>']
     if prep.get("problemas"):
-        linhas = "".join(f"<tr><td>{inline(a)}</td><td>{inline(b)}</td></tr>" for a, b in prep["problemas"])
-        fecho = f"<p>{inline(prep['fechamento'])}</p>" if prep.get("fechamento") else ""
-        partes.append(f'<section class="secao"><h2>Se algo der errado</h2><table class="tabela"><thead><tr><th>Mensagem</th><th>O que fazer</th></tr></thead><tbody>{linhas}</tbody></table>{fecho}</section>')
+        itens = "".join(f'<li><p class="sintoma">{inline(a)}</p><p>{inline(b)}</p></li>' for a, b in prep["problemas"])
+        fecho = f'<p class="rotulo">{inline(prep["fechamento"])}</p>' if prep.get("fechamento") else ""
+        partes.append(f'<section class="secao"><h2>Se algo der errado</h2><ul class="problemas">{itens}</ul>{fecho}</section>')
     if prep.get("dia_da_aula"):
         partes.append(f'<section class="secao"><h2>No dia da aula</h2>{comando(prep["dia_da_aula"])}</section>')
     return pagina(curso, f"{prep['titulo']} · {aula['titulo']}", "\n".join(partes), "../../../")

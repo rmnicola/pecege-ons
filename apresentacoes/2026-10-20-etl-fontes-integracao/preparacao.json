@@ -41,7 +41,7 @@
       "comandos": "./preparar.sh",
       "saida": "[OK] bibliotecas: psycopg, httpx e pandas disponiveis\n[OK] PostgreSQL: oficial.curva_horaria com … linhas\n[OK] Open-Meteo: 24 horas recebidas para um dia\n[OK] pasta saida/: gravacao permitida\n\nTudo pronto para trabalhar.",
       "depois": [
-        "Pronto. Você pode desligar a máquina; nada precisa ficar rodando até a aula. Se algo falhar, o script diz o quê: veja a tabela abaixo e rode-o de novo."
+        "Pronto. Você pode desligar a máquina; nada precisa ficar rodando até a aula. Se algo falhar, o script diz o quê: veja a lista abaixo e rode-o de novo."
       ]
     }
   ],

@@ -6,8 +6,8 @@ Minimalista e monoespaçado, inspirado na simplicidade de opencode.ai. Uma colun
 
 | Grupo | Tokens | Uso |
 |---|---|---|
-| Fundo | `--fundo`, `--fundo-fraco`, `--fundo-fraco-hover`, `--fundo-forte` | página; cartões e hover; blocos de comando |
-| Texto | `--texto`, `--texto-fraco`, `--texto-forte`, `--texto-invertido` | corpo; rótulos e datas; títulos e links; texto sobre `--fundo-forte` |
+| Fundo | `--fundo`, `--fundo-fraco`, `--fundo-fraco-hover`, `--fundo-forte`, `--fundo-forte-hover` | página; hover de listas; cartão da apresentação e seu hover |
+| Texto | `--texto`, `--texto-fraco`, `--texto-forte`, `--texto-invertido`, `--texto-invertido-fraco` | corpo; rótulos e datas; títulos e links; texto sobre `--fundo-forte` |
 | Linhas | `--borda`, `--borda-fraca` | contorno de cartão e campo (≥ 3:1); divisórias decorativas e moldura |
 | Cor | `--destaque`, `--selecao` | acento raro; seleção de texto |
 | Tipo | `--fonte` (IBM Plex Mono), `--t-pequeno`, `--t-base`, `--t-titulo`, `--entrelinha` (2) | uma família, três tamanhos, pesos 400/500 |
@@ -23,15 +23,19 @@ Modo escuro automático por `prefers-color-scheme`; `data-tema="claro"` no `<htm
 - `.secao` — bloco com respiro e divisória superior.
 - `.rotulo` — metadado pequeno e esmaecido (data, instituição, tipo de arquivo).
 - `.aulas` / `.aula` — lista em linhas: data · título e subtítulo · estado.
-- `.cartao` — único elemento com contorno: a ação principal da página.
+- `.cartao` — a ação principal da página (a apresentação): bloco escuro preenchido, título grande, seta que avança ao passar o cursor.
+- `.objetivos` — objetivos de aprendizagem como lista discreta dentro da introdução, sem título próprio.
 - `.arquivos` — lista de downloads com tipo à direita.
-- `.comando` + `.copiar` — bloco de terminal com botão de cópia.
+- `.codigo.terminal` — bloco de terminal no estilo Starlight: três pontos e botão de copiar na barra, realce de shell; `.codigo.saida` mostra a saída esperada.
+- `.etapas` — passo a passo no padrão Steps do Starlight: círculos numerados ligados por uma linha guia.
+- `.problemas` — sintoma em cima, solução embaixo, um por linha.
 - `.rodape` — créditos e avisos em texto pequeno.
 
 ## Regras
 
 - Um só cartão por página: a ação principal.
 - Links sublinhados com 1px; sem botões coloridos.
+- Links do conteúdo da aula (apresentação, preparação, GitHub) abrem em outra aba; a navegação entre páginas do site, na mesma.
 - Títulos em peso 500, nunca negrito pesado.
 - Texto corrido com entrelinha 2.
 

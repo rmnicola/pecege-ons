@@ -37,10 +37,11 @@ Em `curso.json`, cada aula tem:
 | `slug` | URL: `aulas/<slug>/`. Não mude depois de divulgado |
 | `pasta` | pasta da aula em `apresentacoes/` |
 | `rascunho` | `true` enquanto estiver em andamento: fica fora do site publicado, aparece na prévia |
-| `data`, `horario`, `titulo`, `subtitulo`, `resumo` | textos da lista e da página |
+| `data`, `horario`, `titulo`, `subtitulo` | textos da lista e da página |
+| `proposito`, `objetivos` | frase de propósito e lista de objetivos de aprendizagem da página da aula (o professor prefere objetivos a um resumo) |
 | `apresentacao` | arquivo relativo à pasta, normalmente `dist/index.html`; vira `apresentacao.html` |
 | `antes` | lista de `{rotulo, tipo, link}` (página) ou `{rotulo, tipo, arquivo}` (arquivo da pasta, baixado) |
-| `laboratorio` | `true` mostra o comando de clone do repositório |
+| `laboratorio` | `true` mostra o comando de clone; o professor preferiu não usar (o "Antes da aula" já leva ao passo a passo) |
 
 Aula sem `pasta` aparece como "em breve". O CI não roda o build dos decks (precisa de Chromium): `dist/index.html` precisa estar atualizado e commitado.
 
