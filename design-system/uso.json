@@ -1,0 +1,228 @@
+{
+  "design-system/exemplos/exemplo.html": [
+    {
+      "slide": 1,
+      "tipo": "capa"
+    },
+    {
+      "slide": 2,
+      "tipo": "legal"
+    },
+    {
+      "slide": 3,
+      "tipo": "agenda"
+    },
+    {
+      "slide": 4,
+      "tipo": "capitulo-slide"
+    },
+    {
+      "slide": 5,
+      "tipo": "fluxo-slide"
+    },
+    {
+      "slide": 6,
+      "tipo": "painel"
+    },
+    {
+      "slide": 7,
+      "tipo": "ideia"
+    },
+    {
+      "slide": 8,
+      "tipo": "codigo-slide"
+    },
+    {
+      "slide": 9,
+      "tipo": "atividade"
+    },
+    {
+      "slide": 10,
+      "tipo": "encerramento"
+    },
+    {
+      "slide": 11,
+      "tipo": "referencias"
+    }
+  ],
+  "apresentacoes/2026-10-20-etl-fontes-integracao/deck.html": [
+    {
+      "slide": 1,
+      "tipo": "capa"
+    },
+    {
+      "slide": 2,
+      "tipo": "legal"
+    },
+    {
+      "slide": 3,
+      "tipo": "agenda"
+    },
+    {
+      "slide": 4,
+      "tipo": "sob medida: notebook-origem-animada"
+    },
+    {
+      "slide": 5,
+      "tipo": "sob medida: crisp-dm-foco-detalhe"
+    },
+    {
+      "slide": 6,
+      "tipo": "sob medida: dados-pergunta-origem"
+    },
+    {
+      "slide": 7,
+      "tipo": "agenda"
+    },
+    {
+      "slide": 8,
+      "tipo": "sob medida: etl-tres-etapas"
+    },
+    {
+      "slide": 9,
+      "tipo": "sob medida: fonte-evento-captura"
+    },
+    {
+      "slide": 10,
+      "tipo": "sob medida: fonte-codigo-python"
+    },
+    {
+      "slide": 11,
+      "tipo": "sob medida: fonte-evento-captura"
+    },
+    {
+      "slide": 12,
+      "tipo": "sob medida: fonte-codigo-python"
+    },
+    {
+      "slide": 13,
+      "tipo": "agenda"
+    },
+    {
+      "slide": 14,
+      "tipo": "sob medida: duas-fontes-um-csv"
+    }
+  ],
+  "apresentacoes/2026-10-22-etl-qualidade-padronizacao/deck.html": [
+    {
+      "slide": 1,
+      "tipo": "capa"
+    },
+    {
+      "slide": 2,
+      "tipo": "legal"
+    },
+    {
+      "slide": 3,
+      "tipo": "sob medida: fronteira-aceitacao"
+    },
+    {
+      "slide": 4,
+      "tipo": "sob medida: ciclo-qualidade"
+    },
+    {
+      "slide": 5,
+      "tipo": "sob medida: contrato-entrada"
+    },
+    {
+      "slide": 6,
+      "tipo": "sob medida: esquema-identidade"
+    },
+    {
+      "slide": 7,
+      "tipo": "sob medida: cobertura-grade"
+    },
+    {
+      "slide": 8,
+      "tipo": "sob medida: uso-tolerancias"
+    },
+    {
+      "slide": 9,
+      "tipo": "sob medida: diagnostico-dimensoes"
+    },
+    {
+      "slide": 10,
+      "tipo": "sob medida: completude-celula-registro"
+    },
+    {
+      "slide": 11,
+      "tipo": "sob medida: unicidade-duplicata-conflito"
+    },
+    {
+      "slide": 12,
+      "tipo": "sob medida: validade-formato-significado"
+    },
+    {
+      "slide": 13,
+      "tipo": "sob medida: consistencia-geracao-carga"
+    },
+    {
+      "slide": 14,
+      "tipo": "sob medida: acuracia-evidencia"
+    },
+    {
+      "slide": 15,
+      "tipo": "sob medida: transformacoes-classes"
+    },
+    {
+      "slide": 16,
+      "tipo": "sob medida: padronizacao-regras"
+    },
+    {
+      "slide": 17,
+      "tipo": "sob medida: conformacao-significado"
+    },
+    {
+      "slide": 18,
+      "tipo": "sob medida: politica-problema"
+    },
+    {
+      "slide": 19,
+      "tipo": "sob medida: politica-representacao-duplicidade"
+    },
+    {
+      "slide": 20,
+      "tipo": "sob medida: politica-ausencia"
+    },
+    {
+      "slide": 21,
+      "tipo": "sob medida: politica-valor-suspeito"
+    },
+    {
+      "slide": 22,
+      "tipo": "sob medida: aceitacao-publicacao"
+    },
+    {
+      "slide": 23,
+      "tipo": "sob medida: sequencia-decisao"
+    },
+    {
+      "slide": 24,
+      "tipo": "sob medida: intervalo"
+    },
+    {
+      "slide": 25,
+      "tipo": "sob medida: cenario-atividade"
+    },
+    {
+      "slide": 26,
+      "tipo": "sob medida: atividade-extrair-testar"
+    },
+    {
+      "slide": 27,
+      "tipo": "sob medida: atividade-diagnosticar"
+    },
+    {
+      "slide": 28,
+      "tipo": "sob medida: atividade-tratar-integrar"
+    },
+    {
+      "slide": 29,
+      "tipo": "sob medida: atividade-avaliar-entrega"
+    },
+    {
+      "slide": 30,
+      "tipo": "referencias"
+    }
+  ]
+}

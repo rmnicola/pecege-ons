@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ETL II — Qualidade e Padronização · Pecege–ONS</title>
+<link rel="stylesheet" href="../../design-system/css/pecege-ons.css">
+<style>
+  #capa .subtitulo { color:var(--branco); }
+  #etl2 .grade { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+  #etl2 .caixa { background:var(--branco); padding:26px 30px; }
+  #etl2 .caixa h3 { font-size:38px; color:var(--cinza-escuro); margin-bottom:14px; }
+  #etl2 .caixa p { font-size:32px; }
+  #etl2 .linha { display:flex; align-items:center; gap:20px; }
+  #etl2 .linha > .caixa { flex:1; text-align:center; }
+  #etl2 .seta { color:var(--vermelho-marca); font-size:42px; }
+  #etl2 .versus { display:grid; grid-template-columns:1fr 70px 1fr; align-items:stretch; gap:10px; }
+  #etl2 .versus .x { display:flex; align-items:center; justify-content:center; font-size:42px; font-weight:700; color:var(--vermelho-marca); }
+  #etl2 table { border-collapse:collapse; width:100%; }
+  #etl2 td { padding:13px 26px; border-bottom:2px solid var(--cinza-claro); font-size:30px; }
+  #etl2 td:first-child { color:var(--cinza-escuro); font-weight:bold; width:36%; }
+  #etl2 .codigo-curto { font:28px/1.45 var(--f-codigo); overflow-wrap:anywhere; }
+  #etl2 .referencia { font-size:28px; color:var(--cinza-texto); }
+  #etl2 .pipeline { display:flex; align-items:center; gap:12px; }
+  #etl2 .pipeline .etapa { flex:1; text-align:center; background:var(--branco); padding:22px 10px; }
+  #etl2 .pipeline .etapa strong { display:block; font-size:30px; color:var(--cinza-escuro); }
+  #etl2 .pipeline .etapa span { font-size:28px; color:var(--cinza-texto); }
+  #etl2 .pipeline .seta { color:var(--vermelho-marca); font-size:32px; }
+  #etl2 .lista { display:flex; flex-direction:column; gap:16px; }
+  #etl2 .lista p { font-size:32px; }
+  #etl2 .caixa .rotulo-termo { font-size:28px; }
+  #intervalo .conteudo { align-items:center; }
+  #bibliografia .lista-referencias { gap:22px; font-size:28px; }
+</style></head>
+<body><main class="deck" id="etl2">
+
+<!-- 1 -->
+<section class="slide capa sem-numero" id="capa">
+  <div class="marcas-capa"><img class="pecege" src="../../design-system/assets/img/simbolo-pecege-branco.svg" alt="Pecege"><div class="ons-recorte"><img src="../../design-system/assets/img/logo-ons-branco.png" alt="ONS"></div></div>
+  <div class="conteudo"><h1 class="titulo-capa">ETL II</h1><p class="subtitulo">Qualidade e Padronização</p><p class="autor">Rodrigo Nicola</p></div>
+  <aside class="notas">09h00–09h03, junto ao aviso legal. Problema do dia: o pipeline recebe registros de fontes cuja qualidade ainda não conhecemos. Precisamos decidir quais dados podem ser usados, quais transformações se justificam e como registrar as exceções. Retomar a aula I pela staging e pela preservação da origem. A segunda metade aplica as regras no laboratório; nenhum resultado é antecipado nos slides.</aside>
+</section>
+
+<!-- 2 -->
+<section class="slide legal sem-numero" id="legal" data-max-palavras="70">
+  <div class="conteudo"><p class="texto">A responsabilidade pela idoneidade, originalidade e licitude dos conteúdos didáticos apresentados é do professor.</p><p class="texto"><strong>Proibida a reprodução</strong>, total ou parcial, sem autorização.</p><a class="legenda" href="https://www.planalto.gov.br/ccivil_03/leis/l9610.htm">Lei nº 9610/98</a></div>
+  <img class="edificio" src="../../design-system/assets/img/edificio-pecege.svg" alt=""><img class="simbolo-edificio" src="../../design-system/assets/img/simbolo-pecege.svg" alt="Pecege">
+  <aside class="notas">Aviso institucional preservado do template. Não prolongar a leitura; passar diretamente à fronteira entre dados recebidos e dados usados.</aside>
+</section>
+
+<!-- 3 -->
+<section class="slide" id="fronteira" data-modelo="fronteira-aceitacao" data-max-palavras="40">
+  <div class="conteudo"><h2 class="titulo">Da recepção ao uso</h2><div class="linha"><div class="caixa">Dados recebidos</div><span class="seta">→</span><div class="caixa">Regras e testes</div><span class="seta">→</span><div class="caixa">Dados usados</div></div><p class="texto">Aceitar é uma decisão explícita: o pipeline não garante que o dado é verdadeiro.</p><p class="referencia">GOV.UK · adequação ao uso</p></div>
+  <aside class="notas">09h03–09h15. Começar pelo problema operacional: uma extração chegou à staging, mas não conhecemos sua adequação ao uso. O diagrama marca a fronteira entre receber e usar — uma decisão, não um efeito automático da carga. Perguntar à turma: qual uso o destino terá? Quais campos são indispensáveis? Quais defeitos impedem a integração e quais permitem uso parcial? A mesma fonte pode ser confiável em um contexto e insuficiente em outro. Referências: Kimball/Caserta, limpeza e conformação; Government Data Quality Framework, adequação ao propósito. Nada de frase de efeito — use o diagrama enquanto conduz a explicação.</aside>
+</section>
+
+<!-- 4 -->
+<section class="slide" id="ciclo" data-modelo="ciclo-qualidade" data-max-palavras="42">
+  <div class="conteudo"><h2 class="titulo">Qualidade é adequação ao uso</h2><div class="pipeline"><div class="etapa"><strong>Aquisição</strong><span>origem e coleta</span></div><span class="seta">→</span><div class="etapa"><strong>Processamento</strong><span>transformação</span></div><span class="seta">→</span><div class="etapa"><strong>Uso</strong><span>análise e decisão</span></div></div><p class="texto">O mesmo dado pode ser adequado a um uso e insuficiente para outro.</p><p class="referencia">GOV.UK · ciclo de vida</p></div>
+  <aside class="notas">09h15–09h21. Qualidade não é um selo permanente: ela se avalia em cada etapa do ciclo de vida. Um dado pode servir para um painel de acompanhamento e não servir para fechar um balanço. Discutir que o critério de aceitação depende do uso e da consequência do erro. A dimensão de atualidade/revisões também entra aqui: o ONS informa que os dados podem ser revisados depois da publicação, então uma leitura confiável hoje pode mudar amanhã. O objetivo do slide é deslocar a pergunta de "esse dado é bom?" para "esse dado serve para este uso, com que restrição?".</aside>
+</section>
+
+<!-- 5 -->
+<section class="slide" id="contrato" data-modelo="contrato-entrada" data-max-palavras="55">
+  <div class="conteudo"><h2 class="titulo">Contrato de entrada</h2><table><tbody><tr><td>Esquema</td><td>Campos · tipos · unidades</td></tr><tr><td>Identidade</td><td>Chave · granularidade</td></tr><tr><td>Cobertura</td><td>Período · frequência · grupos</td></tr><tr><td>Uso</td><td>Requisitos · tolerâncias</td></tr></tbody></table><p class="referencia">Definir antes de tratar · GOV.UK</p></div>
+  <aside class="notas">09h21–09h30. O contrato de entrada é semântico e técnico: define o que se espera receber antes de qualquer tratamento. Documentar esquema (campos, tipos, unidades), identidade (chave e granularidade), cobertura (período, frequência e grupos) e uso (requisitos e tolerâncias). Diferenciar campo obrigatório de campo opcional. Uma chave duplicada pode impedir a integração 1:1; uma medida ausente pode permitir publicar o registro com restrição explícita. As tolerâncias vêm do uso e da documentação da fonte, não de um limite inventado. Recapitular a necessidade de manter as duas medidas de carga identificadas separadamente.</aside>
+</section>
+
+<!-- 6 -->
+<section class="slide" id="esquema-identidade" data-modelo="esquema-identidade" data-max-palavras="42">
+  <div class="conteudo"><h2 class="titulo">Esquema e identidade</h2><div class="grade"><div class="caixa"><h3>Balanço de Energia</h3><p class="codigo-curto">id_subsistema<br>din_instante<br>val_carga</p></div><div class="caixa"><h3>Curva de Carga</h3><p class="codigo-curto">id_subsistema<br>din_instante<br>val_cargaenergiahomwmed</p></div></div><p class="referencia">Chave: subsistema + instante · ONS · dicionários · MWmed</p></div>
+  <aside class="notas">09h30–09h37. Abrir os dicionários oficiais como material de consulta (links no slide final e cópias em playground/data/oficial). A granularidade é subsistema + instante. Ler a definição das duas medidas de carga: val_carga (Balanço) e val_cargaenergiahomwmed (Curva). MWmed é potência média no intervalo, não energia; a energia correspondente depende da duração. Não presumir equivalência entre as duas medidas: mantê-las separadas e tratar divergências como diagnóstico. O nome do subsistema difere entre as fontes; não usar o nome como identificador estável — a identidade é o par id_subsistema + din_instante.</aside>
+</section>
+
+<!-- 7 -->
+<section class="slide" id="cobertura" data-modelo="cobertura-grade" data-max-palavras="42">
+  <div class="conteudo"><h2 class="titulo">Cobertura e grade esperada</h2><div class="grade"><div class="caixa"><h3>Esperado</h3><p>Período · frequência · grupos</p></div><div class="caixa"><h3>Observado</h3><p>Horas presentes por grupo</p></div></div><p class="texto">A diferença revela um registro ausente — sem supor grade regular para toda série.</p></div>
+  <aside class="notas">09h37–09h44. Para reconhecer o que falta, o contrato precisa declarar período, frequência e grupos. Comparar a grade esperada com a presença observada por subsistema. A diferença aponta para horas de registro ausentes. Cuidado: uma hora faltante não é a mesma coisa que uma célula vazia; o primeiro é ausência de linha, o segundo é uma linha presente com campo vazio (aprofundado adiante). Não extrapolar a grade para séries cuja documentação não a garante. O produto deste bloco é a lista de grupos e horas que deveriam existir no recorte.</aside>
+</section>
+
+<!-- 8 -->
+<section class="slide" id="uso-tolerancias" data-modelo="uso-tolerancias" data-max-palavras="42">
+  <div class="conteudo"><h2 class="titulo">Requisitos de uso</h2><div class="grade"><div class="caixa"><h3>Indispensável</h3><p>Chave e instante válidos</p></div><div class="caixa"><h3>Com restrição</h3><p>Medida ausente, marcada e sinalizada</p></div></div><p class="texto">A tolerância vem do uso, não de um limite inventado.</p><p class="referencia">GOV.UK · adequação ao uso</p></div>
+  <aside class="notas">09h44–09h50. Traduzir o uso em tolerâncias verificáveis. Chave e instante costumam ser indispensáveis: sem eles o registro não entra na integração. Uma medida ausente pode ser aceitável se ficar explícita e sinalizada, com o denominador da cobertura declarado. Não inventar limites físicos ou estatísticos "oficiais": eles vêm da documentação e do uso. Perguntar à turma quem define as tolerâncias e que evidência permitiria revê-las. Este é o critério que os testes da publicação vão executar.</aside>
+</section>
+
+<!-- 9 -->
+<section class="slide" id="diagnostico" data-modelo="diagnostico-dimensoes" data-max-palavras="55">
+  <div class="conteudo"><h2 class="titulo">Diagnóstico de qualidade</h2><table><tbody><tr><td>Completude</td><td>Células e registros</td></tr><tr><td>Unicidade</td><td>Repetições e conflitos</td></tr><tr><td>Validade</td><td>Tipos · domínios · formatos</td></tr><tr><td>Consistência</td><td>Relações e definições</td></tr><tr><td>Acurácia</td><td>Comparação com evidência</td></tr></tbody></table><p class="referencia">GOV.UK · dimensões de qualidade</p></div>
+  <aside class="notas">09h50–09h58. Usar as dimensões como lentes para montar um perfil, não como glossário a decorar. Completude de célula e de registro são verificações distintas. Unicidade depende da chave: comparar toda a informação de negócio para distinguir cópia exata de conflito. Validade verifica formatos e domínios, mas não comprova acurácia. Consistência verifica relações que a documentação realmente sustenta. Acurácia exige comparação com evidência apropriada. O produto do diagnóstico é evidência para decidir, não limpeza automática. Cada dimensão será detalhada nos próximos slides.</aside>
+</section>
+
+<!-- 10 -->
+<section class="slide" id="completude" data-modelo="completude-celula-registro" data-max-palavras="42">
+  <div class="conteudo"><h2 class="titulo">Célula nula × registro ausente</h2><div class="versus"><div class="caixa"><p class="rotulo-termo">Célula nula</p><p>A linha existe; o campo está vazio.</p></div><div class="x">×</div><div class="caixa"><p class="rotulo-termo">Registro ausente</p><p>A linha inteira falta para aquela hora.</p></div></div><p class="referencia">GOV.UK · completude · exemplo didático</p></div>
+  <aside class="notas">09h58–10h03. A distinção central: uma célula vazia deixa a linha presente e afeta um campo; um registro ausente remove a linha inteira e afeta a cobertura do grupo. Tratamentos são diferentes: a célula pode permanecer NULL com flag; o registro ausente entra como lacuna e exige decisão sobre uso parcial ou imputação. Não preencher horas silenciosamente. Reforce que a grade esperada do contrato é o que permite reconhecer o registro ausente.</aside>
+</section>
+
+<!-- 11 -->
+<section class="slide" id="unicidade" data-modelo="unicidade-duplicata-conflito" data-max-palavras="45">
+  <div class="conteudo"><h2 class="titulo">Duplicata exata × conflito de chave</h2><div class="versus"><div class="caixa"><p class="rotulo-termo">Duplicata exata</p><p>Mesma chave e mesmos valores.</p><p>Manter uma cópia e registrar.</p></div><div class="x">×</div><div class="caixa"><p class="rotulo-termo">Conflito de chave</p><p>Mesma chave, valores divergentes.</p><p>Resolver ou pôr em quarentena.</p></div></div><p class="referencia">Classificar antes de agir · Kimball e Caserta</p></div>
+  <aside class="notas">10h03–10h09. Unicidade depende da chave. Duplicata exata é a repetição idêntica: mantém-se uma cópia, de forma determinística, e registra-se a descartada. Conflito de chave é a mesma chave com valores divergentes: não escolher um valor arbitrariamente; resolver com evidência ou colocar a chave inteira em quarentena. Normalizar o id e o instante serve para agrupar chaves potenciais, mas a comparação do conteúdo usa os valores crus. Assim, chaves escondidas por espaço, caixa ou data ISO aparecem. Nunca remover duplicatas de forma indiscriminada.</aside>
+</section>
+
+<!-- 12 -->
+<section class="slide" id="validade" data-modelo="validade-formato-significado" data-max-palavras="45">
+  <div class="conteudo"><h2 class="titulo">Formato × significado</h2><div class="versus"><div class="caixa"><p class="rotulo-termo">Formato</p><p>Vírgula decimal, data ISO, caixa e espaços.</p></div><div class="x">×</div><div class="caixa"><p class="rotulo-termo">Significado</p><p>Unidade, definição e entidade do dado.</p></div></div><p class="texto">Converter formato não garante que o número signifique a mesma coisa.</p></div>
+  <aside class="notas">10h09–10h15. Validade verifica tipos, domínios e formatos — parsing de número, data e categorias. Isso é necessário, mas não suficiente. Dois campos podem ter o mesmo formato e significados diferentes (unidade, definição, nível de agregação). Separar explicitamente as duas questões evita concluir que um número convertido com sucesso está correto. Exemplos de formato: número com vírgula decimal, data ISO com "T", código com espaço ou caixa. Exemplo de significado: MWmed é potência média; comparar medidas de fontes distintas exige checar a definição no dicionário.</aside>
+</section>
+
+<!-- 13 -->
+<section class="slide" id="consistencia" data-modelo="consistencia-geracao-carga" data-max-palavras="50">
+  <div class="conteudo"><h2 class="titulo">Consistência: geração × carga</h2><div class="linha"><div class="caixa">Soma da geração</div><span class="seta">?</span><div class="caixa">Carga</div></div><p class="texto">Existe intercâmbio: não impor geração igual a carga.</p><p class="referencia">val_carga e val_cargaenergiahomwmed: medidas distintas, mantidas separadas · ONS</p></div>
+  <aside class="notas">10h15–10h21. Consistência verifica relações que a documentação sustenta. A soma das gerações (hidráulica, térmica, eólica, solar) não precisa igualar a carga: há intercâmbio entre subsistemas e a interpretação depende da documentação. Portanto, não tratar geração = carga como invariante. As duas medidas de carga (val_carga, do Balanço, e val_cargaenergiahomwmed, da Curva) ficam em colunas separadas; divergência entre elas é diagnóstico, não erro automático. Se um teste de consistência for usado, ele precisa vir da documentação da fonte, com tolerância declarada.</aside>
+</section>
+
+<!-- 14 -->
+<section class="slide" id="acuracia" data-modelo="acuracia-evidencia" data-max-palavras="50">
+  <div class="conteudo"><h2 class="titulo">Acurácia por evidência</h2><div class="linha"><div class="caixa">Valor observado</div><span class="seta">↔</span><div class="caixa">Referência confiável</div></div><p class="texto">Testes internos provam formato e consistência, não acurácia. Dois sistemas podem repetir o mesmo erro.</p><p class="referencia">GOV.UK · acurácia</p></div>
+  <aside class="notas">10h21–10h27. Acurácia exige comparação com uma referência apropriada e confiável. Regras internas de formato e consistência são necessárias, mas não provam que o valor está correto. Dois sistemas alimentados pela mesma origem podem compartilhar o mesmo erro, então "os dois concordam" não é prova. No exercício, a base congelada limpa é um recurso didático de avaliação, não um modo de descobrir os valores corretos em produção. Deixar claro o que a evidência disponível sustenta e o que permanece como limitação.</aside>
+</section>
+
+<!-- 15 -->
+<section class="slide" id="transformacoes" data-modelo="transformacoes-classes" data-max-palavras="45">
+  <div class="conteudo"><h2 class="titulo">Duas classes de transformação</h2><div class="grade"><div class="caixa"><h3>Padronização</h3><p>Tipos, formatos e códigos.</p><p class="rotulo-termo">Representação</p></div><div class="caixa"><h3>Conformação</h3><p>Entidades, unidades e definições.</p><p class="rotulo-termo">Significado</p></div></div><p class="referencia">Preservar o bruto e registrar a regra · McKinney cap. 7 e 8</p></div>
+  <aside class="notas">10h27–10h33. Separar duas classes de decisão. Padronização trata a representação: aparar espaços, normalizar caixa, converter número e data, mapear códigos. Conformação trata o significado: garantir que entidades, unidades e definições sejam as mesmas entre fontes. Conformar não é renomear colunas: exige verificar identidade e significado na documentação. Em ambos os casos, preservar o valor bruto e registrar a regra aplicada. Referência prática: McKinney capítulo 7 (preparação) e 8 (integração/junção).</aside>
+</section>
+
+<!-- 16 -->
+<section class="slide" id="padronizacao" data-modelo="padronizacao-regras" data-max-palavras="50">
+  <div class="conteudo"><h2 class="titulo">Padronização</h2><table><tbody><tr><td>" sp "</td><td>Aparar espaços e padronizar caixa</td></tr><tr><td>1.234,5</td><td>Converter para número</td></tr><tr><td>2025-01-06T07:00</td><td>Aceitar data em formato ISO</td></tr></tbody></table><p class="referencia">Exemplos didáticos · valor original preservado e flag</p></div>
+  <aside class="notas">10h33–10h39. Padronizar é aplicar uma regra de representação explícita e registrar a conversão com uma flag. Aparar espaços e normalizar caixa recupera a chave; converter vírgula decimal para número permite o cálculo; aceitar data ISO com "T" evita descartar uma linha válida por formato. Os valores mostrados são exemplos didáticos, não ocorrências contadas nos dados oficiais. Em todos os casos, o valor original é preservado para auditoria. Uma conversão silenciosa dificulta explicar depois o que mudou.</aside>
+</section>
+
+<!-- 17 -->
+<section class="slide" id="conformacao" data-modelo="conformacao-significado" data-max-palavras="55">
+  <div class="conteudo"><h2 class="titulo">Conformação</h2><table><tbody><tr><td>Códigos</td><td>Mapear pelo identificador, não pelo nome</td></tr><tr><td>Unidades</td><td>MWmed é potência média; energia depende da duração</td></tr><tr><td>Definições</td><td>val_carga ≠ val_cargaenergiahomwmed</td></tr></tbody></table><p class="referencia">McKinney cap. 8 · conformar antes de juntar</p></div>
+  <aside class="notas">10h39–10h45. Conformar é alinhar o significado entre fontes antes de integrá-las. Códigos: usar o identificador estável; o nome do subsistema difere entre as duas fontes e não serve como chave. Unidades: MWmed é potência média no intervalo; converter para energia exige a duração. Definições: as duas medidas de carga são distintas e permanecem em colunas separadas. Depois de normalizar a chave, verificar de novo a unicidade, pois dois registros com códigos escritos de formas diferentes podem se tornar a mesma chave. A integração 1:1 só ocorre após essa verificação.</aside>
+</section>
+
+<!-- 18 -->
+<section class="slide" id="politicas" data-modelo="politica-problema" data-max-palavras="60">
+  <div class="conteudo"><h2 class="titulo">Política por problema</h2><table><tbody><tr><td>Representação</td><td>Converter com regra e preservar o bruto</td></tr><tr><td>Duplicidade</td><td>Classificar antes de agir</td></tr><tr><td>Ausência</td><td>Restringir uso ou imputar com hipótese</td></tr><tr><td>Valor suspeito</td><td>Investigar, sinalizar e quarentena</td></tr></tbody></table><p class="referencia">Kimball e Caserta · tratamento de exceções</p></div>
+  <aside class="notas">10h45–10h51. A política organiza a decisão por problema e consequência. Cada linha indica uma ação-padrão, não uma regra automática: a escolha depende do uso e da evidência. Representação: converter com regra e preservar o bruto. Duplicidade: classificar antes de agir. Ausência: restringir o uso ou imputar com hipótese explícita. Valor suspeito: investigar, sinalizar e, quando o critério justificar, colocar em quarentena. Perguntar à turma quem define cada decisão e qual evidência permitiria voltar atrás.</aside>
+</section>
+
+<!-- 19 -->
+<section class="slide" id="politica-representacao" data-modelo="politica-representacao-duplicidade" data-max-palavras="48">
+  <div class="conteudo"><h2 class="titulo">Representação e duplicidade</h2><div class="grade"><div class="caixa"><h3>Representação</h3><p>Converter com flag; não inventar valor.</p></div><div class="caixa"><h3>Duplicidade</h3><p>Exata: manter uma. Conflito: quarentena da chave.</p></div></div><p class="texto">Normalizar a chave pode revelar um conflito escondido por espaço ou caixa.</p></div>
+  <aside class="notas">10h51–10h57. Duas políticas concretas. Representação: toda conversão gera flag e o valor original fica preservado; nunca inventar um valor para um campo que não pôde ser interpretado. Duplicidade: duplicata exata é resolvida de forma determinística, mantendo uma cópia e registrando a descartada; conflito de chave vai para quarentena da chave inteira, sem escolher um valor. A normalização do identificador e do instante serve para agrupar e detectar conflitos que a comparação crua não veria.</aside>
+</section>
+
+<!-- 20 -->
+<section class="slide" id="politica-ausencia" data-modelo="politica-ausencia" data-max-palavras="55">
+  <div class="conteudo"><h2 class="titulo">Ausência</h2><div class="lista"><p>Ausência não é zero.</p><p>Não imputar sem hipótese, grupo, limite e flag.</p><p>Uso parcial com denominador explícito.</p><p>Não fabricar linha ausente.</p></div><p class="referencia">pandas · working with missing data</p></div>
+  <aside class="notas">10h57–11h01. A ausência exige decisão, não preenchimento reflexo. Substituir por zero distorce média, pico e cobertura. Imputação é inferência: precisa de hipótese, grupo de referência, limite e flag; sem isso, não imputar. Uma alternativa honesta é o uso parcial com o denominador da cobertura declarado. Uma linha de hora inteira ausente não deve ser fabricada sem hipótese registrada. Referência prática de implementação: pandas, working with missing data — que trata faltantes como faltantes até que uma decisão explícita seja tomada.</aside>
+</section>
+
+<!-- 21 -->
+<section class="slide" id="politica-suspeito" data-modelo="politica-valor-suspeito" data-max-palavras="55">
+  <div class="conteudo"><h2 class="titulo">Valor suspeito</h2><div class="lista"><p>Limiar estatístico não é impossibilidade física.</p><p>Não remover picos automaticamente.</p><p>Sinalizar para revisão; quarentena com critério.</p><p>O valor original é preservado.</p></div><p class="referencia">Um extremo pode ser um pico real · Kimball e Caserta</p></div>
+  <aside class="notas">11h01–11h05. Um valor muito fora do padrão é suspeita, não prova de impossibilidade física. Critérios como IQR ou múltiplo da mediana marcam para revisão; não autorizam remover automaticamente. Um pico pode ser um evento real e removê-lo destruiria informação. Quando um critério forte justifica a quarentena, ele é explícito, com o valor original preservado e a política registrada. No exercício, o critério é parametrizável e didático — não uma regra oficial do setor. Toda decisão sobre extremo precisa poder ser explicada e revertida.</aside>
+</section>
+
+<!-- 22 -->
+<section class="slide" id="publicacao" data-modelo="aceitacao-publicacao" data-max-palavras="40">
+  <div class="conteudo"><h2 class="titulo">Aceitação e publicação</h2><div class="linha"><div class="caixa">Testes do contrato</div><span class="seta">→</span><div class="caixa">Aceitar · restringir · rejeitar</div></div><p class="texto">Registrar origem, regra, alteração e exceção.</p><p class="referencia">GOV.UK · comunicar qualidade e limites</p></div>
+  <aside class="notas">11h05–11h09. Fechar a primeira parte mostrando como diagnóstico e políticas viram uma etapa controlada: testar a entrada, aplicar a regra, testar a saída, registrar exceções e decidir. Distinguir falha de execução, rejeição esperada por contrato e aceitação com limitações. Preservar fonte/bruto, a regra, a versão e as flags no dado tratado. Avaliar efeitos sobre cobertura, média e pico antes de disponibilizar: publicar uma base menor pode ser mais apropriado do que fabricar uma completa. A referência congelada do laboratório é recurso pedagógico de avaliação, não fonte para descobrir valores de produção.</aside>
+</section>
+
+<!-- 23 -->
+<section class="slide" id="sequencia" data-modelo="sequencia-decisao" data-max-palavras="45">
+  <div class="conteudo"><h2 class="titulo">Diagnóstico → política → publicação</h2><div class="pipeline"><div class="etapa"><strong>Diagnóstico</strong><span>evidência</span></div><span class="seta">→</span><div class="etapa"><strong>Política</strong><span>regra e ação</span></div><span class="seta">→</span><div class="etapa"><strong>Publicação</strong><span>aceitação e limites</span></div></div><p class="texto">Cada etapa deixa evidência; a aceitação fecha o ciclo.</p></div>
+  <aside class="notas">11h09–11h15. Recapitular a sequência da primeira parte: reconhecer a fronteira, escrever o contrato, diagnosticar, transformar com regra, decidir por problema e publicar com limites. O diagnóstico produz evidência; a política transforma evidência em ação; a publicação testa e decide. A seta de retorno existe: um resultado ruim na publicação obriga a revisar a política ou o contrato. Esta é a ponte para a atividade: no laboratório, a turma percorre a mesma sequência com dados de qualidade desconhecida.</aside>
+</section>
+
+<!-- 24 -->
+<section class="slide" id="intervalo" data-modelo="intervalo"><div class="conteudo"><h2 class="titulo">Intervalo</h2><p class="subtitulo">10h15–10h30</p></div><aside class="notas">15 minutos. Ajustar o horário ao andamento real da primeira parte; o ambiente já deve estar preparado antes da aula. Não usar o intervalo para build ou instalação.</aside></section>
+
+<!-- 25 -->
+<section class="slide" id="ambiente" data-modelo="cenario-atividade" data-max-palavras="45">
+  <div class="conteudo"><h2 class="titulo">Ambiente da atividade</h2><div class="grade"><div class="caixa"><h3>Fontes</h3><p class="codigo-curto">PostgreSQL · laboratorio.*</p><p>Balanço e Curva</p></div><div class="caixa"><h3>Destino</h3><p class="codigo-curto">PostgreSQL · aula2.*</p><p>analytics</p></div></div><p class="referencia">Cópia didática; os originais ficam preservados.</p></div>
+  <aside class="notas">10h30–10h38. Apresentar o cenário sem listar defeitos e sem revelar contagens. As fontes têm uma cópia com alterações controladas para o exercício, distinta dos dados oficiais. Confirmar os bancos healthy e o setup já realizado. Na retomada, usar os scripts 01/02 com --cenario aula2 para ler laboratorio; nunca editar oficial. Encaminhar a turma ao roteiro da aula2 no playground. Explicar que a pasta professor/ é gabarito reservado e não é distribuída.</aside>
+</section>
+
+<!-- 26 -->
+<section class="slide" id="atv-extrair" data-modelo="atividade-extrair-testar" data-max-palavras="45">
+  <div class="conteudo"><h2 class="titulo">Atividade · extrair e testar</h2><div class="lista"><p>Extrair as duas fontes com --cenario aula2.</p><p>Testar a integração bruta.</p><p>Ler a causa da rejeição esperada.</p></div><p class="codigo-curto">01 · 02 · 03</p></div>
+  <aside class="notas">10h38–11h00. Comandos completos no roteiro do aluno. Executar 01_extrair_balanco.py --cenario aula2 e 02_extrair_curva.py --cenario aula2; depois 03_integrar.py --cenario aula2. A rejeição com código de saída 2 é esperada neste exercício: pedir a leitura da causa e do contrato violado, não tratar como defeito do Docker. Identificar o requisito de unicidade/cardinalidade que impede a integração 1:1. Não revelar a lista de problemas nem contagens; o enunciado diz apenas que existem na cópia didática.</aside>
+</section>
+
+<!-- 27 -->
+<section class="slide" id="atv-diagnosticar" data-modelo="atividade-diagnosticar" data-max-palavras="45">
+  <div class="conteudo"><h2 class="titulo">Atividade · diagnosticar</h2><div class="lista"><p>Perfilar as staging recebidas.</p><p>Separar célula, registro, formato e suspeito.</p><p>Registrar hipótese e evidência.</p></div><p class="codigo-curto">04_diagnosticar.py · aula2.diagnostico_*</p></div>
+  <aside class="notas">11h00–11h20. Executar 04_diagnosticar.py e usar as consultas SQL do aluno para examinar aula2.diagnostico_*. O objetivo é distinguir ausência de célula, ausência de registro, formato e valor suspeito, além de cobertura e conflitos de chave. Cada dupla registra uma hipótese e a evidência antes de propor tratamento. Diferenciar contagem de linhas, chaves e células inválidas. Não projetar números do diagnóstico; os achados devem sair da investigação da turma.</aside>
+</section>
+
+<!-- 28 -->
+<section class="slide" id="atv-tratar" data-modelo="atividade-tratar-integrar" data-max-palavras="48">
+  <div class="conteudo"><h2 class="titulo">Atividade · tratar e integrar</h2><div class="lista"><p>Definir regra e ação por problema.</p><p>Executar 05_tratar.py, que também integra.</p><p>Preservar original e registrar exceções.</p></div><p class="referencia">O parâmetro imputar preenche lacunas com hipótese, não células existentes.</p></div>
+  <aside class="notas">11h20–11h38. Primeiro elaborar a tabela problema/evidência/regra/ação/efeito e depois executar 05_tratar.py. O script também integra a saída tratada após nova verificação de unicidade; não repetir 03 como se ele integrasse as tabelas limpas. A imputação é desligada por padrão e, quando ativada, preenche somente lacunas de registro pela mediana da mesma hora-do-dia, com flag; não altera células existentes. O limite min/max registrado é de valor observado, não de tamanho da lacuna. Manter as decisões inferidas identificadas e discutir quando seria necessário mudar o código, não só o parâmetro.</aside>
+</section>
+
+<!-- 29 -->
+<section class="slide" id="atv-avaliar" data-modelo="atividade-avaliar-entrega" data-max-palavras="48">
+  <div class="conteudo"><h2 class="titulo">Atividade · avaliar e entregar</h2><div class="grade"><div class="caixa"><h3>Parâmetros</h3><p class="codigo-curto">mult_iqr · fator_mediana · imputar</p></div><div class="caixa"><h3>Entrega</h3><p>Regras · evidências · limitações</p></div></div><p class="referencia">06_avaliar.py · comparar por grupo, medida e denominador</p></div>
+  <aside class="notas">11h38–12h00. Executar 06_avaliar.py e comparar cenários em aula2.avaliacao_indicadores: referência limpa (oracle didático), leitura ingênua e tratamento escolhido. Especificar sempre grupo, medida, unidade e denominador. Ajustar um parâmetro por vez — mult_iqr, fator_mediana ou imputar — registrando a hipótese e o efeito, sem presumir melhora automática; restaurar os valores iniciais ao final e guardar o arquivo usado como evidência. A entrega é uma tabela de regras com evidência, o registro das alterações/exceções e a justificativa de quais dados podem ser publicados, exigem uso restrito ou devem ser rejeitados. Reservar os últimos minutos para as duplas apresentarem decisões.</aside>
+</section>
+
+<!-- 30 -->
+<section class="slide referencias" id="bibliografia" data-max-palavras="120">
+  <div class="conteudo"><h2 class="titulo">Referências</h2><div class="lista-referencias"><p>Kimball; Caserta. <em>The Data Warehouse ETL Toolkit.</em> Wiley, 2004.</p><p>GOV.UK · <a href="https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework">Government Data Quality Framework</a></p><p>McKinney · <a href="https://wesmckinney.com/book/data-cleaning.html">cap. 7 — preparação</a> · <a href="https://wesmckinney.com/book/data-wrangling.html">cap. 8 — integração</a></p><p>pandas · <a href="https://pandas.pydata.org/docs/user_guide/missing_data.html">Working with missing data</a></p><p>ONS · <a href="https://dados.ons.org.br/dataset/balanco-energia-subsistema">Balanço de Energia</a> · <a href="https://dados.ons.org.br/dataset/curva-carga">Curva de Carga</a></p></div></div>
+  <aside class="notas">Referências sustentam a exposição, sem citações literais inventadas. Dicionários e proveniência estão em playground/data/oficial; a página de cada dataset também os disponibiliza. McKinney e pandas são apoio à implementação, embora os scripts do playground usem psycopg e biblioteca padrão. Deixar o slide para consulta; sem encerramento de efeito nem resumo de resultados.</aside>
+</section>
+
+</main><script>window.PECEGE_DS='../../design-system';</script><script src="../../design-system/js/deck.js"></script></body></html>

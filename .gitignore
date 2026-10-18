@@ -1,3 +1,25 @@
+# Gerados localmente
 _site/
 __pycache__/
-.env
+.pytest_cache/
+**/qa/
+**/dist/*.pdf
+# Cópias nomeadas do build, idênticas a dist/index.html
+apresentacoes/*/dist/2*.html
+design-system/exemplos/dist/
+
+# Playground: estado local
+playground/.env
+playground/resultados/*
+!playground/resultados/.gitkeep
+playground/saida/*
+!playground/saida/.gitkeep
+
+# Material privado ou de trabalho
+*.eml
+Template ONS.pptx
+aulas_anteriores.jpeg
+apresentacoes/*/revisao-*.md
+
+# Clone antigo de publicação (substituído por este repositório)
+publicacao/

@@ -1,29 +1,39 @@
-# Pecege · ONS — Treinamento em Análise de Dados
+# Pecege–ONS · Treinamento em Análise de Dados — Analytics
 
 Materiais das aulas de Rodrigo Nicola: apresentações, preparação do ambiente e laboratório.
 
-**Site:** https://rmnicola.github.io/pecege-ons/
+**Site:** https://rmnicola.github.io/pecege-ons/ — publicado automaticamente a cada push em `main`.
 
 ## Estrutura
 
 ```
-curso.json              fonte única: dados do curso e lista de aulas
-aulas/<slug>/           arquivos publicados de cada aula (apresentação, preparacao.json)
-playground/             laboratório Docker usado nas aulas (gabarito/ incluído)
-site/estilo.css         design system das páginas (ver site/DESIGN.md)
-tools/gerar_site.py     gera _site/ a partir de curso.json (só biblioteca padrão)
-.github/workflows/      publica no GitHub Pages a cada push em main
+curso.json                    fonte única do site: curso e aulas
+apresentacoes/<data-tema>/    deck.html (fonte), dist/index.html (build), preparacao.json
+playground/                   laboratório Docker/PostgreSQL (gabarito/ incluído)
+design-system/                identidade Pecege–ONS dos slides e ferramenta de build
+site/                         design system das páginas do site (ver site/DESIGN.md)
+tools/gerar_site.py           gera _site/ a partir de curso.json
+.claude/skills/               skill de criação das apresentações
 ```
 
-## Adicionar uma aula
+## Fluxo de trabalho
 
-1. Crie `aulas/<AAAA-MM-DD-tema>/` com os arquivos da aula.
-2. Opcional: `aulas/<slug>/preparacao.json` gera a página de passo a passo em `aulas/<slug>/preparacao/` (passos com texto, comandos copiáveis e resultado esperado).
-3. Em `curso.json`, preencha a aula: `apresentacao` (arquivo HTML), `antes` (arquivos para baixar) e `laboratorio` (mostra o comando de clone).
-4. Uma aula sem `apresentacao` nem `antes` aparece como "em breve".
-5. Faça push em `main`: o site é publicado automaticamente.
+1. Trabalhe na aula em `apresentacoes/<data-tema>/` e gere o deck:
+   `node design-system/tools/deck.mjs apresentacoes/<data-tema>/deck.html`
+2. Registre a aula em `curso.json` com `"pasta"`, `"apresentacao": "dist/index.html"` e, enquanto estiver em andamento, `"rascunho": true`.
+3. Veja a prévia local, com rascunhos: `python3 tools/gerar_site.py --previa` e abra http://localhost:8000
+4. Para publicar, retire `"rascunho"` da aula, faça commit e push em `main`.
 
-Para ver localmente: `python tools/gerar_site.py` e abra `_site/index.html`. Senha das páginas: hash SHA-256 em `curso.json` (`senha_sha256`); a tela é só uma barreira visual, o repositório continua público.
+Aulas com `"rascunho": true` ficam fora do site publicado, mesmo que seus arquivos estejam no repositório. A senha das páginas (hash em `senha_sha256`) é só uma barreira visual: o repositório é público.
+
+Em `curso.json`, cada aula aceita `antes` (links ou arquivos para antes da aula) e `laboratorio` (mostra o comando de clone). Um `preparacao.json` na pasta da aula vira a página de passo a passo.
+
+## Referências internas
+
+- Skill de apresentações: [`.claude/skills/apresentacao-pecege-ons/SKILL.md`](.claude/skills/apresentacao-pecege-ons/SKILL.md)
+- Design system dos slides: [`design-system/README.md`](design-system/README.md) · galeria: `node design-system/tools/deck.mjs design-system/exemplos/exemplo.html`
+- Playground: [`playground/README.md`](playground/README.md)
+- Contexto e cronograma: [`.claude/skills/apresentacao-pecege-ons/references/curso.md`](.claude/skills/apresentacao-pecege-ons/references/curso.md)
 
 ## Reaproveitar em outra matéria
 

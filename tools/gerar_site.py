@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
 """Gera o site estático do curso a partir de curso.json.
 
-Saída em _site/: index.html com a lista de aulas e, para cada aula com
-material, aulas/<slug>/index.html com a apresentação, os arquivos de
-preparação e o comando do laboratório. Usa apenas a biblioteca padrão.
+Saída em _site/: index.html com a lista de aulas e, para cada aula
+publicável, aulas/<slug>/ com a página da aula, a apresentação (copiada de
+<pasta>/<apresentacao>) e a preparação (de <pasta>/preparacao.json).
+Aulas com "rascunho": true ficam fora do site publicado.
 
-    python tools/gerar_site.py
+    python tools/gerar_site.py            # gera _site/ como será publicado
+    python tools/gerar_site.py --previa   # inclui rascunhos e serve em http://localhost:8000
 """
 
 from __future__ import annotations
 
+import argparse
+import http.server
 import json
 import re
 import shutil
+from functools import partial
 from datetime import date
 from html import escape
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
+PREVIA = False  # --previa: inclui rascunhos
 SAIDA = RAIZ / "_site"
 MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
 FONTES = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
@@ -175,7 +181,11 @@ def saida(texto: str, titulo: str = "Saída esperada") -> str:
 
 
 def tem_material(aula: dict) -> bool:
-    return bool(aula.get("apresentacao") or aula.get("antes"))
+    return bool(aula.get("pasta") and (aula.get("apresentacao") or aula.get("antes")))
+
+
+def publicavel(aula: dict) -> bool:
+    return tem_material(aula) and (PREVIA or not aula.get("rascunho"))
 
 
 def gerar_indice(curso: dict) -> str:
@@ -183,8 +193,9 @@ def gerar_indice(curso: dict) -> str:
     for aula in curso["aulas"]:
         miolo = (f'<span class="data">{data_curta(aula["data"])}</span>'
                  f'<span><h3>{escape(aula["titulo"])}</h3><span class="sub">{escape(aula["subtitulo"])}</span></span>')
-        if tem_material(aula):
-            itens.append(f'<li class="aula"><a href="aulas/{aula["slug"]}/">{miolo}<span class="estado">abrir →</span></a></li>')
+        if publicavel(aula):
+            estado = "rascunho →" if aula.get("rascunho") else "abrir →"
+            itens.append(f'<li class="aula"><a href="aulas/{aula["slug"]}/">{miolo}<span class="estado">{estado}</span></a></li>')
         else:
             itens.append(f'<li class="aula"><div>{miolo}<span class="estado">em breve</span></div></li>')
     corpo = f"""<section class="secao">
@@ -210,7 +221,7 @@ def gerar_aula(curso: dict, aula: dict) -> str:
 </section>"""]
     if aula.get("apresentacao"):
         partes.append(f"""<section class="secao">
-<a class="cartao" href="{escape(aula['apresentacao'])}"><span><h3>Apresentação</h3><p>Abre no navegador · setas do teclado para navegar</p></span><span class="seta">→</span></a>
+<a class="cartao" href="apresentacao.html"><span><h3>Apresentação</h3><p>Abre no navegador · setas do teclado para navegar</p></span><span class="seta">→</span></a>
 </section>""")
     if aula.get("antes"):
         itens = "".join(
@@ -260,7 +271,20 @@ def gerar_preparacao(curso: dict, aula: dict, prep: dict) -> str:
     return pagina(curso, f"{prep['titulo']} · {aula['titulo']}", "\n".join(partes), "../../../")
 
 
+def servir(porta: int) -> None:
+    manipulador = partial(http.server.SimpleHTTPRequestHandler, directory=str(SAIDA))
+    with http.server.ThreadingHTTPServer(("127.0.0.1", porta), manipulador) as servidor:
+        print(f"prévia em http://localhost:{porta}/  (Ctrl+C para parar)")
+        servidor.serve_forever()
+
+
 def main() -> None:
+    global PREVIA
+    parser = argparse.ArgumentParser(description="Gera o site do curso em _site/.")
+    parser.add_argument("--previa", action="store_true", help="inclui rascunhos e serve o site localmente")
+    parser.add_argument("--porta", type=int, default=8000)
+    args = parser.parse_args()
+    PREVIA = args.previa
     curso = json.loads((RAIZ / "curso.json").read_text(encoding="utf-8"))
     if SAIDA.exists():
         shutil.rmtree(SAIDA)
@@ -269,21 +293,27 @@ def main() -> None:
     (SAIDA / ".nojekyll").touch()
     (SAIDA / "index.html").write_text(com_portao(gerar_indice(curso), curso), encoding="utf-8")
     for aula in curso["aulas"]:
-        if not tem_material(aula):
+        if not publicavel(aula):
             continue
-        origem = RAIZ / "aulas" / aula["slug"]
+        origem = RAIZ / aula["pasta"]
         destino = SAIDA / "aulas" / aula["slug"]
-        shutil.copytree(origem, destino)
-        prep_json = destino / "preparacao.json"
+        destino.mkdir(parents=True)
+        if aula.get("apresentacao"):
+            shutil.copy(origem / aula["apresentacao"], destino / "apresentacao.html")
+        for item in aula.get("antes", []):
+            if item.get("arquivo"):
+                shutil.copy(origem / item["arquivo"], destino / Path(item["arquivo"]).name)
+        prep_json = origem / "preparacao.json"
         if prep_json.exists():
             prep = json.loads(prep_json.read_text(encoding="utf-8"))
             (destino / "preparacao").mkdir()
             (destino / "preparacao" / "index.html").write_text(gerar_preparacao(curso, aula, prep), encoding="utf-8")
-            prep_json.unlink()
         for html in destino.rglob("*.html"):
             html.write_text(com_portao(html.read_text(encoding="utf-8"), curso), encoding="utf-8")
         (destino / "index.html").write_text(com_portao(gerar_aula(curso, aula), curso), encoding="utf-8")
     print(f"site gerado em {SAIDA}")
+    if PREVIA:
+        servir(args.porta)
 
 
 if __name__ == "__main__":

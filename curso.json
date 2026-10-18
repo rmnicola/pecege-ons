@@ -9,12 +9,13 @@
   "aulas": [
     {
       "slug": "2026-10-20-etl-i",
+      "pasta": "apresentacoes/2026-10-20-etl-fontes-integracao",
       "data": "2026-10-20",
       "horario": "09h–12h · Zoom",
       "titulo": "ETL e Limpeza de Dados I",
       "subtitulo": "Fontes e Integração",
       "resumo": "Extração de dados de carga elétrica (PostgreSQL) e de temperatura (API Open-Meteo), e como transformar esse fluxo em código reutilizável.",
-      "apresentacao": "apresentacao.html",
+      "apresentacao": "dist/index.html",
       "antes": [
         {
           "rotulo": "Preparação do ambiente",
@@ -26,10 +27,13 @@
     },
     {
       "slug": "2026-10-22-etl-ii",
+      "pasta": "apresentacoes/2026-10-22-etl-qualidade-padronizacao",
+      "rascunho": true,
       "data": "2026-10-22",
       "horario": "09h–12h · Zoom",
       "titulo": "ETL e Limpeza de Dados II",
-      "subtitulo": "Qualidade e Padronização"
+      "subtitulo": "Qualidade e Padronização",
+      "apresentacao": "dist/2026-10-22-etl-qualidade-padronizacao.html"
     },
     {
       "slug": "2026-10-29-storytelling",
