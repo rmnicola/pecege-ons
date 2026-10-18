@@ -66,7 +66,7 @@ html.liberado #portao { display: none; }
   setTimeout(() => campo.focus(), 0);
   portao.querySelector("form").addEventListener("submit", async ev => {
     ev.preventDefault();
-    const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(campo.value.trim()));
+    const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(campo.value.trim().toLowerCase()));
     const hash = [...new Uint8Array(bytes)].map(b => b.toString(16).padStart(2, "0")).join("");
     if (hash === ALVO) { try { localStorage.setItem(CHAVE, hash); } catch (e) {} liberar(); }
     else { portao.querySelector(".erro").textContent = "Senha incorreta."; campo.select(); }
