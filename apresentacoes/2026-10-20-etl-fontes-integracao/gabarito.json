@@ -1,0 +1,47 @@
+{
+  "titulo": "Gabarito do desafio",
+  "resumo": "Uma resposta para cada passo de `aula1/combinar.py`. Em cada bloco, a primeira linha é o título do passo no arquivo; `...` são as linhas que já estão lá; depois vem o código que entra no lugar do `None`.",
+  "passos": [
+    {
+      "titulo": "Passo 1. A carga",
+      "texto": [
+        "`pd.DataFrame` monta a tabela a partir da lista de dicionários; `rename` troca os nomes do banco pelos do resultado esperado. O banco entrega a carga como `Decimal`, e `astype(float)` a converte para número do pandas. Substitui a linha `carga = None`."
+      ],
+      "arquivo": "aula1/combinar.py",
+      "codigo": "# Passo 1. A carga\n...\nlinhas = extrair_carga(EVENTO)\ncarga = pd.DataFrame(linhas).rename(columns={\n    \"din_instante\": \"instante\", \"val_cargaenergiahomwmed\": \"carga_mwmed\"})\ncarga[\"carga_mwmed\"] = carga[\"carga_mwmed\"].astype(float)"
+    },
+    {
+      "titulo": "Passo 2. A temperatura",
+      "texto": [
+        "A Open-Meteo inclui o último dia: com `EVENTO`, cada cidade traria 192 horas, contra 168 da carga. `EVENTO_CLIMA` termina em 07/01 e entra na chamada. Cada resposta vira uma tabela com as três colunas; `pd.to_datetime` deixa o horário com o mesmo tipo do instante da carga. No fim, `pd.concat` empilha as quatro tabelas."
+      ],
+      "arquivo": "aula1/combinar.py",
+      "codigo": "# Passo 2. A temperatura\n...\nEVENTO_CLIMA = {\"inicio\": \"2025-01-01\", \"fim\": \"2025-01-07\"}\ntabelas = []\nfor subsistema, (cidade, lat, lon) in CIDADES.items():\n    resposta = extrair_clima(EVENTO_CLIMA, lat, lon)\n    tabela = pd.DataFrame({\n        \"id_subsistema\": subsistema,\n        \"instante\": pd.to_datetime(resposta[\"hourly\"][\"time\"]),\n        \"temperatura_c\": resposta[\"hourly\"][\"temperature_2m\"],\n    })\n    tabelas.append(tabela)\n\nclima = pd.concat(tabelas)"
+    },
+    {
+      "titulo": "Passo 3. Juntar",
+      "texto": [
+        "`merge` junta as duas tabelas pelas colunas que identificam a linha; `how=\"left\"` mantém todas as horas de carga. Substitui `dados = None`. Se o horário do clima não tiver sido convertido no passo 2, o `merge` para com o erro *You are trying to merge on datetime64[ns] and object columns*."
+      ],
+      "arquivo": "aula1/combinar.py",
+      "codigo": "# Passo 3. Juntar\n...\ndados = carga.merge(clima, on=[\"id_subsistema\", \"instante\"], how=\"left\")"
+    },
+    {
+      "titulo": "Passo 4. Conferir",
+      "texto": [
+        "Basta tirar o `#` das duas linhas. Mesmo sem o `EVENTO_CLIMA`, a contagem dá 672: a junção mantém as horas da carga e as de 08/01 do clima ficam de fora."
+      ],
+      "arquivo": "aula1/combinar.py",
+      "codigo": "# Passo 4. Conferir\n...\nprint(len(dados), \"linhas\")\nprint(dados[\"temperatura_c\"].isna().sum(), \"horas sem temperatura\")",
+      "saida": "672 linhas\n0 horas sem temperatura"
+    },
+    {
+      "titulo": "Passo 5. Gravar",
+      "texto": [
+        "Tire o `#` da linha. `index=False` evita uma coluna extra com o número da linha. O arquivo aparece em `saida/dados.csv`."
+      ],
+      "arquivo": "aula1/combinar.py",
+      "codigo": "# Passo 5. Gravar\n...\ndados.to_csv(\"saida/dados.csv\", index=False)"
+    }
+  ]
+}

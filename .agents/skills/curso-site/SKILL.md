@@ -48,7 +48,7 @@ Aula sem `pasta` aparece como "em breve". O CI não roda o build dos decks (prec
 
 ## Página de preparação
 
-Todo `apresentacoes/<pasta>/<nome>.json` vira a página de passo a passo `aulas/<slug>/<nome>/` (`preparacao.json` → `preparacao/`; `explorar-banco.json` → `explorar-banco/`). O professor prefere página com comandos copiáveis a PDF.
+Todo `apresentacoes/<pasta>/<nome>.json` vira a página de passo a passo `aulas/<slug>/<nome>/` (`preparacao.json` → `preparacao/`; `explorar-banco.json` → `explorar-banco/`). Uma página sem link no `curso.json` existe, mas não aparece no site: é o caso de `gabarito.json` → `gabarito/`, o passo a passo do desafio com as respostas, para o professor. Um passo pode ter `codigo` + `arquivo` (bloco de código com o nome do arquivo na barra). O professor prefere página com comandos copiáveis a PDF.
 
 ```jsonc
 {

@@ -13,29 +13,26 @@ from extrair_carga import extrair as extrair_carga  # noqa: E402
 from extrair_clima import CIDADES, extrair as extrair_clima  # noqa: E402
 
 EVENTO = {"inicio": "2025-01-01", "fim": "2025-01-08"}
-# Na Open-Meteo, end_date inclui o último dia: o mesmo período é 01 a 07.
+# A Open-Meteo inclui o último dia: o clima vai até 07/01
 EVENTO_CLIMA = {"inicio": "2025-01-01", "fim": "2025-01-07"}
 
 carga = pd.DataFrame(extrair_carga(EVENTO)).rename(columns={
     "din_instante": "instante", "val_cargaenergiahomwmed": "carga_mwmed"})
 carga["carga_mwmed"] = carga["carga_mwmed"].astype(float)
 
-partes = []
-for sub, (cidade, lat, lon) in CIDADES.items():
+tabelas = []
+for subsistema, (cidade, lat, lon) in CIDADES.items():
     resposta = extrair_clima(EVENTO_CLIMA, lat, lon)
-    partes.append(pd.DataFrame({
-        "id_subsistema": sub,
+    tabelas.append(pd.DataFrame({
+        "id_subsistema": subsistema,
         "instante": pd.to_datetime(resposta["hourly"]["time"]),
         "temperatura_c": resposta["hourly"]["temperature_2m"],
     }))
-clima = pd.concat(partes, ignore_index=True)
+clima = pd.concat(tabelas)
 
-dados = carga.merge(clima, on=["id_subsistema", "instante"],
-                    how="left", validate="one_to_one")
+dados = carga.merge(clima, on=["id_subsistema", "instante"], how="left")
 
-assert len(dados) == len(carga), "a junção mudou o número de linhas"
-assert dados["temperatura_c"].notna().all(), "há horas sem temperatura"
+print(len(dados), "linhas")
+print(dados["temperatura_c"].isna().sum(), "horas sem temperatura")
 
-dados = dados.sort_values(["id_subsistema", "instante"])
 dados.to_csv("saida/dados.csv", index=False)
-print(f"{len(dados)} linhas gravadas em saida/dados.csv")

@@ -329,18 +329,6 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
   #desafio td { padding:8px 24px; color:var(--cinza-escuro); border-top:1px solid var(--cinza-claro); }
   #desafio td:nth-child(n+3), #desafio th:nth-child(n+3) { text-align:right; }
   #desafio .reticencias td { color:var(--cinza-texto); }
-  #kata-pecas .encaixes { display:flex; flex-direction:column; margin:auto 0; }
-  #kata-pecas .encaixe-barra { display:flex; justify-content:center; align-items:baseline; gap:14px; padding:26px; background:var(--cinza-escuro); color:var(--branco); border-radius:14px; }
-  #kata-pecas .encaixe-barra strong { font:bold 40px var(--f-codigo); }
-  #kata-pecas .encaixe-barra code { font:32px var(--f-codigo); color:var(--cinza-claro); }
-  #kata-pecas .encaixe-slots { display:grid; grid-template-columns:repeat(3,1fr); gap:48px; padding:0 30px; }
-  #kata-pecas .slot { position:relative; display:flex; flex-direction:column; align-items:center; gap:10px; padding-top:56px; }
-  #kata-pecas .slot::before { content:""; position:absolute; top:0; left:50%; height:44px; border-left:4px solid var(--vermelho-marca); }
-  #kata-pecas .contrato { font:28px var(--f-codigo); color:var(--cinza-escuro); }
-  #kata-pecas .soquete { position:relative; width:100%; height:112px; border:3px dashed var(--cinza-texto); border-radius:16px; }
-  #kata-pecas .soquete .peca { position:absolute; inset:10px; display:grid; place-items:center; background:var(--branco); border:2px solid var(--cinza-escuro); border-radius:10px; font:bold 30px var(--f-codigo); color:var(--cinza-escuro); }
-  #kata-pecas .soquete .peca.nova { border-color:var(--vermelho-marca); color:var(--vermelho-marca); }
-  #kata-pecas .troca { font-size:28px; color:var(--vermelho-marca); }
   @media (prefers-reduced-motion:reduce) { #mundo-notebooks .notebook, #crisp-revisao .crisp-etapa, #definicao-etl .etl-letra, #etl1 .passo { transition:none !important; } }
   #esquema-banco .conteudo { gap:34px; }
   #esquema-banco .tabela-banco { background:var(--branco); border:2px solid var(--cinza-claro); border-radius:14px; overflow:hidden; }
@@ -577,7 +565,7 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
           <thead><tr><th>id_subsistema</th><th>instante</th><th>carga_mwmed</th><th>temperatura_c</th></tr></thead>
           <tbody>
             <tr><td>N</td><td>2025-01-01 00:00:00</td><td>7097.75099999</td><td>24.0</td></tr>
-            <tr><td>N</td><td>2025-01-01 01:00:00</td><td>7053.337</td><td>23.9</td></tr>
+            <tr><td>NE</td><td>2025-01-01 00:00:00</td><td>12251.182</td><td>26.4</td></tr>
             <tr class="reticencias"><td>…</td><td>…</td><td>…</td><td>…</td></tr>
           </tbody>
         </table>
@@ -594,36 +582,6 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
 </section>
 <section class="slide" id="kata-juntar" data-modelo="kata-codigo" data-max-palavras="120">
   <div class="conteudo"><h2 class="titulo">Solução · juntar e gravar</h2><div class="kata-codigo" data-codigo="solucao2" data-arquivo="combinar.py" data-linguagem="Python"></div></div>
-</section>
-<section class="slide" id="kata-pecas" data-modelo="pipeline-encaixes" data-max-palavras="50">
-  <div class="conteudo"><h2 class="titulo">Peças que se encaixam</h2>
-    <div class="encaixes">
-      <div class="encaixe-barra"><strong>executar</strong><code>(fontes, destino, período)</code></div>
-      <div class="encaixe-slots">
-        <div class="slot">
-          <span class="rotulo-termo">Fonte</span><code class="contrato">extrair(inicio, fim)</code>
-          <div class="soquete"><div class="peca">CargaPostgres</div></div>
-        </div>
-        <div class="slot">
-          <span class="rotulo-termo">Fonte</span><code class="contrato">extrair(inicio, fim)</code>
-          <div class="soquete"><div class="peca passo" data-passo="0" data-sai="1">ClimaOpenMeteo</div><div class="peca nova passo" data-passo="1">ClimaArquivo</div></div>
-          <p class="troca passo" data-passo="1">respostas salvas, sem internet</p>
-        </div>
-        <div class="slot">
-          <span class="rotulo-termo">Destino</span><code class="contrato">gravar(dados)</code>
-          <div class="soquete"><div class="peca passo" data-passo="0" data-sai="2">CsvLocal</div><div class="peca nova passo" data-passo="2">ParquetS3</div></div>
-          <p class="troca passo" data-passo="2">próxima aula</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<section class="slide" id="kata-pipeline" data-modelo="kata-codigo" data-max-palavras="120">
-  <div class="conteudo"><h2 class="titulo">O pipeline só conhece contratos</h2><div class="kata-codigo" data-codigo="pipeline" data-arquivo="pipeline.py" data-linguagem="Python"></div></div>
-</section>
-<section class="slide" id="kata-montar" data-modelo="kata-codigo" data-max-palavras="120">
-  <div class="conteudo"><h2 class="titulo">Trocar a peça, não o pipeline</h2><div class="kata-codigo" data-codigo="montar" data-arquivo="executar.py" data-linguagem="Python"></div>
-  </div>
 </section>
 <section class="slide encerramento sem-numero" id="encerramento">
   <div class="conteudo"><h2 class="titulo">Obrigado!</h2><p class="contato">Rodrigo Nicola</p></div>
@@ -972,84 +930,43 @@ sub = df.groupby("id_subsistema")
 print(sub["carga_mwmed"].mean())
 print(sub["temperatura_c"].mean())`,
     rodar: `python aula1/combinar.py`,
-    solucao1: `# end_date inclui o último dia: o mesmo período é 01 a 07
+    solucao1: `# A Open-Meteo inclui o último dia: o clima vai até 07/01
 EVENTO_CLIMA = {"inicio": "2025-01-01", "fim": "2025-01-07"}
 
 carga = pd.DataFrame(extrair_carga(EVENTO)).rename(columns={
     "din_instante": "instante", "val_cargaenergiahomwmed": "carga_mwmed"})
 carga["carga_mwmed"] = carga["carga_mwmed"].astype(float)
 
-partes = []
-for sub, (cidade, lat, lon) in CIDADES.items():
+tabelas = []
+for subsistema, (cidade, lat, lon) in CIDADES.items():
     resposta = extrair_clima(EVENTO_CLIMA, lat, lon)
-    partes.append(pd.DataFrame({
-        "id_subsistema": sub,
+    tabelas.append(pd.DataFrame({
+        "id_subsistema": subsistema,
         "instante": pd.to_datetime(resposta["hourly"]["time"]),
         "temperatura_c": resposta["hourly"]["temperature_2m"],
     }))
-clima = pd.concat(partes, ignore_index=True)`,
-    solucao2: `dados = carga.merge(clima, on=["id_subsistema", "instante"],
-                    how="left", validate="one_to_one")
+clima = pd.concat(tabelas)`,
+    solucao2: `dados = carga.merge(clima, on=["id_subsistema", "instante"], how="left")
 
-assert len(dados) == len(carga), "a junção mudou o número de linhas"
-assert dados["temperatura_c"].notna().all(), "há horas sem temperatura"
+print(len(dados), "linhas")
+print(dados["temperatura_c"].isna().sum(), "horas sem temperatura")
 
-dados.sort_values(["id_subsistema", "instante"]).to_csv(
-    "saida/dados.csv", index=False)`,
-    pipeline: `class Fonte(Protocol):
-    nome: str
-    def extrair(self, inicio, fim) -> pd.DataFrame: ...
-
-class Destino(Protocol):
-    def gravar(self, dados: pd.DataFrame) -> None: ...
-
-def executar(fontes, destino, inicio, fim):
-    dados = None
-    for fonte in fontes:
-        tabela = fonte.extrair(inicio, fim)
-        tabela = tabela.rename(columns={"valor": fonte.nome})
-        dados = tabela if dados is None else dados.merge(
-            tabela, on=CHAVE, how="left", validate="one_to_one")
-    destino.gravar(dados.sort_values(CHAVE))`,
-    montar: `from destinos import CsvLocal
-from fontes import CargaPostgres, ClimaArquivo, ClimaOpenMeteo
-from pipeline import executar
-
-clima = ClimaOpenMeteo()          # ou ClimaArquivo(".lab/open-meteo")
-
-executar(
-    fontes=[CargaPostgres(), clima],
-    destino=CsvLocal("saida/dados.csv"),
-    inicio="2025-01-01",
-    fim="2025-01-08",
-)`
+dados.to_csv("saida/dados.csv", index=False)`
   };
   // Explicações da interrogação (?) para consulta depois da aula; linhas contadas a partir de 0.
   const KATA_AJUDAS = {
     solucao1: [
       { inicio:0, fim:1, texto:'A Open-Meteo inclui end_date. Para cobrir o mesmo período da carga, de 01/01 até antes de 08/01, o clima vai até 07/01. Sem isso, cada cidade traz 192 horas e a carga, 168.' },
-      { inicio:3, fim:4, texto:'pd.DataFrame monta a tabela a partir da lista de dicionários do psycopg. rename troca os nomes do banco pelos nomes do formato esperado.' },
-      { inicio:5, fim:5, texto:'O PostgreSQL entrega numeric como Decimal. astype(float) converte para o número do pandas, que o CSV e as contas esperam.' },
+      { inicio:3, fim:4, texto:'pd.DataFrame monta a tabela a partir da lista de dicionários. rename troca os nomes do banco pelos nomes do resultado esperado.' },
+      { inicio:5, fim:5, texto:'O PostgreSQL entrega a carga como Decimal. astype(float) converte para o número do pandas.' },
       { inicio:7, fim:9, texto:'Uma chamada por cidade: CIDADES associa cada subsistema às coordenadas da cidade escolhida para representá-lo.' },
       { inicio:10, fim:14, texto:'Cada resposta vira uma tabela com o subsistema, o instante e a temperatura. pd.to_datetime converte o horário, que chega como texto, para o mesmo tipo do instante da carga.' },
-      { inicio:15, fim:15, texto:'pd.concat empilha as quatro tabelas de clima; ignore_index refaz a numeração das linhas.' }
+      { inicio:15, fim:15, texto:'pd.concat empilha as quatro tabelas, uma embaixo da outra.' }
     ],
     solucao2: [
-      { inicio:0, fim:1, texto:'merge junta pela chave subsistema + instante. how="left" mantém todas as horas de carga; validate="one_to_one" falha se a chave se repetir em algum dos lados.' },
-      { inicio:3, fim:4, texto:'Conferências antes de gravar: a junção não pode criar nem perder linhas, e toda hora de carga precisa ter temperatura. Se algo falhar, o script para.' },
-      { inicio:6, fim:7, texto:'Ordena por subsistema e hora e grava o CSV. index=False evita uma coluna extra com o número da linha.' }
-    ],
-    pipeline: [
-      { inicio:0, fim:2, texto:'Fonte é um contrato: qualquer objeto com nome e extrair(inicio, fim) que devolva id_subsistema, instante e valor serve. Protocol só descreve o formato; ninguém precisa herdar dele.' },
-      { inicio:4, fim:5, texto:'Destino é qualquer objeto com gravar(dados). Hoje, CsvLocal; na próxima aula, ParquetS3, que grava Parquet num armazenamento S3.' },
-      { inicio:7, fim:8, texto:'executar recebe as peças prontas, de fora. Ele não sabe se os dados vêm de um banco, de uma API ou de um arquivo.' },
-      { inicio:9, fim:13, texto:'Para cada fonte: extrai o período, renomeia valor para o nome da fonte e junta pela chave, com a mesma validação da solução.' },
-      { inicio:14, fim:14, texto:'Entrega o resultado ao destino, seja ele qual for.' }
-    ],
-    montar: [
-      { inicio:0, fim:2, texto:'Só aqui o código conhece as implementações concretas: este é o ponto de montagem do pipeline.' },
-      { inicio:4, fim:4, texto:'Trocar a fonte de clima é trocar esta linha. ClimaArquivo lê respostas salvas da Open-Meteo e funciona sem internet.' },
-      { inicio:6, fim:11, texto:'As peças entram como argumentos. O período usa fim exclusivo; cada fonte cuida das particularidades da sua origem, como o end_date inclusivo da Open-Meteo.' }
+      { inicio:0, fim:0, texto:'merge junta pelas colunas id_subsistema e instante. how="left" mantém todas as horas de carga.' },
+      { inicio:2, fim:3, texto:'Conferência antes de gravar: o certo é 672 linhas (4 subsistemas × 168 horas) e 0 horas sem temperatura.' },
+      { inicio:5, fim:5, texto:'Grava o CSV. index=False evita uma coluna extra com o número da linha.' }
     ]
   };
   document.querySelectorAll('.kata-codigo').forEach(alvo => {

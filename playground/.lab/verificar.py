@@ -62,7 +62,6 @@ def saida():
 
 conferir("PostgreSQL", postgres)
 conferir("Open-Meteo", clima("https://archive-api.open-meteo.com/v1/archive"))
-conferir("API de clima local", clima(os.environ["CLIMA_URL"]))
 conferir("armazenamento S3", armazenamento)
 conferir("pasta saida/", saida)
 

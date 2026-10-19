@@ -1,16 +1,12 @@
-"""Fontes da aula 2: os mesmos contratos da aula 1, agora com dados que precisam de correção.
-
-Cada fonte devolve os dados como chegam (brutos), sem corrigir nada:
-id_subsistema, instante e valor, mais as colunas de contexto que a origem informa.
-"""
+"""Funções prontas da aula 2: não precisa mexer aqui."""
 
 import os
-from datetime import date, timedelta
 
+import boto3
 import httpx
 import pandas as pd
 import psycopg
-from psycopg.rows import dict_row
+from botocore.config import Config
 
 CIDADES = {
     "N": ("Belém", -1.46, -48.49),
@@ -20,44 +16,52 @@ CIDADES = {
 }
 
 
-class CargaPostgres:
-    """Cópia de laboratório da Curva de Carga: todas as colunas chegam como texto."""
-    nome = "carga_mwmed"
-    SQL = """SELECT id_subsistema, din_instante AS instante,
-                    val_cargaenergiahomwmed AS valor
-             FROM laboratorio.curva_horaria
-             WHERE din_instante >= %(inicio)s AND din_instante < %(fim)s"""
-
-    def extrair(self, inicio, fim):
-        with psycopg.connect(os.environ["PG_DSN"], row_factory=dict_row) as conexao:
-            linhas = conexao.execute(self.SQL, {"inicio": inicio, "fim": fim}).fetchall()
-        return pd.DataFrame(linhas)
+def ler_carga():
+    """A carga da cópia de laboratório, de 01 a 07/01/2025. A carga chega como texto."""
+    with psycopg.connect(os.environ["PG_DSN"]) as conexao:
+        linhas = conexao.execute(
+            "SELECT id_subsistema, din_instante, val_cargaenergiahomwmed "
+            "FROM laboratorio.curva_horaria").fetchall()
+    carga = pd.DataFrame(linhas, columns=["id_subsistema", "instante", "carga_mwmed"])
+    carga["instante"] = pd.to_datetime(carga["instante"])
+    return carga
 
 
-class ClimaApi:
-    """API de clima no formato da Open-Meteo. Por padrão, a API local do playground."""
-    nome = "temperatura_c"
+def ler_clima():
+    """A temperatura da Open-Meteo, como na aula 1, de 01 a 07/01/2025."""
+    tabelas = []
+    for subsistema, (cidade, lat, lon) in CIDADES.items():
+        resposta = httpx.get("https://archive-api.open-meteo.com/v1/archive", params={
+            "latitude": lat, "longitude": lon,
+            "start_date": "2025-01-01", "end_date": "2025-01-07",
+            "hourly": "temperature_2m", "timezone": "America/Sao_Paulo",
+        }, timeout=30.0).json()
+        tabelas.append(pd.DataFrame({
+            "id_subsistema": subsistema,
+            "instante": pd.to_datetime(resposta["hourly"]["time"]),
+            "temperatura_c": resposta["hourly"]["temperature_2m"],
+        }))
+    return pd.concat(tabelas)
 
-    def __init__(self, url=None, cidades=CIDADES):
-        self.url = url or os.environ["CLIMA_URL"]
-        self.cidades = cidades
 
-    def extrair(self, inicio, fim):
-        # O contrato usa fim exclusivo; a API inclui end_date.
-        ultimo_dia = (date.fromisoformat(fim) - timedelta(days=1)).isoformat()
-        partes = []
-        for sub, (_, lat, lon) in self.cidades.items():
-            resposta = httpx.get(self.url, params={
-                "latitude": lat, "longitude": lon,
-                "start_date": inicio, "end_date": ultimo_dia,
-                "hourly": "temperature_2m", "timezone": "America/Sao_Paulo",
-            }, timeout=30.0)
-            resposta.raise_for_status()
-            dados = resposta.json()
-            partes.append(pd.DataFrame({
-                "id_subsistema": sub,
-                "instante": dados["hourly"]["time"],
-                "valor": dados["hourly"]["temperature_2m"],
-                "unidade": dados["hourly_units"]["temperature_2m"],
-            }))
-        return pd.concat(partes, ignore_index=True)
+def completar_horas(tabela):
+    """Devolve a tabela com todas as horas de 01 a 07/01 para os quatro subsistemas.
+
+    As horas que não vieram aparecem com a carga vazia.
+    """
+    horas = pd.date_range("2025-01-01 00:00", "2025-01-07 23:00", freq="h")
+    grade = pd.DataFrame([(s, h) for s in ["N", "NE", "S", "SE"] for h in horas],
+                         columns=["id_subsistema", "instante"])
+    return grade.merge(tabela, on=["id_subsistema", "instante"], how="left")
+
+
+def enviar_para_s3(arquivo, chave):
+    """Envia um arquivo para o bucket da aula no armazenamento S3 (RustFS)."""
+    s3 = boto3.client(
+        "s3", endpoint_url=os.environ["S3_ENDPOINT"],
+        aws_access_key_id=os.environ["S3_ACCESS_KEY"],
+        aws_secret_access_key=os.environ["S3_SECRET_KEY"],
+        region_name="us-east-1", config=Config(s3={"addressing_style": "path"}),
+    )
+    s3.upload_file(arquivo, os.environ["S3_BUCKET"], chave)
+    print(f"enviado para s3://{os.environ['S3_BUCKET']}/{chave}")

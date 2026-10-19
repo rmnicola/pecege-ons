@@ -1,0 +1,69 @@
+{
+  "titulo": "Gabarito do desafio",
+  "resumo": "Uma resposta para cada passo de `aula2/limpar.py`. Em cada bloco, a primeira linha é o título do passo no arquivo; `...` são as linhas que já estão lá; depois vem a linha marcada com `# troque`, já corrigida. A lista das falhas está em `.lab/gabarito/aula2/defeitos.md`.",
+  "passos": [
+    {
+      "titulo": "Passo 1. Texto despadronizado",
+      "texto": [
+        "Quatro códigos foram digitados de outro jeito: `\" s \"`, `\"se\"`, `\"Ne \"` e `\" N\"`. `str.strip` tira os espaços e `str.upper` passa para maiúsculas."
+      ],
+      "arquivo": "aula2/limpar.py",
+      "codigo": "# Passo 1. Texto despadronizado\n...\ncarga[\"id_subsistema\"] = carga[\"id_subsistema\"].str.strip().str.upper()",
+      "saida": "Passo 1, códigos: ['N' 'NE' 'S' 'SE']"
+    },
+    {
+      "titulo": "Passo 2. Formato errado",
+      "texto": [
+        "Quatro números usam vírgula. Primeiro a vírgula vira ponto; depois `pd.to_numeric` converte o texto. Com `errors=\"coerce\"`, as células vazias viram vazio de verdade (NaN), que o passo 6 preenche."
+      ],
+      "arquivo": "aula2/limpar.py",
+      "codigo": "# Passo 2. Formato errado\n...\ncarga[\"carga_mwmed\"] = pd.to_numeric(carga[\"carga_mwmed\"].str.replace(\",\", \".\"), errors=\"coerce\")",
+      "saida": "Passo 2, tipo da carga: float64"
+    },
+    {
+      "titulo": "Passo 3. Duplicidade",
+      "texto": [
+        "Três linhas vieram repetidas, idênticas. `drop_duplicates` deixa uma de cada."
+      ],
+      "arquivo": "aula2/limpar.py",
+      "codigo": "# Passo 3. Duplicidade\n...\ncarga = carga.drop_duplicates()",
+      "saida": "Passo 3, linhas repetidas: 0"
+    },
+    {
+      "titulo": "Passo 4. Outlier",
+      "texto": [
+        "O z-score diz quantos desvios-padrão cada carga está longe da média. As três cargas com erro ficam entre 4,9 e 10,4; a maior carga normal fica em 1,96. `where` mantém as cargas com |z| até 3 e esvazia as outras, que são preenchidas no passo 5."
+      ],
+      "arquivo": "aula2/limpar.py",
+      "codigo": "# Passo 4. Outlier\n...\nz = (carga[\"carga_mwmed\"] - carga[\"carga_mwmed\"].mean()) / carga[\"carga_mwmed\"].std()\ncarga[\"carga_mwmed\"] = carga[\"carga_mwmed\"].where(z.abs() <= 3)",
+      "saida": "Passo 4, maior carga por subsistema:\nid_subsistema\nN      8326.010\nNE    15825.672\nS     17355.435\nSE    51471.444"
+    },
+    {
+      "titulo": "Passo 5. Dados faltantes",
+      "texto": [
+        "Três horas não vieram: `completar_horas` cria todas as horas, com a carga vazia nas que faltavam. Depois, a marca vem antes de preencher: `isna` diz quais cargas estão vazias, e `interpolate` preenche cada uma com um valor entre a hora anterior e a seguinte. São 9 horas: 3 células vazias, 3 outliers e 3 que não vieram."
+      ],
+      "arquivo": "aula2/limpar.py",
+      "codigo": "# Passo 5. Dados faltantes\n...\ncarga = completar_horas(carga)\n...\ncarga[\"carga_imputada\"] = carga[\"carga_mwmed\"].isna()\ncarga[\"carga_mwmed\"] = carga[\"carga_mwmed\"].interpolate()",
+      "saida": "Passo 5, horas por subsistema:\nid_subsistema\nN     168\nNE    168\nS     168\nSE    168\nPasso 5, cargas vazias: 0\nPasso 5, horas preenchidas: 9"
+    },
+    {
+      "titulo": "Passo 6. Juntar e gravar",
+      "texto": [
+        "Basta tirar o `#` das cinco linhas. A temperatura vem da Open-Meteo, como na aula 1."
+      ],
+      "arquivo": "aula2/limpar.py",
+      "codigo": "# Passo 6. Juntar e gravar\n...\nclima = ler_clima()\ndados = carga.merge(clima, on=[\"id_subsistema\", \"instante\"], how=\"left\")\nprint(len(dados), \"linhas\")\nprint(dados.isna().sum())\ndados.to_csv(\"saida/dados_limpos.csv\", index=False)",
+      "saida": "672 linhas\nid_subsistema     0\ninstante          0\ncarga_mwmed       0\ncarga_imputada    0\ntemperatura_c     0"
+    },
+    {
+      "titulo": "Passo 7. Carregar no S3",
+      "texto": [
+        "Basta tirar o `#` das duas linhas. O Parquet guarda os tipos das colunas; `enviar_para_s3` está em `aula2/fontes.py`. O objeto aparece no bucket `aula2` do console do RustFS."
+      ],
+      "arquivo": "aula2/limpar.py",
+      "codigo": "# Passo 7 (parte 2). Carregar no armazenamento S3\n...\ndados.to_parquet(\"saida/dados_limpos.parquet\", index=False)\nenviar_para_s3(\"saida/dados_limpos.parquet\", \"carga_clima/dados.parquet\")",
+      "saida": "enviado para s3://aula2/carga_clima/dados.parquet"
+    }
+  ]
+}

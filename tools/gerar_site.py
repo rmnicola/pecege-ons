@@ -191,6 +191,15 @@ def comando(texto: str, titulo: str = "") -> str:
             f'</figcaption><pre><code>{realcar_shell(texto)}</code></pre></figure>')
 
 
+def codigo(texto: str, arquivo: str) -> str:
+    """Bloco de código com o arquivo na barra; comentários e "..." (o que já está no arquivo) esmaecidos."""
+    linhas = "\n".join(f'<span class="sx-com">{escape(l)}</span>' if l.strip() == "..." or l.lstrip().startswith("#") else escape(l)
+                       for l in texto.split("\n"))
+    return (f'<figure class="codigo"><figcaption class="codigo-barra"><span class="codigo-titulo">{escape(arquivo)}</span>'
+            f'<button class="copiar" type="button" aria-label="Copiar código" title="Copiar">{ICONE_COPIAR}</button>'
+            f'</figcaption><pre><code>{linhas}</code></pre></figure>')
+
+
 def saida(texto: str, titulo: str = "Saída esperada") -> str:
     corpo = re.sub(r"\[OK\]", '<span class="sx-ok">[OK]</span>', escape(texto))
     return (f'<figure class="codigo saida"><figcaption class="codigo-barra"><span class="codigo-titulo">{escape(titulo)}</span>'
@@ -288,6 +297,8 @@ def gerar_preparacao(curso: dict, aula: dict, prep: dict) -> str:
             miolo.append(f"<p>{inline(textos[0])}</p>")
         if passo.get("comandos"):
             miolo.append(comando(passo["comandos"]))
+        if passo.get("codigo"):
+            miolo.append(codigo(passo["codigo"], passo.get("arquivo", "")))
         if passo.get("saida"):
             miolo.append(saida(passo["saida"]))
         miolo += [f"<p>{inline(t)}</p>" for t in passo.get("depois", [])]

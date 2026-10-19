@@ -12,8 +12,8 @@ CREATE TABLE oficial.curva_horaria (
 COPY oficial.curva_horaria FROM '/docker-entrypoint-initdb.d/curva_oficial.csv'
     WITH (FORMAT csv, DELIMITER ';', HEADER);
 
--- Aula 2: cópia didática do mesmo recorte, toda em texto e com defeitos de propósito.
--- Os defeitos não são da base do ONS (lista em .lab/gabarito/aula2/defeitos.md).
+-- Aula 2: cópia didática do mesmo recorte, toda em texto, com seis tipos de falha
+-- inseridos de propósito. Não são defeitos da base do ONS (lista em .lab/gabarito/aula2/defeitos.md).
 CREATE SCHEMA laboratorio;
 CREATE TABLE laboratorio.curva_horaria (
     id_subsistema text,

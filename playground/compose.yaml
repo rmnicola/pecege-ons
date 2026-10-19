@@ -4,7 +4,6 @@ name: pecege-ons-etl
 
 services:
   # A máquina do aluno: o VS Code se conecta a ela e o código roda aqui.
-  # Também serve a API de clima local da aula 2 em localhost:8080.
   playground:
     build:
       context: ./.lab
@@ -14,14 +13,13 @@ services:
     image: pecege-ons-playground:local
     hostname: playground
     working_dir: /work
-    command: ["python", ".lab/api_clima.py"]
+    command: ["sleep", "infinity"]
     environment:
       PG_DSN: postgresql://ons_lab:ons_lab@banco:5432/curva
       PGHOST: banco
       PGUSER: ons_lab
       PGPASSWORD: ons_lab
       PGDATABASE: curva
-      CLIMA_URL: http://localhost:8080/v1/archive
       S3_ENDPOINT: http://rustfs:9000
       S3_ACCESS_KEY: ons_lab
       S3_SECRET_KEY: ons_lab_s3
@@ -31,10 +29,6 @@ services:
     depends_on:
       banco: {condition: service_healthy}
       rustfs: {condition: service_healthy}
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/saude')"]
-      interval: 2s
-      retries: 30
 
   # Fonte da carga. Na primeira subida, roda init.sql e carrega os CSVs da pasta.
   banco:
