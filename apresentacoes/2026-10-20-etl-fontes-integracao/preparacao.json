@@ -6,7 +6,7 @@
     {
       "titulo": "Conecte o VS Code à máquina remota",
       "texto": [
-        "No VS Code do seu computador, instale a extensão **Remote - SSH** (Microsoft).",
+        "No VS Code do seu computador, instale as extensões **Remote - SSH** e **Dev Containers** (Microsoft).",
         "Abra a paleta de comandos (`F1`), escolha **Remote-SSH: Connect to Host…** e informe o acesso da sua máquina na nuvem.",
         "Abra um terminal no VS Code (**Terminal → New Terminal**). Os próximos comandos são colados nele."
       ]
@@ -29,19 +29,30 @@
     {
       "titulo": "Baixe o material",
       "comandos": "git clone https://github.com/rmnicola/pecege-ons.git\ncd pecege-ons/playground",
-      "depois": [
-        "No VS Code, use **File → Open Folder…** e abra a pasta `pecege-ons/playground`."
-      ]
+      "depois": []
     },
     {
       "titulo": "Prepare o laboratório",
       "texto": [
-        "O script faz tudo: constrói o ambiente Python, sobe os bancos, carrega os dados e verifica a conexão com o banco e com a API. Na primeira vez, baixa cerca de 1 GB."
+        "O script faz tudo: atualiza o material, monta o playground (a máquina onde o código da aula roda), sobe o banco e verifica a conexão com o banco e com a API. Na primeira vez, baixa cerca de 1 GB. Ele recomeça o laboratório do zero a cada execução; seus arquivos não são apagados."
       ],
       "comandos": "./preparar.sh",
-      "saida": "[OK] bibliotecas: psycopg, httpx e pandas disponiveis\n[OK] PostgreSQL: oficial.curva_horaria com … linhas\n[OK] Open-Meteo: 24 horas recebidas para um dia\n[OK] pasta saida/: gravacao permitida\n\nTudo pronto para trabalhar.",
+      "saida": "[OK] PostgreSQL: oficial.curva_horaria com 672 linhas\n[OK] Open-Meteo: 24 horas recebidas para um dia\n[OK] API de clima local: 24 horas recebidas para um dia\n[OK] armazenamento S3: bucket aula2 criado no RustFS\n[OK] pasta saida/: gravação permitida\n\nTudo pronto para trabalhar.",
       "depois": [
-        "Pronto. Você pode desligar a máquina; nada precisa ficar rodando até a aula. Se algo falhar, o script diz o quê: veja a lista abaixo e rode-o de novo."
+        "Se algo falhar, o script diz o quê: veja a lista abaixo e rode-o de novo."
+      ]
+    },
+    {
+      "titulo": "Entre no playground",
+      "texto": [
+        "O código da aula roda dentro do playground. Entre por um dos dois caminhos:",
+        "**Pelo terminal:** `docker compose exec playground bash`.",
+        "**Pelo VS Code:** paleta de comandos (`F1`) → **Dev Containers: Attach to Running Container…** → `pecege-ons-etl-playground-1`. Na janela nova, **File → Open Folder…** → `/work` e **Terminal → New Terminal**."
+      ],
+      "comandos": "python aula1/extrair_carga.py",
+      "saida": "672 linhas\n…",
+      "depois": [
+        "Pronto. Você pode desligar a máquina; nada precisa ficar rodando até a aula."
       ]
     }
   ],
@@ -65,10 +76,6 @@
     [
       "`[FALHA] pasta saida/`",
       "Apague o arquivo `.env` da pasta `playground` e rode `./preparar.sh` de novo."
-    ],
-    [
-      "`[FALHA] bibliotecas`",
-      "Rode `./preparar.sh` de novo; ele reconstrói a imagem."
     ]
   ],
   "fechamento": "Se o problema continuar, anote o comando e a mensagem completa e traga para o início da aula: há um tempo reservado para resolver o ambiente.",

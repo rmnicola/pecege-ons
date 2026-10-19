@@ -1,0 +1,83 @@
+{
+  "titulo": "Explorar o banco",
+  "resumo": "Roteiro para explorar, no terminal, o banco PostgreSQL da aula: um comando por vez, com a saída esperada.",
+  "passos": [
+    {
+      "titulo": "Entre no banco",
+      "texto": [
+        "Dentro do playground (`docker compose exec playground bash` ou pelo VS Code), abra o cliente do PostgreSQL. A conexão já vem configurada: não precisa de senha."
+      ],
+      "comandos": "psql",
+      "depois": [
+        "O prompt muda para `curva=>`. Os comandos que começam com `\\` são do psql; os outros são SQL e terminam com `;`."
+      ]
+    },
+    {
+      "titulo": "Onde estou",
+      "comandos": "\\conninfo",
+      "saida": "You are connected to database \"curva\" as user \"ons_lab\" on host \"banco\" … at port \"5432\"."
+    },
+    {
+      "titulo": "Que schemas existem",
+      "texto": [
+        "Um schema agrupa tabelas dentro de um banco, como uma pasta."
+      ],
+      "comandos": "\\dn",
+      "saida": "    Name     |       Owner\n-------------+-------------------\n laboratorio | ons_lab\n meta        | ons_lab\n oficial     | ons_lab\n public      | pg_database_owner",
+      "depois": [
+        "`oficial` guarda o recorte da Curva de Carga do ONS; `meta`, de onde ele veio. `public` é o schema padrão do PostgreSQL, vazio aqui."
+      ]
+    },
+    {
+      "titulo": "Que tabelas há num schema",
+      "comandos": "\\dt oficial.*",
+      "saida": " Schema  |     Name      | Type  |  Owner\n---------+---------------+-------+---------\n oficial | curva_horaria | table | ons_lab"
+    },
+    {
+      "titulo": "Como é a tabela",
+      "comandos": "\\d oficial.curva_horaria",
+      "saida": "         Column          |            Type             | Collation | Nullable | Default\n-------------------------+-----------------------------+-----------+----------+---------\n id_subsistema           | text                        |           | not null |\n nom_subsistema          | text                        |           |          |\n din_instante            | timestamp without time zone |           | not null |\n val_cargaenergiahomwmed | numeric                     |           |          |\nIndexes:\n    \"curva_horaria_pkey\" PRIMARY KEY, btree (id_subsistema, din_instante)",
+      "depois": [
+        "A chave primária é o par subsistema + instante: não pode haver duas linhas iguais nele. Pelo dicionário do ONS, a carga está em MWmed."
+      ]
+    },
+    {
+      "titulo": "Algumas linhas",
+      "comandos": "SELECT *\nFROM oficial.curva_horaria\nLIMIT 5;",
+      "saida": " id_subsistema | nom_subsistema |    din_instante     | val_cargaenergiahomwmed\n---------------+----------------+---------------------+-------------------------\n N             | NORTE          | 2025-01-01 00:00:00 |           7097.75099999\n NE            | NORDESTE       | 2025-01-01 00:00:00 |               12251.182\n S             | SUL            | 2025-01-01 00:00:00 |          10554.60299999\n SE            | SUDESTE        | 2025-01-01 00:00:00 |          35374.03299999\n N             | NORTE          | 2025-01-01 01:00:00 |                7053.337"
+    },
+    {
+      "titulo": "Quantas linhas e quais subsistemas",
+      "comandos": "SELECT count(*)\nFROM oficial.curva_horaria;\n\nSELECT DISTINCT id_subsistema, nom_subsistema\nFROM oficial.curva_horaria\nORDER BY 1;",
+      "saida": " count\n-------\n   672\n\n id_subsistema | nom_subsistema\n---------------+----------------\n N             | NORTE\n NE            | NORDESTE\n S             | SUL\n SE            | SUDESTE"
+    },
+    {
+      "titulo": "Que período",
+      "comandos": "SELECT min(din_instante), max(din_instante)\nFROM oficial.curva_horaria;",
+      "saida": "         min         |         max\n---------------------+---------------------\n 2025-01-01 00:00:00 | 2025-01-07 23:00:00"
+    },
+    {
+      "titulo": "Qual a granularidade",
+      "comandos": "SELECT id_subsistema, count(*)\nFROM oficial.curva_horaria\nGROUP BY 1\nORDER BY 1;",
+      "saida": " id_subsistema | count\n---------------+-------\n N             |   168\n NE            |   168\n S             |   168\n SE            |   168",
+      "depois": [
+        "168 = 7 dias × 24 horas: uma linha por subsistema e hora."
+      ]
+    },
+    {
+      "titulo": "De onde vieram os dados",
+      "texto": [
+        "`\\x` liga a exibição vertical, boa para linhas largas; rode de novo para desligar."
+      ],
+      "comandos": "\\x\nSELECT * FROM meta.proveniencia;\n\\x",
+      "saida": "fonte                 | curva\nurl                   | https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/curva-carga-ho/CURVA_CARGA_2025.csv\nsha256_arquivo_origem | 69a3d2560bf111e46d1fa356ee4be7c917ca89bf53ae16ab1af9f9e7477ff4c4\nrecorte_inicio        | 2025-01-01 00:00:00\nrecorte_fim           | 2025-01-08 00:00:00\nextraido_em           | 2026-10-13 15:12:35+00"
+    },
+    {
+      "titulo": "Sair",
+      "comandos": "\\q",
+      "depois": [
+        "`\\?` lista todos os comandos do psql. Se a saída abrir paginada, saia com `q`."
+      ]
+    }
+  ]
+}

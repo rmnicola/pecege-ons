@@ -342,6 +342,39 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
   #kata-pecas .soquete .peca.nova { border-color:var(--vermelho-marca); color:var(--vermelho-marca); }
   #kata-pecas .troca { font-size:28px; color:var(--vermelho-marca); }
   @media (prefers-reduced-motion:reduce) { #mundo-notebooks .notebook, #crisp-revisao .crisp-etapa, #definicao-etl .etl-letra, #etl1 .passo { transition:none !important; } }
+  #esquema-banco .conteudo { gap:34px; }
+  #esquema-banco .tabela-banco { background:var(--branco); border:2px solid var(--cinza-claro); border-radius:14px; overflow:hidden; }
+  #esquema-banco .tabela-nome { display:flex; align-items:baseline; gap:24px; padding:16px 28px; background:var(--cinza-escuro); color:var(--branco); font:bold 32px var(--f-codigo); }
+  #esquema-banco .tabela-nome span { font:28px var(--f-texto); color:var(--cinza-claro); }
+  #esquema-banco table { width:100%; border-collapse:collapse; font-size:28px; }
+  #esquema-banco td { padding:12px 28px; border-bottom:2px solid var(--cinza-claro); }
+  #esquema-banco tr:last-child td { border-bottom:0; }
+  #esquema-banco td:first-child { font-family:var(--f-codigo); color:var(--cinza-escuro); font-weight:bold; width:520px; }
+  #esquema-banco td:nth-child(2) { font-family:var(--f-codigo); width:220px; }
+  #esquema-banco .chave { color:var(--vermelho-marca); font:bold 28px var(--f-texto); margin-left:14px; }
+  #resposta-meteo .meteo-layout { display:grid; grid-template-columns:860px 1fr; gap:48px; align-items:center; margin:auto 0; }
+  #resposta-meteo .json-codigo { --codigo-fonte:28px; --codigo-entrelinha:1.4; }
+  #resposta-meteo .notas-json { display:flex; flex-direction:column; gap:30px; }
+  #resposta-meteo .notas-json p { font-size:30px; line-height:1.3; border-left:4px solid var(--vermelho-marca); padding-left:18px; }
+  #resposta-meteo .notas-json code { font:bold 30px var(--f-codigo); color:var(--cinza-escuro); }
+  #pasta-playground .arvore { align-self:center; margin:auto 0; width:1180px; background:var(--branco); border:2px solid var(--cinza-claro); border-radius:14px; padding:26px 40px; font:32px/1.25 var(--f-codigo); }
+  #pasta-playground .item-arvore { display:grid; grid-template-columns:560px 1fr; align-items:baseline; padding:8px 0; }
+  #pasta-playground .item-arvore span:first-child { color:var(--cinza-escuro); white-space:pre; }
+  #pasta-playground .item-arvore.pasta span:first-child { font-weight:bold; }
+  #pasta-playground .item-arvore span:last-child { font:30px var(--f-texto); color:var(--vermelho-marca); }
+  #esquema-banco .tabela-banco { margin:auto 0; }
+  #schemas-banco .banco { margin:auto 0; background:var(--branco); border:3px solid var(--cinza-escuro); border-radius:16px; overflow:hidden; }
+  #schemas-banco .banco-nome, #schemas-banco .schema-nome { display:flex; align-items:baseline; gap:18px; }
+  #schemas-banco .banco-nome { padding:16px 32px; background:var(--cinza-escuro); }
+  #schemas-banco .banco-nome .rotulo-termo { color:var(--cinza-claro); }
+  #schemas-banco .banco-nome code { font:bold 36px var(--f-codigo); color:var(--branco); }
+  #schemas-banco .schemas { display:grid; grid-template-columns:1fr 1fr; gap:40px; padding:40px; }
+  #schemas-banco .schema { display:flex; flex-direction:column; gap:22px; padding:26px 30px; background:var(--fundo); border:2px dashed #b9bdcb; border-radius:12px; }
+  #schemas-banco .schema-nome code { font:bold 34px var(--f-codigo); color:var(--cinza-escuro); }
+  #schemas-banco .tabela { background:var(--branco); border-left:6px solid var(--vermelho-marca); padding:18px 24px; }
+  #schemas-banco .tabela code { display:block; font:bold 30px var(--f-codigo); color:var(--cinza-escuro); margin-bottom:8px; }
+  #schemas-banco .tabela p { font-size:30px; }
+  #schemas-banco .referencia code { font:28px var(--f-codigo); color:var(--cinza-escuro); }
 </style>
 </head>
 <body><main class="deck" id="etl1">
@@ -461,24 +494,74 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
     <p class="referencia">Passo a passo: <a href="https://rmnicola.github.io/pecege-ons/aulas/2026-10-20-etl-i/preparacao/">rmnicola.github.io/pecege-ons</a></p>
   </div>
 </section>
+<section class="slide" id="schemas-banco" data-modelo="banco-schemas" data-max-palavras="50">
+  <div class="conteudo"><h2 class="titulo">O banco da carga</h2>
+    <div class="banco">
+      <p class="banco-nome"><span class="rotulo-termo">banco</span><code>curva</code></p>
+      <div class="schemas">
+        <div class="schema"><p class="schema-nome"><span class="rotulo-termo">schema</span><code>oficial</code></p>
+          <div class="tabela"><code>curva_horaria</code><p>Recorte da Curva de Carga do ONS</p></div></div>
+        <div class="schema"><p class="schema-nome"><span class="rotulo-termo">schema</span><code>meta</code></p>
+          <div class="tabela"><code>proveniencia</code><p>De onde veio o recorte</p></div></div>
+      </div>
+    </div>
+    <p class="referencia">No psql: <code>\dn</code> lista os schemas · <code>\dt oficial.*</code> lista as tabelas</p>
+  </div>
+</section>
+<section class="slide" id="esquema-banco" data-modelo="esquema-banco" data-max-palavras="80">
+  <div class="conteudo"><h2 class="titulo">A tabela da carga</h2>
+    <div class="tabela-banco">
+      <p class="tabela-nome">oficial.curva_horaria <span>uma linha por subsistema e hora · 672 linhas</span></p>
+      <table>
+        <tr><td>id_subsistema<span class="chave">chave</span></td><td>text</td><td>Código do subsistema</td></tr>
+        <tr><td>nom_subsistema</td><td>text</td><td>Nome do subsistema</td></tr>
+        <tr><td>din_instante<span class="chave">chave</span></td><td>timestamp</td><td>Data de referência</td></tr>
+        <tr><td>val_cargaenergiahomwmed</td><td>numeric</td><td>Carga de energia, em MWmed</td></tr>
+      </table>
+    </div>
+    <p class="referencia">Descrições: dicionário de dados do <a href="https://dados.ons.org.br/dataset/curva-carga">ONS · Curva de Carga</a></p>
+  </div>
+</section>
 <section class="slide tarefa" id="pratica-carga" data-modelo="comando-tarefa" data-max-palavras="60">
   <div class="conteudo"><h2 class="titulo">Extrair a carga</h2>
-    <div class="tarefa-layout"><div class="tarefa-terminal" data-comando="docker compose run --rm etl \
-  python aluno/aula1/extrair_carga.py" data-arquivo="Terminal"></div>
-      <div class="tarefa-confira"><h3>Confira</h3><p>Quantas linhas por subsistema?</p><p>Que tipos chegam no instante e na carga?</p><p>Cobre de 01 a 07/01/2025?</p></div>
+    <div class="tarefa-layout so-terminal"><div class="tarefa-terminal" data-comando="python aula1/extrair_carga.py" data-arquivo="Terminal"></div></div>
+  </div>
+</section>
+<section class="slide" id="resposta-meteo" data-modelo="resposta-json" data-max-palavras="90">
+  <div class="conteudo"><h2 class="titulo">A resposta da Open-Meteo</h2>
+    <div class="meteo-layout">
+      <div class="json-codigo kata-codigo" data-codigo="resposta" data-arquivo="resposta · Recife" data-linguagem="Python"></div>
+      <div class="notas-json">
+        <p><code>latitude</code> e <code>longitude</code> são do ponto da grade, não as pedidas</p>
+        <p>A unidade vem separada, em <code>hourly_units</code></p>
+        <p><code>hourly</code> traz listas paralelas: a posição liga hora e valor</p>
+      </div>
     </div>
+    <p class="referencia">Trecho de uma resposta real, 01/01/2025 · <a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a></p>
   </div>
 </section>
 <section class="slide tarefa" id="pratica-clima" data-modelo="comando-tarefa" data-max-palavras="60">
   <div class="conteudo"><h2 class="titulo">Extrair o clima</h2>
-    <div class="tarefa-layout"><div class="tarefa-terminal" data-comando="docker compose run --rm etl \
-  python aluno/aula1/extrair_clima.py" data-arquivo="Terminal"></div>
-      <div class="tarefa-confira"><h3>Confira</h3><p>Quantas horas por cidade?</p><p>Batem com as horas de carga? Por quê?</p><p>Onde vem a unidade?</p></div>
-    </div>
+    <div class="tarefa-layout so-terminal"><div class="tarefa-terminal" data-comando="python aula1/extrair_clima.py" data-arquivo="Terminal"></div></div>
   </div>
 </section>
 <section class="slide agenda" id="agenda-intervalo" data-agora="3">
   <div class="conteudo"><div class="itens"></div></div>
+</section>
+<section class="slide" id="pasta-playground" data-modelo="arvore-pasta" data-max-palavras="60">
+  <div class="conteudo"><h2 class="titulo">O playground</h2>
+    <div class="arvore">
+      <p class="item-arvore pasta"><span>playground/</span><span></span></p>
+      <p class="item-arvore pasta"><span>├── aula1/</span><span>o código desta aula</span></p>
+      <p class="item-arvore"><span>│   ├── extrair_carga.py</span><span></span></p>
+      <p class="item-arvore"><span>│   ├── extrair_clima.py</span><span></span></p>
+      <p class="item-arvore"><span>│   └── combinar.py</span><span>o desafio</span></p>
+      <p class="item-arvore pasta"><span>├── aula2/</span><span>próxima aula</span></p>
+      <p class="item-arvore pasta"><span>├── saida/</span><span>o que vocês geram</span></p>
+      <p class="item-arvore"><span>├── compose.yaml</span><span>os serviços do laboratório</span></p>
+      <p class="item-arvore"><span>└── preparar.sh</span><span>rode no começo de cada aula</span></p>
+    </div>
+  </div>
 </section>
 <section class="slide agenda" id="agenda-desafio" data-agora="4">
   <div class="conteudo"><div class="itens"></div></div>
@@ -500,7 +583,7 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
         </table>
       </div>
     </div>
-    <p class="referencia">Comece por aluno/aula1/combinar.py · 60 min</p>
+    <p class="referencia">Comece por aula1/combinar.py · 60 min</p>
   </div>
 </section>
 <section class="slide agenda" id="agenda-solucao" data-agora="5">
@@ -540,7 +623,6 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
 </section>
 <section class="slide" id="kata-montar" data-modelo="kata-codigo" data-max-palavras="120">
   <div class="conteudo"><h2 class="titulo">Trocar a peça, não o pipeline</h2><div class="kata-codigo" data-codigo="montar" data-arquivo="executar.py" data-linguagem="Python"></div>
-    <p class="referencia">Código completo: playground/gabarito/aula1/componivel/</p>
   </div>
 </section>
 <section class="slide encerramento sem-numero" id="encerramento">
@@ -765,7 +847,7 @@ a { color: var(--vermelho-marca); text-decoration-thickness: 2px; text-underline
     ['DSN', 'Configuração de conexão à fonte de dados.']
   ].filter(([termo]) => new RegExp('\\b' + termo + '\\b').test(texto.replace('PG_DSN', 'DSN')));
   function prepararCodigo(slide, fonte) {
-    const arquivos = { postgres:'extrair_postgres.py', api:'extrair_clima.py' };
+    const arquivos = { postgres:'extrair_carga.py', api:'extrair_clima.py' };
     window.PECEGE_CODIGO.montar(slide.querySelector('.captura-codigo'), {
       codigo:fonte.codigo, arquivo:arquivos[fonte.id], linguagem:'Python', ajudas:AJUDA_CODIGOS[fonte.id]
     });
@@ -869,8 +951,18 @@ def extrair(evento, lat, lon):
   document.querySelectorAll('.tarefa-terminal').forEach(alvo => {
     window.PECEGE_CODIGO.montar(alvo, { codigo:alvo.dataset.comando, arquivo:'playground', linguagem:'Terminal' });
   });
-  // Trechos do desafio e da demonstração; espelham playground/gabarito/aula1/.
+  // Trechos do desafio e da demonstração; espelham playground/.lab/gabarito/aula1/.
   const KATA = {
+    resposta: `{
+  "latitude": -8.049209,
+  "longitude": -34.923065,
+  "timezone": "America/Sao_Paulo",
+  "hourly_units": {"temperature_2m": "°C", …},
+  "hourly": {
+    "time": ["2025-01-01T00:00", …],
+    "temperature_2m": [26.4, …]
+  }
+}`,
     notebook: `import pandas as pd
 
 df = pd.read_csv("dados.csv")
@@ -879,8 +971,7 @@ print(df.head(3))
 sub = df.groupby("id_subsistema")
 print(sub["carga_mwmed"].mean())
 print(sub["temperatura_c"].mean())`,
-    rodar: `docker compose run --rm etl \\
-  python aluno/aula1/combinar.py`,
+    rodar: `python aula1/combinar.py`,
     solucao1: `# end_date inclui o último dia: o mesmo período é 01 a 07
 EVENTO_CLIMA = {"inicio": "2025-01-01", "fim": "2025-01-07"}
 
@@ -924,7 +1015,7 @@ def executar(fontes, destino, inicio, fim):
 from fontes import CargaPostgres, ClimaArquivo, ClimaOpenMeteo
 from pipeline import executar
 
-clima = ClimaOpenMeteo()          # ou ClimaArquivo("aluno/aula1/dados")
+clima = ClimaOpenMeteo()          # ou ClimaArquivo(".lab/open-meteo")
 
 executar(
     fontes=[CargaPostgres(), clima],
@@ -957,7 +1048,7 @@ executar(
     ],
     montar: [
       { inicio:0, fim:2, texto:'Só aqui o código conhece as implementações concretas: este é o ponto de montagem do pipeline.' },
-      { inicio:4, fim:4, texto:'Trocar a fonte de clima é trocar esta linha. ClimaArquivo lê as respostas salvas em aluno/aula1/dados e funciona sem internet.' },
+      { inicio:4, fim:4, texto:'Trocar a fonte de clima é trocar esta linha. ClimaArquivo lê respostas salvas da Open-Meteo e funciona sem internet.' },
       { inicio:6, fim:11, texto:'As peças entram como argumentos. O período usa fim exclusivo; cada fonte cuida das particularidades da sua origem, como o end_date inclusivo da Open-Meteo.' }
     ]
   };

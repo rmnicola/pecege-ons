@@ -1,147 +1,67 @@
 name: pecege-ons-etl
 
-# Laboratorio didatico Pecege-ONS: duas fontes PostgreSQL independentes
-# (balanco e curva), um destino (analytics) e um ambiente Python de ETL.
-#
-# * Nenhuma porta e publicada no host de proposito: os servicos se falam
-#   pela rede interna do Compose pelos nomes DNS fonte-balanco / fonte-curva /
-#   destino. Assim nao conflitamos com um PostgreSQL ja instalado.
-# * Credenciais locais de exercicio (nao use em producao).
-
-x-postgres-common: &postgres-common
-  image: postgres:16-alpine
-  restart: unless-stopped
-  environment: &postgres-env
-    POSTGRES_USER: ons_lab
-    POSTGRES_PASSWORD: ons_lab
-    TZ: UTC
-    PGTZ: UTC
-  healthcheck:
-    test: ["CMD-SHELL", "pg_isready -U ons_lab -h 127.0.0.1"]
-    interval: 5s
-    timeout: 5s
-    retries: 30
-    start_period: 10s
+# Laboratório Pecege-ONS. Credenciais locais de exercício.
 
 services:
-  fonte-balanco:
-    <<: *postgres-common
-    environment:
-      <<: *postgres-env
-      POSTGRES_DB: balanco
-    volumes:
-      - balanco_data:/var/lib/postgresql/data
-    networks: [etl-net]
-
-  fonte-curva:
-    <<: *postgres-common
-    environment:
-      <<: *postgres-env
-      POSTGRES_DB: curva
-    volumes:
-      - curva_data:/var/lib/postgresql/data
-    networks: [etl-net]
-
-  destino:
-    <<: *postgres-common
-    environment:
-      <<: *postgres-env
-      POSTGRES_DB: analytics
-    volumes:
-      - destino_data:/var/lib/postgresql/data
-    networks: [etl-net]
-
-  etl:
+  # A máquina do aluno: o VS Code se conecta a ela e o código roda aqui.
+  # Também serve a API de clima local da aula 2 em localhost:8080.
+  playground:
     build:
-      context: ./docker/etl
-    image: pecege-ons-etl:local
-    # Executa como o seu usuario para os arquivos gravados em ./resultados
-    # nao ficarem como root no Linux. Sobrescreva com ETL_UID/ETL_GID se
-    # o seu id de usuario no host for diferente.
-    user: "${ETL_UID:-1000}:${ETL_GID:-1000}"
+      context: ./.lab
+      args:
+        UID: ${ETL_UID:-1000}
+        GID: ${ETL_GID:-1000}
+    image: pecege-ons-playground:local
+    hostname: playground
     working_dir: /work
+    command: ["python", ".lab/api_clima.py"]
     environment:
-      FONTE_BALANCO_HOST: fonte-balanco
-      FONTE_BALANCO_PORT: "5432"
-      FONTE_BALANCO_DB: balanco
-      FONTE_BALANCO_USER: ons_lab
-      FONTE_BALANCO_PASSWORD: ons_lab
-      FONTE_CURVA_HOST: fonte-curva
-      FONTE_CURVA_PORT: "5432"
-      FONTE_CURVA_DB: curva
-      FONTE_CURVA_USER: ons_lab
-      FONTE_CURVA_PASSWORD: ons_lab
-      # Conexao unica usada nos exemplos da aula ETL I (extracao da carga).
-      PG_DSN: postgresql://ons_lab:ons_lab@fonte-curva:5432/curva
-      # Aula ETL II: API de clima com defeitos e armazenamento S3 (RustFS).
-      CLIMA_URL: http://api-clima:8080/v1/archive
+      PG_DSN: postgresql://ons_lab:ons_lab@banco:5432/curva
+      PGHOST: banco
+      PGUSER: ons_lab
+      PGPASSWORD: ons_lab
+      PGDATABASE: curva
+      CLIMA_URL: http://localhost:8080/v1/archive
       S3_ENDPOINT: http://rustfs:9000
       S3_ACCESS_KEY: ons_lab
       S3_SECRET_KEY: ons_lab_s3
       S3_BUCKET: aula2
-      DESTINO_HOST: destino
-      DESTINO_PORT: "5432"
-      DESTINO_DB: analytics
-      DESTINO_USER: ons_lab
-      DESTINO_PASSWORD: ons_lab
-      PYTHONUNBUFFERED: "1"
-    depends_on:
-      fonte-balanco:
-        condition: service_healthy
-      fonte-curva:
-        condition: service_healthy
-      destino:
-        condition: service_healthy
-      api-clima:
-        condition: service_healthy
-      rustfs:
-        condition: service_healthy
     volumes:
       - ./:/work
-    networks: [etl-net]
-    command: ["python", "--version"]
-
-  # Aula ETL II: imita a Historical Weather da Open-Meteo, com defeitos de proposito.
-  api-clima:
-    build:
-      context: ./docker/etl
-    image: pecege-ons-etl:local
-    working_dir: /work
-    command: ["python", "servicos/api_clima.py"]
-    volumes:
-      - ./:/work:ro
-    networks: [etl-net]
+    depends_on:
+      banco: {condition: service_healthy}
+      rustfs: {condition: service_healthy}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/saude')"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
+      interval: 2s
+      retries: 30
 
-  # Aula ETL II: armazenamento de objetos compativel com S3. O console web fica
-  # em http://localhost:9001/rustfs/console/ (usuario ons_lab, senha ons_lab_s3).
+  # Fonte da carga. Na primeira subida, roda init.sql e carrega os CSVs da pasta.
+  banco:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ons_lab
+      POSTGRES_PASSWORD: ons_lab
+      POSTGRES_DB: curva
+      TZ: UTC
+      PGTZ: UTC
+    volumes:
+      - ./.lab/banco:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ons_lab -h 127.0.0.1"]
+      interval: 2s
+      retries: 60
+
+  # Aula 2: armazenamento de objetos compatível com S3.
   rustfs:
     image: rustfs/rustfs:1.0.3
     environment:
       RUSTFS_ACCESS_KEY: ons_lab
       RUSTFS_SECRET_KEY: ons_lab_s3
       RUSTFS_CONSOLE_ENABLE: "true"
-    volumes:
-      - rustfs_data:/data
     ports:
       - "127.0.0.1:${RUSTFS_CONSOLE_PORT:-9001}:9001"
-    networks: [etl-net]
     healthcheck:
       test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1:9000/health"]
-      interval: 5s
-      timeout: 5s
-      retries: 30
-
-volumes:
-  rustfs_data:
-  balanco_data:
-  curva_data:
-  destino_data:
-
-networks:
-  etl-net:
-    driver: bridge
+      interval: 2s
+      retries: 60

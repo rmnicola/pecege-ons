@@ -105,6 +105,14 @@
   #referencias .lista-referencias { gap:16px; }
   #referencias .lista-referencias p { font-size:28px; }
   @media (prefers-reduced-motion:reduce) { #etl2 .passo { transition:none !important; } }
+  #ambiente2 .tarefa-layout { flex-direction:row; gap:56px; }
+  #ambiente2 .terminal-largo { width:620px; flex:none; }
+  #ambiente2 .entrar { display:flex; flex-direction:column; gap:26px; }
+  #ambiente2 .entrar h3 { color:var(--cinza-escuro); font-size:34px; }
+  #ambiente2 .opcao { display:flex; flex-direction:column; gap:10px; border-left:4px solid var(--vermelho-marca); padding-left:20px; }
+  #ambiente2 .opcao code { font:bold 28px var(--f-codigo); color:var(--cinza-escuro); }
+  #ambiente2 .opcao p { font-size:30px; line-height:1.3; }
+  #ambiente2 .opcao .nome { white-space:nowrap; }
 </style>
 </head>
 <body><main class="deck" id="etl2">
@@ -241,7 +249,7 @@
   <div class="conteudo"><h2 class="titulo">Mesmo pipeline, fontes com problemas</h2>
     <div class="cartoes tres">
       <div class="cartao"><h3>Carga</h3><p><code>laboratorio.curva_horaria</code></p><p>Cópia didática, tudo em texto.</p></div>
-      <div class="cartao"><h3>Clima</h3><p><code>api-clima</code></p><p>API local no formato da Open-Meteo.</p></div>
+      <div class="cartao"><h3>Clima</h3><p><code>localhost:8080</code></p><p>API local no formato da Open-Meteo.</p></div>
       <div class="cartao"><h3>Armazenamento</h3><p><code>rustfs</code></p><p>Objetos compatíveis com S3.</p></div>
     </div>
     <p class="sintetico">Os defeitos são de propósito e não estão nas bases oficiais do ONS.</p>
@@ -249,9 +257,9 @@
 </section>
 
 <section class="slide" id="ambiente2" data-modelo="comando-tarefa" data-max-palavras="40">
-  <div class="conteudo"><h2 class="titulo">Atualizar o ambiente</h2>
-    <div class="tarefa-layout"><div class="terminal-largo" data-codigo="atualizar" data-arquivo="playground" data-linguagem="Terminal"></div></div>
-    <p class="referencia">Passo a passo: <a href="https://rmnicola.github.io/pecege-ons/aulas/2026-10-22-etl-ii/preparacao/">rmnicola.github.io/pecege-ons</a></p>
+  <div class="conteudo"><h2 class="titulo">Preparar o ambiente</h2>
+    <div class="tarefa-layout"><div class="terminal-largo" data-codigo="atualizar" data-arquivo="playground" data-linguagem="Terminal"></div>
+      <div class="entrar"><h3>Entre no playground</h3><div class="opcao"><span class="rotulo-termo">Pelo terminal</span><code>docker compose exec playground bash</code></div><div class="opcao"><span class="rotulo-termo">Pelo VS Code</span><p>F1 → Dev Containers: Attach to Running Container… → <span class="nome">…-playground-1</span> → abra /work</p></div></div></div>
   </div>
 </section>
 
@@ -273,7 +281,7 @@
         </table>
       </div>
     </div>
-    <p class="referencia">Complete aluno/aula2/transformacoes.py</p>
+    <p class="referencia">Complete aula2/transformacoes.py</p>
   </div>
 </section>
 
@@ -286,7 +294,7 @@
       <div class="seta">→</div>
       <div class="etapa-caminho"><h3>s3://aula2/</h3><p>carga_clima/<wbr>dados.parquet</p></div>
     </div>
-    <p class="referencia">Complete ParquetS3 em aluno/aula2/destinos.py · console: localhost:9001/rustfs/console</p>
+    <p class="referencia">Complete ParquetS3 em aula2/destinos.py · console: localhost:9001/rustfs/console</p>
   </div>
 </section>
 
@@ -342,8 +350,7 @@
   <div class="conteudo"><h2 class="titulo">Solução · completar e imputar</h2><div class="bloco" data-codigo="solucao_imputar" data-arquivo="transformacoes.py"></div></div>
 </section>
 <section class="slide" id="solucao-s3" data-modelo="codigo-consulta" data-max-palavras="120">
-  <div class="conteudo"><h2 class="titulo">Solução · Parquet no S3</h2><div class="bloco" data-codigo="solucao_s3" data-arquivo="destinos.py"></div>
-    <p class="referencia">Código completo: playground/gabarito/aula2/</p></div>
+  <div class="conteudo"><h2 class="titulo">Solução · Parquet no S3</h2><div class="bloco" data-codigo="solucao_s3" data-arquivo="destinos.py"></div></div>
 </section>
 
 <section class="slide encerramento sem-numero" id="encerramento">
@@ -366,14 +373,11 @@
 <script>
   window.PECEGE_DS = '../../design-system';
 
-  // Trechos de código: fonte única para os blocos e as ajudas (?). Espelham playground/gabarito/aula2/.
+  // Trechos de código: fonte única para os blocos e as ajudas (?). Espelham playground/.lab/gabarito/aula2/.
   const CODIGOS = {
-    atualizar: { linguagem:'Terminal', codigo:`cd pecege-ons
-git pull
-cd playground
+    atualizar: { linguagem:'Terminal', codigo:`cd pecege-ons/playground
 ./preparar.sh` },
-    rodar: { linguagem:'Terminal', codigo:`docker compose run --rm etl \\
-  python aluno/aula2/executar.py` },
+    rodar: { linguagem:'Terminal', codigo:`python aula2/executar.py` },
     juncao: { codigo:`antes = len(carga)
 
 dados = carga.merge(clima, on=["id_subsistema", "instante"],

@@ -208,6 +208,9 @@ p code, li code { background: var(--fundo-fraco); border: 1px solid var(--borda-
 .codigo pre { margin: 0; padding: 1rem 1.25rem; overflow-x: auto; font: var(--t-pequeno)/1.75 var(--fonte); color: var(--codigo-texto); }
 .codigo code { color: inherit; background: none; border: 0; padding: 0; font: inherit; }
 .saida { border-style: dashed; }
+.codigo pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+/* Saídas em letra menor: tabelas do psql de até ~90 colunas cabem sem quebrar no computador. */
+.saida pre { padding: 0.75rem 1rem; font-size: 0.8125rem; }
 .saida .codigo-barra { border-bottom-style: dashed; }
 .sx-cmd { color: var(--sx-cmd); } .sx-kw { color: var(--sx-kw); } .sx-flag { color: var(--sx-flag); }
 .sx-str { color: var(--sx-str); } .sx-var { color: var(--sx-var); } .sx-op { color: var(--sx-op); }

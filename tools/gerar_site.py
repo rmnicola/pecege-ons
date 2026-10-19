@@ -3,7 +3,8 @@
 
 Saída em _site/: index.html com a lista de aulas e, para cada aula
 publicável, aulas/<slug>/ com a página da aula, a apresentação (copiada de
-<pasta>/<apresentacao>) e a preparação (de <pasta>/preparacao.json).
+<pasta>/<apresentacao>) e uma página de passo a passo para cada <pasta>/<nome>.json
+(preparacao.json vira preparacao/).
 Aulas com "rascunho": true ficam fora do site publicado.
 
     python tools/gerar_site.py            # gera _site/ como será publicado
@@ -249,13 +250,15 @@ def gerar_aula(curso: dict, aula: dict) -> str:
         partes.append(f"""<section class="secao">
 <a class="cartao" href="apresentacao.html"{NOVA_ABA}><span><h3>Apresentação</h3><p>Abre no navegador · setas do teclado para navegar</p></span><span class="seta">→</span></a>
 </section>""")
-    if aula.get("antes"):
+    for campo, titulo in (("antes", "Antes da aula"), ("apoio", "Material de apoio")):
+        if not aula.get(campo):
+            continue
         itens = "".join(
             f'<li><a href="{escape(a["link"])}"{NOVA_ABA}>{escape(a["rotulo"])}</a><span class="rotulo">{escape(a["tipo"])}</span></li>'
             if a.get("link") else
             f'<li><a href="{escape(a["arquivo"])}" download{NOVA_ABA}>{escape(a["rotulo"])}</a><span class="rotulo">{escape(a["tipo"])}</span></li>'
-            for a in aula["antes"])
-        partes.append(f'<section class="secao"><h2>Antes da aula</h2><ul class="arquivos">{itens}</ul></section>')
+            for a in aula[campo])
+        partes.append(f'<section class="secao"><h2>{titulo}</h2><ul class="arquivos">{itens}</ul></section>')
     if aula.get("laboratorio"):
         repo = curso["repositorio"]
         pasta = repo.rstrip("/").rsplit("/", 1)[-1]
@@ -330,14 +333,13 @@ def main() -> None:
         destino.mkdir(parents=True)
         if aula.get("apresentacao"):
             shutil.copy(origem / aula["apresentacao"], destino / "apresentacao.html")
-        for item in aula.get("antes", []):
+        for item in aula.get("antes", []) + aula.get("apoio", []):
             if item.get("arquivo"):
                 shutil.copy(origem / item["arquivo"], destino / Path(item["arquivo"]).name)
-        prep_json = origem / "preparacao.json"
-        if prep_json.exists():
-            prep = json.loads(prep_json.read_text(encoding="utf-8"))
-            (destino / "preparacao").mkdir()
-            (destino / "preparacao" / "index.html").write_text(gerar_preparacao(curso, aula, prep), encoding="utf-8")
+        for guia in sorted(origem.glob("*.json")):
+            prep = json.loads(guia.read_text(encoding="utf-8"))
+            (destino / guia.stem).mkdir()
+            (destino / guia.stem / "index.html").write_text(gerar_preparacao(curso, aula, prep), encoding="utf-8")
         for html in destino.rglob("*.html"):
             html.write_text(com_portao(html.read_text(encoding="utf-8"), curso), encoding="utf-8")
         (destino / "index.html").write_text(com_portao(gerar_aula(curso, aula), curso), encoding="utf-8")

@@ -1,0 +1,101 @@
+{
+  "titulo": "Explorar a API",
+  "resumo": "Roteiro para explorar, no terminal, a resposta da Open-Meteo com `curl` e `jq`: um comando por vez, com a saída esperada.",
+  "passos": [
+    {
+      "titulo": "Entre no playground",
+      "texto": [
+        "Pelo terminal (`docker compose exec playground bash`) ou pelo VS Code. Os comandos abaixo rodam lá."
+      ]
+    },
+    {
+      "titulo": "Faça a chamada",
+      "texto": [
+        "A mesma chamada de `extrair_clima.py`, para Recife e um só dia. Cada `-d` é um parâmetro da URL, como o `params` do httpx."
+      ],
+      "comandos": "curl -sG https://archive-api.open-meteo.com/v1/archive \\\n  -d latitude=-8.05 -d longitude=-34.88 \\\n  -d start_date=2025-01-01 -d end_date=2025-01-01 \\\n  -d hourly=temperature_2m \\\n  -d timezone=America/Sao_Paulo",
+      "saida": "{\"latitude\":-8.049209,\"longitude\":-34.923065,\"generationtime_ms\":0.338…,\"utc_offset_seconds\":-10800,\"timezone\":\"America/Sao_Paulo\",\"timezone_abbreviation\":\"GMT-3\",\"elevation\":3.0,\"hourly_units\":{\"time\":\"iso8601\",\"temperature_2m\":\"°C\"},\"hourly\":{\"time\":[\"2025-01-01T00:00\",\"2025-01-01T01:00\",…,\"2025-01-01T23:00\"],\"temperature_2m\":[26.4,26.1,…,26.3]}}",
+      "depois": [
+        "Chega um JSON numa linha só: legível para o programa, não para nós."
+      ]
+    },
+    {
+      "titulo": "Guarde a resposta",
+      "texto": [
+        "Para explorar sem chamar a API de novo, grave a resposta em `saida/`. `-o` escolhe o arquivo."
+      ],
+      "comandos": "curl -sG https://archive-api.open-meteo.com/v1/archive \\\n  -d latitude=-8.05 -d longitude=-34.88 \\\n  -d start_date=2025-01-01 -d end_date=2025-01-01 \\\n  -d hourly=temperature_2m \\\n  -d timezone=America/Sao_Paulo \\\n  -o saida/recife.json"
+    },
+    {
+      "titulo": "Formate o JSON",
+      "texto": [
+        "`jq` lê JSON. O filtro `.` mostra o documento inteiro, indentado."
+      ],
+      "comandos": "jq . saida/recife.json"
+    },
+    {
+      "titulo": "Que chaves há no topo",
+      "comandos": "jq 'keys' saida/recife.json",
+      "saida": "[\n  \"elevation\",\n  \"generationtime_ms\",\n  \"hourly\",\n  \"hourly_units\",\n  \"latitude\",\n  \"longitude\",\n  \"timezone\",\n  \"timezone_abbreviation\",\n  \"utc_offset_seconds\"\n]"
+    },
+    {
+      "titulo": "Que ponto veio",
+      "comandos": "jq '{latitude, longitude}' saida/recife.json",
+      "saida": "{\n  \"latitude\": -8.049209,\n  \"longitude\": -34.923065\n}",
+      "depois": [
+        "Pedimos -8.05 e -34.88. A API devolve o ponto da grade mais próximo."
+      ]
+    },
+    {
+      "titulo": "Em que fuso",
+      "comandos": "jq '{timezone, utc_offset_seconds}' saida/recife.json",
+      "saida": "{\n  \"timezone\": \"America/Sao_Paulo\",\n  \"utc_offset_seconds\": -10800\n}",
+      "depois": [
+        "-10800 segundos = 3 horas antes de UTC. Os horários vêm no fuso pedido."
+      ]
+    },
+    {
+      "titulo": "Em que unidade",
+      "comandos": "jq .hourly_units saida/recife.json",
+      "saida": "{\n  \"time\": \"iso8601\",\n  \"temperature_2m\": \"°C\"\n}",
+      "depois": [
+        "A unidade não vem junto de cada valor: fica nesta chave separada."
+      ]
+    },
+    {
+      "titulo": "Como vêm as horas e os valores",
+      "comandos": "jq '.hourly.time[:3], .hourly.temperature_2m[:3]' saida/recife.json",
+      "saida": "[\n  \"2025-01-01T00:00\",\n  \"2025-01-01T01:00\",\n  \"2025-01-01T02:00\"\n]\n[\n  26.4,\n  26.1,\n  25.8\n]",
+      "depois": [
+        "Duas listas paralelas: a primeira hora corresponde ao primeiro valor, e assim por diante."
+      ]
+    },
+    {
+      "titulo": "Quantas horas",
+      "comandos": "jq '.hourly.time | length' saida/recife.json",
+      "saida": "24"
+    },
+    {
+      "titulo": "O último dia entra",
+      "texto": [
+        "Agora de 01 a 07/01, sem gravar: o `|` entrega a resposta direto ao `jq`."
+      ],
+      "comandos": "curl -sG https://archive-api.open-meteo.com/v1/archive \\\n  -d latitude=-8.05 -d longitude=-34.88 \\\n  -d start_date=2025-01-01 -d end_date=2025-01-07 \\\n  -d hourly=temperature_2m \\\n  -d timezone=America/Sao_Paulo \\\n  | jq '.hourly.time | length, first, last'",
+      "saida": "168\n\"2025-01-01T00:00\"\n\"2025-01-07T23:00\"",
+      "depois": [
+        "`end_date` inclui o próprio dia: 7 dias × 24 horas. Na carga, o fim é exclusivo."
+      ]
+    },
+    {
+      "titulo": "Quando dá erro",
+      "texto": [
+        "Com um parâmetro inválido, a API responde com outro formato e um código HTTP de erro. `-w` mostra o código."
+      ],
+      "comandos": "curl -sG https://archive-api.open-meteo.com/v1/archive \\\n  -d latitude=200 -d longitude=-34.88 \\\n  -d start_date=2025-01-01 -d end_date=2025-01-01 \\\n  -d hourly=temperature_2m \\\n  -w '\\nHTTP %{http_code}\\n'",
+      "saida": "{\"reason\":\"Latitude must be in range of -90 to 90°. Given: 200.0.\",\"error\":true}\nHTTP 400",
+      "depois": [
+        "É o caso que `raise_for_status()` transforma em exceção no script."
+      ]
+    }
+  ]
+}

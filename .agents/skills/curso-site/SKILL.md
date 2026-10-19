@@ -26,7 +26,7 @@ Rode a prévia em segundo plano e não inicie um segundo servidor: os dois dispu
 | `site/estilo.css`, `site/DESIGN.md` | design system das páginas: tokens, componentes, regras de contraste |
 | `tools/gerar_site.py` | gera `_site/`: índice, página de cada aula, preparação, tela de senha |
 | `tools/verificar_contraste.py` | regras C1–C4 e T1; falha bloqueia a publicação |
-| `playground/` | laboratório que os alunos clonam (`gabarito/` é público, por decisão do professor) |
+| `playground/` | laboratório que os alunos clonam: só `aula1/`, `aula2/`, `saida/`, `compose.yaml` e `preparar.sh` à vista; serviços, dados e gabarito em `.lab/`, escondida no VS Code por `.vscode/settings.json` |
 
 ## Registrar uma aula
 
@@ -41,13 +41,14 @@ Em `curso.json`, cada aula tem:
 | `proposito`, `objetivos` | frase de propósito e lista de objetivos de aprendizagem da página da aula (o professor prefere objetivos a um resumo) |
 | `apresentacao` | arquivo relativo à pasta, normalmente `dist/index.html`; vira `apresentacao.html` |
 | `antes` | lista de `{rotulo, tipo, link}` (página) ou `{rotulo, tipo, arquivo}` (arquivo da pasta, baixado) |
+| `apoio` | mesmo formato de `antes`, na seção "Material de apoio" (ex.: o roteiro `explorar-banco/`) |
 | `laboratorio` | `true` mostra o comando de clone; o professor preferiu não usar (o "Antes da aula" já leva ao passo a passo) |
 
 Aula sem `pasta` aparece como "em breve". O CI não roda o build dos decks (precisa de Chromium): `dist/index.html` precisa estar atualizado e commitado.
 
 ## Página de preparação
 
-`apresentacoes/<pasta>/preparacao.json` vira `aulas/<slug>/preparacao/`. O professor prefere página com comandos copiáveis a PDF.
+Todo `apresentacoes/<pasta>/<nome>.json` vira a página de passo a passo `aulas/<slug>/<nome>/` (`preparacao.json` → `preparacao/`; `explorar-banco.json` → `explorar-banco/`). O professor prefere página com comandos copiáveis a PDF.
 
 ```jsonc
 {
@@ -69,7 +70,7 @@ Aula sem `pasta` aparece como "em breve". O CI não roda o build dos decks (prec
 }
 ```
 
-Prefira um script único e idempotente no playground (como `./preparar.sh`) a uma sequência longa de comandos. Antes de publicar instruções, teste-as do zero com um clone real e um projeto Docker isolado (`COMPOSE_PROJECT_NAME=<teste>` ou `-p <teste>`; o compose fixa `name: pecege-ons-etl`, e `down -v` sem isolamento apaga os volumes reais).
+O professor quer o mínimo de arquivos: não crie READMEs, roteiros ou cópias de segurança (o histórico do Git basta). Só a aula 1 tem página de preparação (a instalação); nas outras aulas, os alunos rodam `./preparar.sh`, que faz `git pull`, apaga o laboratório e sobe tudo do zero. Antes de publicar instruções, teste-as do zero com um clone real e um projeto Docker isolado (`COMPOSE_PROJECT_NAME=<teste>` ou `-p <teste>`; o compose fixa `name: pecege-ons-etl`, e `down -v` sem isolamento apaga os volumes reais).
 
 ## Estilo do site
 

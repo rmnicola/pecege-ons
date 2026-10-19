@@ -1,0 +1,7 @@
+{
+  "files.exclude": {
+    ".lab": true,
+    ".vscode": true,
+    ".env": true
+  }
+}

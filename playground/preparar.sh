@@ -1,45 +1,45 @@
 #!/usr/bin/env bash
-# Prepara o laboratório: registra seu usuário, constrói a imagem Python,
-# sobe os bancos, a API de clima local e o armazenamento S3, carrega os
-# dados (só na primeira vez), cria o bucket e verifica tudo.
-# Pode ser executado de novo a qualquer momento: não apaga dados.
+# Prepara o laboratório do zero: atualiza o material, apaga o laboratório
+# anterior (contêineres e dados), sobe tudo de novo e verifica.
+# Seus arquivos em aula1/, aula2/ e saida/ não são apagados.
 set -euo pipefail
-cd "$(dirname "$0")"
 
 etapa() { printf '\n==> %s\n' "$1"; }
 falha() { printf '\n[FALHA] %s\n' "$1" >&2; exit 1; }
 
-etapa "Conferindo o Docker"
-command -v docker >/dev/null 2>&1 || falha "Docker não encontrado. Instale-o (passo 3 da preparação)."
-docker compose version >/dev/null 2>&1 || falha "Docker Compose v2 não encontrado. Instale docker-compose-v2 (passo 3)."
-docker info >/dev/null 2>&1 || falha "Sem permissão para usar o Docker. Rode o usermod do passo 3, reconecte e tente de novo."
-echo "ok"
+main() {
+  cd "$(dirname "$0")"
 
-if [ ! -f .env ]; then
-  etapa "Registrando seu usuário em .env"
-  printf 'ETL_UID=%s\nETL_GID=%s\n' "$(id -u)" "$(id -g)" > .env
-  echo "ok"
-fi
+  etapa "Atualizando o material"
+  antes=$(git rev-parse HEAD)
+  git pull --no-rebase --ff-only || falha "git pull não conseguiu atualizar. Mostre esta mensagem ao professor."
+  # Se o próprio script mudou, roda a versão nova.
+  [ "$(git rev-parse HEAD)" = "$antes" ] || exec ./preparar.sh
 
-etapa "Construindo a imagem Python (na primeira vez, leva alguns minutos)"
-docker compose build etl
+  etapa "Conferindo o Docker"
+  command -v docker >/dev/null 2>&1 || falha "Docker não encontrado. Siga a preparação do ambiente."
+  docker compose version >/dev/null 2>&1 || falha "Docker Compose v2 não encontrado. Siga a preparação do ambiente."
+  docker info >/dev/null 2>&1 || falha "Sem permissão para usar o Docker. Rode o usermod da preparação, reconecte e tente de novo."
+  [ -f .env ] || printf 'ETL_UID=%s\nETL_GID=%s\n' "$(id -u)" "$(id -g)" > .env
+  rm -rf resultados  # pasta de versões anteriores do laboratório
 
-etapa "Subindo os bancos, a API de clima local e o armazenamento"
-docker compose up -d --wait fonte-balanco fonte-curva destino api-clima rustfs
+  etapa "Apagando o laboratório anterior"
+  projeto=$(docker compose config | sed -n 's/^name: //p')
+  docker compose down -v --remove-orphans
+  volumes=$(docker volume ls -q --filter "label=com.docker.compose.project=$projeto")
+  [ -z "$volumes" ] || docker volume rm $volumes >/dev/null
 
-etapa "Carregando os dados"
-linhas=$(docker compose exec -T fonte-curva psql -U ons_lab -d curva -tAc \
-  "SELECT count(*) FROM oficial.curva_horaria" 2>/dev/null || echo 0)
-if [ "${linhas:-0}" -gt 0 ] 2>/dev/null; then
-  echo "dados já carregados ($linhas linhas de carga); nada a fazer"
-else
-  docker compose run --rm etl python scripts/00_carregar_fontes.py --sem-reset
-fi
+  etapa "Construindo o playground (na primeira vez, leva alguns minutos)"
+  docker compose build playground
 
-etapa "Preparando o armazenamento"
-docker compose run --rm etl python scripts/preparar_armazenamento.py
+  etapa "Subindo o playground, o banco e o armazenamento"
+  docker compose up -d --wait
 
-etapa "Verificando o ambiente"
-docker compose run --rm etl python scripts/verificar_ambiente.py
+  etapa "Verificando"
+  docker compose exec playground python .lab/verificar.py
 
-printf '\nTudo pronto para trabalhar.\n'
+  printf '\nEntre no playground:\n  pelo terminal: docker compose exec playground bash\n  pelo VS Code:  F1 → Dev Containers: Attach to Running Container… → %s-playground-1 → abra /work\n' "$projeto"
+}
+
+main "$@"
+exit

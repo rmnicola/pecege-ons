@@ -27,6 +27,18 @@
           "link": "preparacao/",
           "tipo": "passo a passo"
         }
+      ],
+      "apoio": [
+        {
+          "rotulo": "Explorar o banco",
+          "link": "explorar-banco/",
+          "tipo": "roteiro"
+        },
+        {
+          "rotulo": "Explorar a API",
+          "link": "explorar-api/",
+          "tipo": "roteiro"
+        }
       ]
     },
     {
@@ -43,14 +55,7 @@
         "Gravar o resultado em Parquet num armazenamento de objetos compatível com S3.",
         "Diferenciar data warehouse, data lake e lakehouse."
       ],
-      "apresentacao": "dist/index.html",
-      "antes": [
-        {
-          "rotulo": "Atualizar o ambiente",
-          "link": "preparacao/",
-          "tipo": "passo a passo"
-        }
-      ]
+      "apresentacao": "dist/index.html"
     },
     {
       "slug": "2026-10-29-storytelling",

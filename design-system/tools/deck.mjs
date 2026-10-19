@@ -6,11 +6,11 @@
    A partir do HTML-fonte (que aponta para ../design-system/...), produz na pasta do deck:
      dist/index.html   arquivo único: CSS, JS, fontes e imagens embutidos (pronto para GitHub Pages);
                        com --nome X, sai como dist/X.html, para distribuir o arquivo avulso
-      dist/<pasta>.pdf  apenas com --pdf: um slide por página, 16:9
+     dist/<pasta>.pdf  apenas com --pdf: uma página por slide e por conteúdo substituído, 16:9
      qa/slide-NN.png   imagem de cada slide, para revisão visual
      qa/relatorio.json resultado das verificações
    Sai com código 1 se alguma verificação de erro falhar. */
-import { spawn } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -89,6 +89,9 @@ const excecoes = [];
 ws.addEventListener("message", (e) => { const m = JSON.parse(e.data);
   if (m.method === "Runtime.exceptionThrown") excecoes.push((m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text || "").split("\n").slice(0, 2).join(" ")); });
 await cdp("Runtime.enable");
+/* No PDF, cada página escolhe o seu estado: o beforeprint de deck.js levaria todos ao estado final. */
+if (args.includes("--pdf")) await cdp("Page.addScriptToEvaluateOnNewDocument", { source:
+  `{ const add = window.addEventListener.bind(window); window.addEventListener = (t, ...r) => t === "beforeprint" || t === "afterprint" ? undefined : add(t, ...r); }` });
 await cdp("Page.navigate", { url: pathToFileURL(saida).href });
 await new Promise((r) => setTimeout(r, 1500));
 await avaliar("document.fonts.ready.then(() => true)");
@@ -186,7 +189,7 @@ const VERIFICAR = (i) => `(() => {
   if (blocos > 4) avisos.push("muitos elementos na tela: " + blocos + " blocos (máximo 4)");
   const LAYOUTS = ${JSON.stringify(LAYOUTS)};
   const tipo = LAYOUTS.find((l) => s.classList.contains(l)) || ("sob medida: " + (s.dataset.modelo || "sem nome"));
-  if (!LAYOUTS.some((l) => s.classList.contains(l)) && !s.dataset.modelo) avisos.push("slide sob medida sem data-modelo (dê um nome curto para o registro de uso)");
+  if (!LAYOUTS.some((l) => s.classList.contains(l)) && !s.dataset.modelo) avisos.push("slide sob medida sem data-modelo (dê um nome curto)");
   return { slide: ${i} + 1, tipo, palavras, fundo: getComputedStyle(s).backgroundColor, imagemFundo: getComputedStyle(s).backgroundImage !== 'none', erros: [...new Set(erros)], avisos: [...new Set(avisos)] };
 })()`;
 
@@ -242,17 +245,35 @@ for (let i = 0; i < total; i++) {
   if (r) r.erros.push(...problemas);
 }
 
-/* ---------- 3. PDF ---------- */
+/* ---------- 3. PDF ----------
+   Uma página por slide no estado final e, quando um passo substitui conteúdo (data-sai),
+   uma página no último estado antes de cada saída: nada do que aparece na aula fica de fora. */
 if (!soSlide && args.includes("--pdf")) {
-  await avaliar("window.deck.prepararImpressao(); true");
+  await avaliar(`(() => { const st = document.createElement("style");
+    st.textContent = "@media print { .slide.fora-pdf { display: none !important; } }"; document.head.append(st); return true; })()`);
   await cdp("Emulation.setEmulatedMedia", { media: "print" });
-  const pdf = await cdp("Page.printToPDF", { printBackground: true, preferCSSPageSize: true });
-  fs.writeFileSync(path.join(dist, `${path.basename(pastaDeck)}.pdf`), Buffer.from(pdf.result.data, "base64"));
+  const estados = await avaliar(`window.deck.slides.map((s) => {
+    const itens = Array.from(s.querySelectorAll(".passo")).map((el, i) => ({
+      entra: el.dataset.passo !== undefined ? parseFloat(el.dataset.passo) : i + 1,
+      sai: el.dataset.sai !== undefined ? parseFloat(el.dataset.sai) : Infinity }));
+    const marcos = [...new Set(itens.flatMap((x) => [x.entra, x.sai]).filter((v) => v > 0 && v !== Infinity))].sort((a, b) => a - b);
+    const antesDeSair = itens.filter((x) => x.sai !== Infinity).map((x) => marcos.indexOf(x.sai));
+    return [...new Set([...antesDeSair, marcos.length])].sort((a, b) => a - b);
+  })`);
+  const partes = [];
+  for (let i = 0; i < estados.length; i++) for (const k of estados[i]) {
+    await avaliar(`window.deck.ir(${i}, false, ${k});
+      window.deck.slides.forEach((s, j) => s.classList.toggle("fora-pdf", j !== ${i})); true`);
+    const pdf = await cdp("Page.printToPDF", { printBackground: true, preferCSSPageSize: true });
+    const parte = path.join(perfil, `parte-${String(partes.length).padStart(3, "0")}.pdf`);
+    fs.writeFileSync(parte, Buffer.from(pdf.result.data, "base64"));
+    partes.push(parte);
+  }
+  execFileSync("qpdf", ["--empty", "--pages", ...partes, "--", path.join(dist, `${path.basename(pastaDeck)}.pdf`)]);
 }
 
 ws.close(); chrome.kill(); fs.rmSync(perfil, { recursive: true, force: true });
 fs.writeFileSync(path.join(qa, "relatorio.json"), JSON.stringify(relatorio, null, 2));
-if (!soSlide) registrarUso(relatorio);
 
 let falhou = false;
 for (const x of excecoes) { console.log(`✗ erro de JavaScript na página: ${x}`); falhou = true; }
@@ -265,29 +286,3 @@ for (const r of relatorio) {
 }
 console.log(`\n${saida}\n${qa}`);
 process.exit(falhou ? 1 : 0);
-
-/* ---------- Registro de uso dos tipos de slide ----------
-   design-system/uso.json guarda, por deck, o tipo de cada slide. USO.md resume:
-   layouts nunca usados e slides sob medida que se repetem (candidatos a template). */
-function registrarUso(rel) {
-  const ds = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
-  const arqJson = path.join(ds, "uso.json");
-  const uso = fs.existsSync(arqJson) ? JSON.parse(fs.readFileSync(arqJson, "utf8")) : {};
-  uso[path.relative(path.dirname(ds), src)] = rel.map((r) => ({ slide: r.slide, tipo: r.tipo }));
-  fs.writeFileSync(arqJson, JSON.stringify(uso, null, 2));
-
-  const cont = {}, onde = {};
-  for (const [deck, slides] of Object.entries(uso)) for (const { slide, tipo } of slides) {
-    cont[tipo] = (cont[tipo] || 0) + 1; (onde[tipo] ||= []).push(`${deck} #${slide}`);
-  }
-  const decks = Object.keys(uso).filter((d) => !d.includes("design-system/exemplos"));
-  const real = {}; for (const d of decks) for (const { tipo } of uso[d]) real[tipo] = (real[tipo] || 0) + 1;
-  const linhas = ["# Uso dos tipos de slide", "", "Gerado por `tools/deck.mjs` a cada build completo. Não edite à mão. O deck de exemplos do design system fica fora da contagem.", "",
-    `Decks registrados: ${decks.length ? decks.map((d) => "`" + d + "`").join(", ") : "nenhum ainda"}`, "", "## Pontos de partida", "", "| Layout | Usos |", "|---|---|",
-    ...LAYOUTS.map((l) => `| \`${l}\` | ${real[l] || 0}${real[l] ? "" : " (nunca usado)"} |`), "", "## Slides sob medida", "",
-    "Um nome que aparece 2 vezes ou mais é **candidato a virar template**. A decisão é do professor.", "", "| Modelo | Usos | Onde |", "|---|---|---|"];
-  const sob = Object.keys(real).filter((t) => t.startsWith("sob medida")).sort((a, b) => real[b] - real[a]);
-  for (const t of sob) linhas.push(`| ${t.replace("sob medida: ", "")}${real[t] >= 2 && !t.endsWith("sem nome") ? " ⭐" : ""} | ${real[t]} | ${onde[t].filter((o) => !o.includes("design-system/exemplos")).join("<br>")} |`);
-  if (!sob.length) linhas.push("| (nenhum ainda) | | |");
-  fs.writeFileSync(path.join(ds, "USO.md"), linhas.join("\n") + "\n");
-}

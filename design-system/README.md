@@ -4,7 +4,7 @@ Sistema de apresentações do **Treinamento em Análise de Dados – Analytics**
 
 ## Fonte visual e decisões
 
-O template original tem 7 slides, 16:9, 12192000×6858000 EMU (13⅓×7½ polegadas). A grade HTML é 1600×900. A capa, símbolos, marca ONS, prédio e ondas foram extraídos do próprio arquivo; `assets/proveniencia.json` registra partes e hash do template. Regenere os ativos com `python design-system/tools/extrair-template.py` caso o arquivo oficial seja atualizado.
+O template original tem 7 slides, 16:9, 12192000×6858000 EMU (13⅓×7½ polegadas). A grade HTML é 1600×900. A capa, símbolos, marca ONS, prédio e ondas foram extraídos do próprio arquivo.
 
 | Token | Cor | Origem e função |
 |---|---|---|
@@ -39,16 +39,12 @@ Margens horizontais 106px; área útil padrão de y=112 a y=758. Rodapé na faix
 ```text
 design-system/
 ├── assets/img/                    imagens e símbolos oficiais
-├── assets/proveniencia.json        rastreabilidade dos ativos
 ├── css/pecege-ons.css              tokens, componentes e layouts
 ├── js/deck.js                     navegação, passos, ajuda e rodapé
 ├── js/codigo.js                   bloco de documentação: highlight, cópia e ajuda
-├── tools/deck.mjs                 HTML offline, capturas, QA e PDF opcional
-├── tools/extrair-template.py      extração reproduzível dos ativos
+├── tools/deck.mjs                 HTML offline, capturas, QA e PDF opcional (exige qpdf)
 ├── references/template-visual.md  mapeamento da referência visual para HTML
-├── references/decks-inteli.md     ideias de slide dos decks Inteli para portar
-├── exemplos/exemplo.html          galeria de composições HTML
-└── USO.md / uso.json              registro gerado pelo build
+└── exemplos/exemplo.html          galeria de composições HTML
 ```
 
 Skill: `.agents/skills/apresentacao-pecege-ons/SKILL.md`. Contexto do curso e exigências em seu `references/curso.md`.
@@ -65,9 +61,9 @@ node design-system/tools/deck.mjs apresentacoes/<pasta>/deck.html --slide 3
 node design-system/tools/deck.mjs apresentacoes/<pasta>/deck.html --nome aula
 ```
 
-Build completo: `dist/aula.html` (arquivo único offline), `qa/slide-NN.png`, capturas dos passos, `qa/relatorio.json` e atualização de `USO.md`. Se solicitado, acrescente `--pdf` para exportar `dist/<pasta>.pdf`.
+Build completo: `dist/aula.html` (arquivo único offline), `qa/slide-NN.png`, capturas dos passos, e `qa/relatorio.json`. Se solicitado, acrescente `--pdf` para exportar `dist/<pasta>.pdf`: uma página por slide e uma por conteúdo que um passo substitui.
 
-Dependências: Node.js 22+ (WebSocket nativo), Chromium no PATH. Extração de ativos do template: Python 3, biblioteca padrão. Nenhum pacote npm é necessário.
+Dependências: Node.js 22+ (WebSocket nativo), Chromium no PATH. Nenhum pacote npm é necessário.
 
 **Formato de apresentação e entrega: exclusivamente HTML**, por decisão do professor. O template enviado serve como referência visual e fonte de ativos; consulte `references/template-visual.md`. O HTML gerado funciona offline. PDF é uma exportação opcional, somente quando solicitada. Os exemplos são uma galeria visual, não aulas completas nem resultados calculados sobre os datasets.
 
@@ -138,4 +134,4 @@ Preserve faltantes como faltantes, marque imputações, respeite granularidade e
 
 ## Origem e evolução
 
-`deck.js` e `deck.mjs` derivam das ferramentas locais de `../exec-inteli-ai-for-business/design-system/`, adaptadas para rodapé, layouts e verificações deste curso. CSS, ativos e documentação são próprios. Não foram copiados os históricos de uso, decks ou ativos Inteli. Modelos recorrentes aparecem em `USO.md`; promova componentes com a decisão do professor. Ideias de composição dos decks do professor no Inteli (IA Executiva e M8) estão catalogadas em `references/decks-inteli.md`, com a situação de cada uma.
+`deck.js` e `deck.mjs` derivam das ferramentas locais de `../exec-inteli-ai-for-business/design-system/`, adaptadas para rodapé, layouts e verificações deste curso. CSS, ativos e documentação são próprios. Não foram copiados decks ou ativos Inteli. Promova composições recorrentes a componentes com a decisão do professor.
