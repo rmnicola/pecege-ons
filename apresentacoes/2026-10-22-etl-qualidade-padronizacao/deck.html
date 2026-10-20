@@ -145,7 +145,7 @@
   #databricks .marca-ferramenta { margin:auto 0; display:flex; flex-direction:column; align-items:center; gap:56px; }
   #databricks .marca-ferramenta img { width:720px; height:auto; }
   #databricks .marca-ferramenta a { font-size:36px; }
-  #etl2 #solucao-carga .bloco.cheio, #etl2 #solucao-carga-2 .bloco.cheio { margin:auto 0; --codigo-fonte:30px; --codigo-entrelinha:1.45; --codigo-padding:26px 36px; }
+  #etl2 #solucao-carga .bloco.cheio, #etl2 #solucao-carga-2 .bloco.cheio, #etl2 #solucao-s3 .bloco.cheio { margin:auto 0; --codigo-fonte:30px; --codigo-entrelinha:1.45; --codigo-padding:26px 36px; }
 </style>
 </head>
 <body><main class="deck" id="etl2">
@@ -153,10 +153,12 @@
   <div class="marcas-capa"><img class="pecege" src="../../design-system/assets/img/simbolo-pecege-branco.svg" alt="Pecege"><div class="ons-recorte"><img src="../../design-system/assets/img/logo-ons-branco.png" alt="ONS"></div></div>
   <div class="conteudo"><h1 class="titulo-capa">ETL II</h1><p class="subtitulo">Qualidade e Padronização</p><p class="autor">Rodrigo Nicola</p></div>
 </section>
+
 <section class="slide legal sem-numero" id="legal" data-max-palavras="70">
   <div class="conteudo"><p class="texto">A responsabilidade pela idoneidade, originalidade e licitude dos conteúdos didáticos apresentados é do professor.</p><p class="texto"><strong>Proibida a reprodução</strong>, total ou parcial, sem autorização.</p><a class="legenda" href="https://www.planalto.gov.br/ccivil_03/leis/l9610.htm">Lei nº 9610/98</a></div>
   <img class="edificio" src="../../design-system/assets/img/edificio-pecege.svg" alt=""><img class="simbolo-edificio" src="../../design-system/assets/img/simbolo-pecege.svg" alt="Pecege">
 </section>
+
 <section class="slide agenda" id="agenda-inicio" data-agora="0"><div class="conteudo"><div class="itens"></div></div></section>
 
 <section class="slide" id="revisao" data-modelo="pipeline-encaixes" data-max-palavras="50">
@@ -341,63 +343,7 @@
   <div class="conteudo"><h2 class="titulo">Dados faltantes · no pandas</h2><div class="bloco" data-codigo="mediana" data-arquivo="pandas"></div></div>
 </section>
 
-<section class="slide agenda" id="agenda-laboratorio" data-agora="1"><div class="conteudo"><div class="itens"></div></div></section>
-
-<section class="slide" id="fluxo-lab" data-modelo="fluxo-etl" data-max-palavras="50">
-  <div class="conteudo"><h2 class="titulo">Duas fontes, um CSV</h2>
-    <div class="fluxo">
-      <svg class="ligacoes" viewBox="0 0 1388 480" aria-hidden="true"><defs><marker id="seta-fluxo-lab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="currentColor"/></marker></defs>
-        <path class="passo" data-passo="1" d="M420 95 H470" fill="none" stroke="currentColor" stroke-width="4" marker-end="url(#seta-fluxo-lab)"/>
-        <path class="passo" data-passo="2" d="M710 95 H750 Q790 95 790 135 V200 Q790 240 830 240 M420 385 H750 Q790 385 790 345 V280 Q790 240 830 240" fill="none" stroke="currentColor" stroke-width="4"/>
-        <path class="passo" data-passo="2" d="M830 240 H1030" fill="none" stroke="currentColor" stroke-width="4" marker-end="url(#seta-fluxo-lab)"/>
-      </svg>
-      <div class="no fonte" style="left:0;top:20px;width:420px;height:150px"><svg viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><ellipse cx="64" cy="24" rx="43" ry="16"/><path d="M21 24 V100 C21 121 107 121 107 100 V24 M21 51 C21 72 107 72 107 51 M21 77 C21 98 107 98 107 77"/></svg><div><span class="rotulo-termo">PostgreSQL</span><h3>Carga elétrica</h3></div></div>
-      <div class="no fonte" style="left:0;top:310px;width:420px;height:150px"><svg viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" aria-hidden="true"><path d="M50 76 V25 A14 14 0 0 1 78 25 V76 A27 27 0 1 1 50 76 Z"/><path d="M64 42 V91 M90 33 H106 M90 51 H100 M90 69 H106"/><circle cx="64" cy="96" r="10" fill="currentColor"/></svg><div><span class="rotulo-termo">API · Open-Meteo</span><h3>Temperatura</h3></div></div>
-      <div class="no etapa passo" data-passo="1" style="left:480px;top:45px;width:230px;height:100px"><h3>Transformar</h3></div>
-      <p class="operacao passo" data-passo="2" style="left:830px;top:190px;width:200px">Combinar</p>
-      <div class="resultado passo" data-passo="2" style="left:1045px;top:140px;width:340px"><div class="arquivo"><svg viewBox="0 0 70 84" aria-hidden="true"><path d="M8 3 H44 L62 21 V80 H8 Z M44 3 V21 H62 M19 38 H51 M19 50 H51 M19 62 H51" fill="none" stroke="currentColor" stroke-width="5"/></svg><span>dados_limpos.csv</span></div><p>Carga + temperatura</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="slide" id="ambiente2" data-modelo="comando-tarefa" data-max-palavras="40">
-  <div class="conteudo"><h2 class="titulo">Ambiente</h2>
-    <div class="tarefa-layout"><div class="terminal-largo" data-codigo="atualizar" data-arquivo="playground" data-linguagem="Terminal"></div></div>
-    <p class="referencia">Passo a passo: <a href="https://rmnicola.github.io/pecege-ons/aulas/2026-10-20-etl-i/preparacao/">rmnicola.github.io/pecege-ons</a></p>
-  </div>
-</section>
-
-<section class="slide agenda" id="agenda-intervalo" data-agora="2"><div class="conteudo"><div class="itens"></div></div></section>
-<section class="slide agenda" id="agenda-desafio" data-agora="3"><div class="conteudo"><div class="itens"></div></div></section>
-
-<section class="slide" id="desafio1" data-modelo="desafio-fluxo" data-max-palavras="60">
-  <div class="conteudo"><h2 class="titulo">Desafio · parte 1: arrumar a carga</h2>
-    <div class="fluxo-desafio">
-      <div data-codigo="rodar" data-arquivo="playground" data-linguagem="Terminal"></div>
-      <div class="desafio-seta" aria-hidden="true">↓<span>gera</span></div>
-      <div class="planilha">
-        <div class="planilha-aba"><svg viewBox="0 0 70 84" aria-hidden="true"><path d="M8 3 H44 L62 21 V80 H8 Z M44 3 V21 H62 M19 38 H51 M19 50 H51 M19 62 H51" fill="none" stroke="currentColor" stroke-width="5"/></svg>saida/dados_limpos.csv</div>
-        <table>
-          <thead><tr><th>id_<wbr>subsistema</th><th>instante</th><th>carga_<wbr>mwmed</th><th class="nova">carga_<wbr>imputada</th><th>temperatura_<wbr>c</th></tr></thead>
-          <tbody>
-            <tr><td>N</td><td>2025-01-01 00:00:00</td><td>7097.75099999</td><td>False</td><td>24.0</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <p class="referencia">Comece por aula2/limpar.py · passos 1 a 6</p>
-  </div>
-</section>
-
-<section class="slide" id="solucao-carga" data-modelo="codigo-consulta" data-max-palavras="120">
-  <div class="conteudo"><h2 class="titulo">Solução · arrumar a carga</h2><div class="bloco" data-codigo="solucao_carga" data-arquivo="limpar.py"></div></div>
-</section>
-<section class="slide" id="solucao-carga-2" data-modelo="codigo-consulta" data-max-palavras="120">
-  <div class="conteudo"><h2 class="titulo">Solução · arrumar a carga</h2><div class="bloco" data-codigo="solucao_carga_2" data-arquivo="limpar.py"></div></div>
-</section>
-<section class="slide" id="solucao-imputar" data-modelo="codigo-consulta" data-max-palavras="120">
-  <div class="conteudo"><h2 class="titulo">Solução · juntar e gravar</h2><div class="bloco" data-codigo="solucao_juntar" data-arquivo="limpar.py"></div></div>
-</section>
+<section class="slide agenda" id="agenda-carga" data-agora="1"><div class="conteudo"><div class="itens"></div></div></section>
 
 <section class="slide etl-destaque" id="etl-carregar" data-modelo="etl-tres-etapas" data-max-palavras="40">
   <div class="conteudo"><h2 class="titulo">ETL</h2>
@@ -417,27 +363,62 @@
   <div class="conteudo"><h2 class="titulo">Carregar: Parquet no armazenamento</h2>
     <div class="fluxo">
       <svg class="ligacoes" viewBox="0 0 1388 480" aria-hidden="true"><defs><marker id="seta-fluxo-carga" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="currentColor"/></marker></defs>
-        <path d="M420 95 H470" fill="none" stroke="currentColor" stroke-width="4" marker-end="url(#seta-fluxo-carga)"/>
-        <path d="M710 95 H750 Q790 95 790 135 V200 Q790 240 830 240 M420 385 H750 Q790 385 790 345 V280 Q790 240 830 240" fill="none" stroke="currentColor" stroke-width="4"/>
-        <path d="M830 240 H845" fill="none" stroke="currentColor" stroke-width="4"/>
-        
-        <path class="passo" data-passo="2" d="M1020 240 H1100" fill="none" stroke="currentColor" stroke-width="4" marker-end="url(#seta-fluxo-carga)"/>
+        <path d="M400 240 H450" fill="none" stroke="currentColor" stroke-width="4" marker-end="url(#seta-fluxo-carga)"/>
+        <path d="M690 240 H770" fill="none" stroke="currentColor" stroke-width="4" marker-end="url(#seta-fluxo-carga)"/>
+        <path class="passo" data-passo="2" d="M950 240 H1030" fill="none" stroke="currentColor" stroke-width="4" marker-end="url(#seta-fluxo-carga)"/>
       </svg>
-      <div class="no fonte" style="left:0;top:20px;width:420px;height:150px"><svg viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><ellipse cx="64" cy="24" rx="43" ry="16"/><path d="M21 24 V100 C21 121 107 121 107 100 V24 M21 51 C21 72 107 72 107 51 M21 77 C21 98 107 98 107 77"/></svg><div><span class="rotulo-termo">PostgreSQL</span><h3>Carga elétrica</h3></div></div>
-      <div class="no fonte" style="left:0;top:310px;width:420px;height:150px"><svg viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" aria-hidden="true"><path d="M50 76 V25 A14 14 0 0 1 78 25 V76 A27 27 0 1 1 50 76 Z"/><path d="M64 42 V91 M90 33 H106 M90 51 H100 M90 69 H106"/><circle cx="64" cy="96" r="10" fill="currentColor"/></svg><div><span class="rotulo-termo">API · Open-Meteo</span><h3>Temperatura</h3></div></div>
-      <div class="no etapa" style="left:480px;top:45px;width:230px;height:100px"><h3>Transformar</h3></div>
-      <div class="no saida passo" data-passo="0" data-sai="1" style="left:850px;top:165px;width:170px;height:150px"><svg viewBox="0 0 70 84" aria-hidden="true"><path d="M8 3 H44 L62 21 V80 H8 Z M44 3 V21 H62 M19 38 H51 M19 50 H51 M19 62 H51" fill="none" stroke="currentColor" stroke-width="5"/></svg><h3>CSV</h3></div>
-      <div class="no saida passo" data-passo="1" style="left:850px;top:165px;width:170px;height:150px"><svg viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="5" aria-hidden="true"><rect x="16" y="20" width="96" height="88" rx="6"/><path d="M48 20 V108 M80 20 V108 M16 44 H112"/></svg><h3>Parquet</h3></div>
-      <div class="no saida destaque passo" data-passo="2" style="left:1110px;top:165px;width:200px;height:150px"><svg viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="64" cy="25" rx="47" ry="15"/><path d="M17 25 L28 103 C31 121 97 121 100 103 L111 25 M40 58 H88 M44 77 H84"/></svg><h3>RustFS</h3></div>
+      <div class="no fonte" style="left:0;top:165px;width:400px;height:150px"><svg viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><ellipse cx="64" cy="24" rx="43" ry="16"/><path d="M21 24 V100 C21 121 107 121 107 100 V24 M21 51 C21 72 107 72 107 51 M21 77 C21 98 107 98 107 77"/></svg><div><span class="rotulo-termo">PostgreSQL</span><h3>Carga elétrica</h3></div></div>
+      <div class="no etapa" style="left:460px;top:190px;width:230px;height:100px"><h3>Transformar</h3></div>
+      <div class="no saida passo" data-passo="0" data-sai="1" style="left:780px;top:165px;width:170px;height:150px"><svg viewBox="0 0 70 84" aria-hidden="true"><path d="M8 3 H44 L62 21 V80 H8 Z M44 3 V21 H62 M19 38 H51 M19 50 H51 M19 62 H51" fill="none" stroke="currentColor" stroke-width="5"/></svg><h3>CSV</h3></div>
+      <div class="no saida passo" data-passo="1" style="left:780px;top:165px;width:170px;height:150px"><svg viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="5" aria-hidden="true"><rect x="16" y="20" width="96" height="88" rx="6"/><path d="M48 20 V108 M80 20 V108 M16 44 H112"/></svg><h3>Parquet</h3></div>
+      <div class="no saida destaque passo" data-passo="2" style="left:1040px;top:165px;width:220px;height:150px"><svg viewBox="0 0 128 128" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="64" cy="25" rx="47" ry="15"/><path d="M17 25 L28 103 C31 121 97 121 100 103 L111 25 M40 58 H88 M44 77 H84"/></svg><h3>RustFS</h3></div>
     </div>
   </div>
 </section>
 
-<section class="slide" id="solucao-s3" data-modelo="codigo-consulta" data-max-palavras="120">
-  <div class="conteudo"><h2 class="titulo">Solução · Parquet no S3</h2><div class="bloco" data-codigo="solucao_s3" data-arquivo="limpar.py"></div></div>
+<section class="slide" id="ambiente2" data-modelo="comando-tarefa" data-max-palavras="40">
+  <div class="conteudo"><h2 class="titulo">Ambiente</h2>
+    <div class="tarefa-layout"><div class="terminal-largo" data-codigo="atualizar" data-arquivo="playground" data-linguagem="Terminal"></div></div>
+    <p class="referencia">Passo a passo: <a href="https://rmnicola.github.io/pecege-ons/aulas/2026-10-20-etl-i/preparacao/">rmnicola.github.io/pecege-ons</a></p>
+  </div>
 </section>
 
-<section class="slide agenda" id="agenda-lakehouse" data-agora="4"><div class="conteudo"><div class="itens"></div></div></section>
+<section class="slide" id="desafio1" data-modelo="desafio-fluxo" data-max-palavras="60">
+  <div class="conteudo"><h2 class="titulo">Desafio: arrumar e carregar a carga</h2>
+    <div class="fluxo-desafio">
+      <div data-codigo="rodar" data-arquivo="playground" data-linguagem="Terminal"></div>
+      <div class="desafio-seta" aria-hidden="true">↓<span>envia</span></div>
+      <div class="planilha">
+        <div class="planilha-aba"><svg viewBox="0 0 70 84" aria-hidden="true"><path d="M8 3 H44 L62 21 V80 H8 Z M44 3 V21 H62 M19 38 H51 M19 50 H51 M19 62 H51" fill="none" stroke="currentColor" stroke-width="5"/></svg>s3://aula2/carga/carga_limpa.parquet</div>
+        <table>
+          <thead><tr><th>id_<wbr>subsistema</th><th>instante</th><th>carga_<wbr>mwmed</th><th class="nova">carga_<wbr>imputada</th></tr></thead>
+          <tbody>
+            <tr><td>N</td><td>2025-01-01 00:00:00</td><td>7097.75099999</td><td>False</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="referencia">Comece por aula2/limpar.py · passos 1 a 6</p>
+  </div>
+</section>
+
+<section class="slide agenda" id="agenda-intervalo" data-agora="2"><div class="conteudo"><div class="itens"></div></div></section>
+
+<section class="slide agenda" id="agenda-desafio" data-agora="3"><div class="conteudo"><div class="itens"></div></div></section>
+
+<section class="slide agenda" id="agenda-fechamento" data-agora="4"><div class="conteudo"><div class="itens"></div></div></section>
+
+<section class="slide" id="solucao-carga" data-modelo="codigo-consulta" data-max-palavras="120">
+  <div class="conteudo"><h2 class="titulo">Solução · arrumar a carga</h2><div class="bloco" data-codigo="solucao_carga" data-arquivo="limpar.py"></div></div>
+</section>
+
+<section class="slide" id="solucao-carga-2" data-modelo="codigo-consulta" data-max-palavras="120">
+  <div class="conteudo"><h2 class="titulo">Solução · arrumar a carga</h2><div class="bloco" data-codigo="solucao_carga_2" data-arquivo="limpar.py"></div></div>
+</section>
+
+<section class="slide" id="solucao-s3" data-modelo="codigo-consulta" data-max-palavras="120">
+  <div class="conteudo"><h2 class="titulo">Solução · carregar no S3</h2><div class="bloco" data-codigo="solucao_s3" data-arquivo="limpar.py"></div></div>
+</section>
 
 <section class="slide" id="data-lake" data-modelo="arquitetura-visual" data-max-palavras="10">
   <div class="conteudo"><h2 class="titulo">Data lake</h2>
@@ -471,17 +452,17 @@
   <img class="edificio" src="../../design-system/assets/img/edificio-pecege.svg" alt="">
   <img class="simbolo-edificio" src="../../design-system/assets/img/simbolo-pecege.svg" alt="Pecege">
 </section>
+
 <section class="slide referencias" id="referencias" data-max-palavras="160">
   <div class="conteudo"><h2 class="titulo">Referências e dados</h2><div class="lista-referencias">
     <p>Kimball, R.; Caserta, J. (2004). The Data Warehouse ETL Toolkit. Wiley.</p>
     <p>UK Government Data Quality Hub. <a href="https://www.gov.uk/government/publications/the-government-data-quality-framework">The Government Data Quality Framework</a></p>
-    <p>pandas — <a href="https://pandas.pydata.org/docs/user_guide/missing_data.html">Working with missing data</a> · <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.merge.html">DataFrame.merge</a></p>
+    <p>pandas — <a href="https://pandas.pydata.org/docs/user_guide/missing_data.html">Working with missing data</a> · <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_parquet.html">DataFrame.to_parquet</a></p>
     <p>Armbrust, M. et al. (2021). <a href="https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf">Lakehouse: A New Generation of Open Platforms</a>. CIDR.</p>
     <p><a href="https://parquet.apache.org/docs/">Apache Parquet</a> · <a href="https://docs.rustfs.com/">RustFS</a> · <a href="https://docs.databricks.com/aws/pt/">Documentação do Databricks</a></p>
     <p>ONS — <a href="https://dados.ons.org.br/dataset/curva-carga">Curva de Carga Horária</a> · <a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a> (CC BY 4.0)</p>
   </div></div>
 </section>
-
 <script src="../../design-system/js/codigo.js"></script>
 <script>
   window.PECEGE_DS = '../../design-system';
@@ -554,28 +535,20 @@ z = (carga["carga_mwmed"] - media) / desvio
 carga["carga_mwmed"] = carga["carga_mwmed"].where(z.abs() <= 3)
 
 # Passo 5. Dados faltantes
-carga = completar_horas(carga)
 carga["carga_imputada"] = carga["carga_mwmed"].isna()
 carga["carga_mwmed"] = carga["carga_mwmed"].interpolate()`,
       ajudas:[
         { inicio:0, fim:4, texto:'As três cargas com erro têm z entre 4,9 e 10,4; a maior carga normal, 1,96. Com |z| maior que 3, o valor fica vazio.' },
-        { inicio:6, fim:9, texto:'completar_horas cria as horas que não vieram. A marca vem antes de preencher. São 9 horas: 3 células vazias, 3 outliers e 3 que não vieram.' }
+        { inicio:6, fim:8, texto:'A marca vem antes de preencher. São 6 horas: 3 células vazias e 3 outliers.' }
       ] },
-    solucao_juntar: { codigo:`clima = ler_clima()
-dados = carga.merge(clima, on=["id_subsistema", "instante"], how="left")
-print(len(dados), "linhas")
-print(dados.isna().sum())
-dados.to_csv("saida/dados_limpos.csv", index=False)`,
+    solucao_s3: { codigo:`# Passo 6. Carregar no armazenamento S3
+print("Passo 6,", len(carga), "linhas")
+carga.to_parquet("saida/carga_limpa.parquet", index=False)
+enviar_para_s3("saida/carga_limpa.parquet", "carga/carga_limpa.parquet")`,
       ajudas:[
-        { inicio:0, fim:1, texto:'A temperatura vem da Open-Meteo, como na aula 1. A carga já tem uma linha por subsistema e hora: a junção não cria nem perde linhas.' },
-        { inicio:2, fim:3, texto:'O certo é 672 linhas e nenhum vazio. A coluna carga_imputada diz quais horas foram preenchidas.' },
-        { inicio:4, fim:4, texto:'Grava o CSV. index=False evita uma coluna extra com o número da linha.' }
-      ] },
-    solucao_s3: { codigo:`dados.to_parquet("saida/dados_limpos.parquet", index=False)
-enviar_para_s3("saida/dados_limpos.parquet", "carga_clima/dados.parquet")`,
-      ajudas:[
-        { inicio:0, fim:0, texto:'O Parquet guarda os tipos das colunas (datas, números, True/False), ao contrário do CSV, e ocupa menos espaço.' },
-        { inicio:1, fim:1, texto:'enviar_para_s3 é uma das funções prontas de aula2/fontes.py: envia o arquivo para o bucket aula2. Confira no console do RustFS.' }
+        { inicio:1, fim:1, texto:'O certo é 672 linhas: 4 subsistemas × 168 horas (7 dias × 24).' },
+        { inicio:2, fim:2, texto:'O Parquet guarda os tipos das colunas (datas, números, True/False), ao contrário do CSV, e ocupa menos espaço.' },
+        { inicio:3, fim:3, texto:'enviar_para_s3 é uma das funções prontas de aula2/fontes.py: envia o arquivo para o bucket aula2. Confira no console do RustFS.' }
       ] }
   };
   document.querySelectorAll('[data-codigo]').forEach(alvo => {
@@ -663,7 +636,7 @@ enviar_para_s3("saida/dados_limpos.parquet", "carga_clima/dados.parquet")`,
     }
   });
 
-  const AGENDA = ['Transformação', 'O laboratório', 'Intervalo', 'Desafio', 'Ferramentas de mercado'];
+  const AGENDA = ['Transformação', 'Carga', 'Intervalo', 'Desafio', 'Solução e arquiteturas'];
   document.querySelectorAll('.agenda').forEach(slide => {
     const atual = Number(slide.dataset.agora);
     const itens = slide.querySelector('.itens');

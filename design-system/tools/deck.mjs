@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /* Gera, verifica e exporta um deck Pecege–ONS. Adaptado do sistema Inteli.
 
-   node design-system/tools/deck.mjs <deck.html> [--slide N] [--nome arquivo] [--pdf]
+   node design-system/tools/deck.mjs <deck.html> [--slide N] [--nome arquivo] [--pdf [--passos]]
 
    A partir do HTML-fonte (que aponta para ../design-system/...), produz na pasta do deck:
      dist/index.html   arquivo único: CSS, JS, fontes e imagens embutidos (pronto para GitHub Pages);
                        com --nome X, sai como dist/X.html, para distribuir o arquivo avulso
-     dist/<pasta>.pdf  apenas com --pdf: uma página por slide e por conteúdo substituído, 16:9
+     dist/<pasta>.pdf  apenas com --pdf: uma página por slide e por conteúdo substituído, 16:9;
+                       com --passos, uma página por estado de cada slide, todas com o número do slide
      qa/slide-NN.png   imagem de cada slide, para revisão visual
      qa/relatorio.json resultado das verificações
    Sai com código 1 se alguma verificação de erro falhar. */
@@ -257,6 +258,7 @@ if (!soSlide && args.includes("--pdf")) {
       entra: el.dataset.passo !== undefined ? parseFloat(el.dataset.passo) : i + 1,
       sai: el.dataset.sai !== undefined ? parseFloat(el.dataset.sai) : Infinity }));
     const marcos = [...new Set(itens.flatMap((x) => [x.entra, x.sai]).filter((v) => v > 0 && v !== Infinity))].sort((a, b) => a - b);
+    if (${args.includes("--passos")}) return marcos.length ? [...marcos.keys(), marcos.length] : [0];
     const antesDeSair = itens.filter((x) => x.sai !== Infinity).map((x) => marcos.indexOf(x.sai));
     return [...new Set([...antesDeSair, marcos.length])].sort((a, b) => a - b);
   })`);

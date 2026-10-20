@@ -2,16 +2,11 @@
 
     python .lab/gabarito/aula2/limpar.py
 
-Desafio: arrumar a carga e carregar o resultado.
+Desafio: arrumar a carga e carregar o resultado no armazenamento S3.
 
 A carga chega da cópia de laboratório com cinco tipos de falha, um em cada passo.
-A temperatura vem da Open-Meteo, como na aula 1, e chega certa.
-
-Parte 1, passos 1 a 6: arrumar os dados e gravar saida/dados_limpos.csv:
-
-    id_subsistema,instante,carga_mwmed,carga_imputada,temperatura_c
-
-Parte 2, passo 7: carregar o resultado no armazenamento S3.
+Nos passos 1 a 5, você arruma a carga; no passo 6, grava o resultado em Parquet
+e o envia para o RustFS.
 
 Rode quantas vezes quiser:
 
@@ -28,7 +23,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "aula2"))
-from fontes import completar_horas, enviar_para_s3, ler_carga, ler_clima  # noqa: E402
+from fontes import enviar_para_s3, ler_carga  # noqa: E402
 
 carga = ler_carga()
 print("Carga:", len(carga), "linhas")
@@ -77,14 +72,8 @@ print(carga.groupby("id_subsistema")["carga_mwmed"].max())
 
 
 # Passo 5. Dados faltantes
-# Cada subsistema deveria ter 168 horas (7 dias × 24), mas algumas não vieram; e há
-# cargas vazias (as que já vieram vazias e as esvaziadas no passo 4).
-# Primeiro, crie as horas que faltam: completar_horas(carga) devolve a tabela com
-# todas as horas, com a carga vazia nas que não vieram.
-carga = completar_horas(carga)
-print("Passo 5, horas por subsistema:")
-print(carga["id_subsistema"].value_counts())  # o certo é 168 em cada
-# Depois, marque quais cargas estão vazias e preencha com interpolação
+# Algumas cargas estão vazias: as que já vieram vazias e as esvaziadas no passo 4.
+# Primeiro, marque quais estão vazias; depois, preencha com interpolação
 # (um valor entre a hora anterior e a seguinte).
 #     isna         https://pandas.pydata.org/docs/reference/api/pandas.Series.isna.html
 #     interpolate  https://pandas.pydata.org/docs/reference/api/pandas.Series.interpolate.html
@@ -94,19 +83,11 @@ print("Passo 5, cargas vazias:", carga["carga_mwmed"].isna().sum())  # o certo �
 print("Passo 5, horas preenchidas:", carga["carga_imputada"].sum())
 
 
-# Passo 6. Juntar e gravar
-# Quando os passos 1 a 5 estiverem prontos, tire o # das linhas abaixo.
-# O certo é 672 linhas e nenhum valor vazio.
-clima = ler_clima()
-dados = carga.merge(clima, on=["id_subsistema", "instante"], how="left")
-print(len(dados), "linhas")
-print(dados.isna().sum())
-dados.to_csv("saida/dados_limpos.csv", index=False)
-
-
-# Passo 7 (parte 2). Carregar no armazenamento S3
-# Tire o # das linhas abaixo: elas gravam os dados em Parquet e enviam o arquivo.
+# Passo 6. Carregar no armazenamento S3
+# O certo é 672 linhas: 4 subsistemas × 168 horas (7 dias × 24).
+# Depois, tire o # das duas últimas linhas: elas gravam a carga em Parquet e enviam o arquivo.
 # Confira no console: http://localhost:9001/rustfs/console/ (usuário ons_lab, senha ons_lab_s3)
 #     to_parquet  https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_parquet.html
-dados.to_parquet("saida/dados_limpos.parquet", index=False)
-enviar_para_s3("saida/dados_limpos.parquet", "carga_clima/dados.parquet")
+print("Passo 6,", len(carga), "linhas")
+carga.to_parquet("saida/carga_limpa.parquet", index=False)
+enviar_para_s3("saida/carga_limpa.parquet", "carga/carga_limpa.parquet")

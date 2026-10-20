@@ -14,7 +14,7 @@
     {
       "titulo": "Passo 2. Formato errado",
       "texto": [
-        "Quatro números usam vírgula. Primeiro a vírgula vira ponto; depois `pd.to_numeric` converte o texto. Com `errors=\"coerce\"`, as células vazias viram vazio de verdade (NaN), que o passo 6 preenche."
+        "Quatro números usam vírgula. Primeiro a vírgula vira ponto; depois `pd.to_numeric` converte o texto. Com `errors=\"coerce\"`, as células vazias viram vazio de verdade (NaN), que o passo 5 preenche."
       ],
       "arquivo": "aula2/limpar.py",
       "codigo": "# Passo 2. Formato errado\n...\ncarga[\"carga_mwmed\"] = pd.to_numeric(carga[\"carga_mwmed\"].str.replace(\",\", \".\"), errors=\"coerce\")",
@@ -41,29 +41,20 @@
     {
       "titulo": "Passo 5. Dados faltantes",
       "texto": [
-        "Três horas não vieram: `completar_horas` cria todas as horas, com a carga vazia nas que faltavam. Depois, a marca vem antes de preencher: `isna` diz quais cargas estão vazias, e `interpolate` preenche cada uma com um valor entre a hora anterior e a seguinte. São 9 horas: 3 células vazias, 3 outliers e 3 que não vieram."
+        "A marca vem antes de preencher: `isna` diz quais cargas estão vazias, e `interpolate` preenche cada uma com um valor entre a hora anterior e a seguinte do mesmo subsistema. São 6 horas: 3 células vazias e 3 outliers."
       ],
       "arquivo": "aula2/limpar.py",
-      "codigo": "# Passo 5. Dados faltantes\n...\ncarga = completar_horas(carga)\n...\ncarga[\"carga_imputada\"] = carga[\"carga_mwmed\"].isna()\ncarga[\"carga_mwmed\"] = carga[\"carga_mwmed\"].interpolate()",
-      "saida": "Passo 5, horas por subsistema:\nid_subsistema\nN     168\nNE    168\nS     168\nSE    168\nPasso 5, cargas vazias: 0\nPasso 5, horas preenchidas: 9"
+      "codigo": "# Passo 5. Dados faltantes\n...\ncarga[\"carga_imputada\"] = carga[\"carga_mwmed\"].isna()\ncarga[\"carga_mwmed\"] = carga[\"carga_mwmed\"].interpolate()",
+      "saida": "Passo 5, cargas vazias: 0\nPasso 5, horas preenchidas: 6"
     },
     {
-      "titulo": "Passo 6. Juntar e gravar",
+      "titulo": "Passo 6. Carregar no S3",
       "texto": [
-        "Basta tirar o `#` das cinco linhas. A temperatura vem da Open-Meteo, como na aula 1."
+        "O certo é 672 linhas: 4 subsistemas × 168 horas. Depois, basta tirar o `#` das duas últimas linhas. O Parquet guarda os tipos das colunas; `enviar_para_s3` está em `aula2/fontes.py`. O objeto aparece no bucket `aula2` do console do RustFS."
       ],
       "arquivo": "aula2/limpar.py",
-      "codigo": "# Passo 6. Juntar e gravar\n...\nclima = ler_clima()\ndados = carga.merge(clima, on=[\"id_subsistema\", \"instante\"], how=\"left\")\nprint(len(dados), \"linhas\")\nprint(dados.isna().sum())\ndados.to_csv(\"saida/dados_limpos.csv\", index=False)",
-      "saida": "672 linhas\nid_subsistema     0\ninstante          0\ncarga_mwmed       0\ncarga_imputada    0\ntemperatura_c     0"
-    },
-    {
-      "titulo": "Passo 7. Carregar no S3",
-      "texto": [
-        "Basta tirar o `#` das duas linhas. O Parquet guarda os tipos das colunas; `enviar_para_s3` está em `aula2/fontes.py`. O objeto aparece no bucket `aula2` do console do RustFS."
-      ],
-      "arquivo": "aula2/limpar.py",
-      "codigo": "# Passo 7 (parte 2). Carregar no armazenamento S3\n...\ndados.to_parquet(\"saida/dados_limpos.parquet\", index=False)\nenviar_para_s3(\"saida/dados_limpos.parquet\", \"carga_clima/dados.parquet\")",
-      "saida": "enviado para s3://aula2/carga_clima/dados.parquet"
+      "codigo": "# Passo 6. Carregar no armazenamento S3\n...\nprint(\"Passo 6,\", len(carga), \"linhas\")\ncarga.to_parquet(\"saida/carga_limpa.parquet\", index=False)\nenviar_para_s3(\"saida/carga_limpa.parquet\", \"carga/carga_limpa.parquet\")",
+      "saida": "Passo 6, 672 linhas\nenviado para s3://aula2/carga/carga_limpa.parquet"
     }
   ]
 }
