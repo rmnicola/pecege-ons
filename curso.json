@@ -37,6 +37,11 @@
           "rotulo": "Explorar a API",
           "link": "explorar-api/",
           "tipo": "roteiro"
+        },
+        {
+          "rotulo": "Gabarito do desafio",
+          "link": "gabarito/",
+          "tipo": "passo a passo"
         }
       ]
     },
