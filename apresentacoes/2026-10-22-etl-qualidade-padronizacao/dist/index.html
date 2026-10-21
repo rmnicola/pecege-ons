@@ -1007,6 +1007,7 @@ enviar_para_s3("saida/carga_limpa.parquet", "carga/carga_limpa.parquet")`,
    J, ↓: pula para o próximo slide, ignorando as animações (o slide aparece completo)
    K, ↑: pula para o slide anterior, ignorando as animações (o slide aparece completo)
    Home/End: primeiro e último · F: tela cheia · #N na URL: abre no slide N.
+   Toque: arrastar navega e o gesto de zoom liga a tela cheia (veja "Celular e tablet", no fim).
    Passos: elementos com a classe .passo entram a cada avanço, antes do próximo slide.
    data-passo="N": entra no passo N (padrão: a ordem no HTML) · data-sai="N": some no passo N.
    Um elemento .passo com data-passo="0" começa visível (útil com data-sai). */
@@ -1070,9 +1071,25 @@ enviar_para_s3("saida/carga_limpa.parquet", "carga/carga_limpa.parquet")`,
   const visiveis = (s) => parseInt(s.dataset.estado || "0", 10);
   const totalPassos = (s) => passosDe(s).marcos.length;
 
+  /* Na tela cheia de um celular em pé, o slide gira 90° para ocupar a tela (veja "Celular e tablet"). */
   function escalar() {
-    const e = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
-    document.documentElement.style.setProperty("--escala", e);
+    const raiz = document.documentElement;
+    const girado = raiz.classList.contains("tela-cheia") && window.innerHeight > window.innerWidth;
+    raiz.classList.toggle("girado", girado);
+    const [w, h] = girado ? [window.innerHeight, window.innerWidth] : [window.innerWidth, window.innerHeight];
+    raiz.style.setProperty("--escala", Math.min(w / 1600, h / 900));
+  }
+
+  /* Retângulo de um elemento em coordenadas do slide (1600 × 900), mesmo com o slide girado. */
+  function noSlide(el, s) {
+    const R = s.getBoundingClientRect(), r = el.getBoundingClientRect();
+    if (!document.documentElement.classList.contains("girado")) {
+      const e = R.width / 1600;
+      return { x: (r.left - R.left) / e, y: (r.top - R.top) / e, w: r.width / e, h: r.height / e };
+    }
+    /* girado 90° no sentido horário: o x do slide desce pela tela e o y vai para a esquerda */
+    const e = R.height / 1600;
+    return { x: (r.top - R.top) / e, y: (R.right - r.right) / e, w: r.height / e, h: r.width / e };
   }
 
   function ir(n, atualizarUrl = true, passos = 0) {
@@ -1142,10 +1159,7 @@ enviar_para_s3("saida/carga_limpa.parquet", "carga/carga_limpa.parquet")`,
     else if (["k", "K", "ArrowUp"].includes(k)) { if (atual > 0) ir(atual - 1, true, Infinity); ev.preventDefault(); }
     else if (k === "Home") ir(0);
     else if (k === "End") ir(slides.length - 1, true, Infinity);
-    else if (k === "f" || k === "F") {
-      if (document.fullscreenElement) document.exitFullscreen();
-      else document.documentElement.requestFullscreen();
-    }
+    else if (k === "f" || k === "F") alternarTelaCheia();
   });
 
   /* Ajuda guiada: num slide com elementos marcados com data-ajuda="texto", um botão "?" no canto
@@ -1161,8 +1175,7 @@ enviar_para_s3("saida/carga_limpa.parquet", "carga/carga_limpa.parquet")`,
   function mostrarAjuda() {
     const { s, itens, i, camada } = ajuda;
     const el = itens[i];
-    const R = s.getBoundingClientRect(), esc = R.width / 1600, r = el.getBoundingClientRect();
-    const x = (r.left - R.left) / esc, y = (r.top - R.top) / esc, w = r.width / esc, h = r.height / esc;
+    const { x, y, w, h } = noSlide(el, s);
     camada.replaceChildren();
     const foco = document.createElement("div");
     foco.className = "ajuda-foco";
@@ -1253,6 +1266,109 @@ enviar_para_s3("saida/carga_limpa.parquet", "carga/carga_limpa.parquet")`,
   function prepararImpressao() { estadoNaTela = visiveis(slides[atual]); slides.forEach((s) => mostrarPassos(s, Infinity)); }
   window.addEventListener("beforeprint", prepararImpressao);
   window.addEventListener("afterprint", () => ir(atual, false, estadoNaTela));
+
+  /* ---------- Celular e tablet ----------
+     Este bloco é igual nos design systems inteli e pecege-ons: ao mudar um, leve a mudança ao outro.
+     Arrastar para a esquerda avança e para a direita volta, como → e ←.
+     Arrastar para cima vai ao próximo slide e para baixo ao anterior, já completos, como ↓ e ↑.
+     Afastar dois dedos (o gesto de zoom) liga a tela cheia; juntar os dois dedos desliga.
+     Com o celular em pé, a tela cheia gira o slide para ocupar a tela toda: é só virar o aparelho.
+     O zoom do navegador fica desligado no deck, para que o gesto sirva só à tela cheia.
+     Um arrasto que começa num campo, seletor, controle deslizante, trecho com rolagem ou elemento
+     .sem-gesto fica com ele: um simulador em que se arrasta alguma coisa marca essa área com .sem-gesto. */
+  const raizToque = document.documentElement;
+  const estiloToque = document.createElement("style");
+  estiloToque.textContent = `
+    html { touch-action: none; }
+    @media screen { html.girado .slide { transform: translate(-50%, -50%) rotate(90deg) scale(var(--escala, 1)); } }
+    @media (pointer: coarse) {
+      .slide { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+      .slide input, .slide textarea, .slide [contenteditable] { -webkit-user-select: text; user-select: text; }
+    }
+    .aviso-toque { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 1000;
+      width: max-content; max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: 10px;
+      background: rgba(0, 0, 0, .8); color: #fff; font: 14px/1.4 system-ui, sans-serif; text-align: center;
+      pointer-events: none; transition: opacity .6s; }
+    @media print { .aviso-toque { display: none; } }`;
+  document.head.append(estiloToque);
+
+  const emTelaCheia = () => document.fullscreenElement || document.webkitFullscreenElement;
+  /* Pede a tela cheia do navegador quando ele permite (no iPhone, não permite: fica só a tela cheia do deck,
+     que gira o slide). Precisa vir de um gesto: toque que termina, clique ou tecla. */
+  function alternarTelaCheia(ligar = !raizToque.classList.contains("tela-cheia")) {
+    raizToque.classList.toggle("tela-cheia", ligar);
+    const pedir = raizToque.requestFullscreen || raizToque.webkitRequestFullscreen;
+    const sair = document.exitFullscreen || document.webkitExitFullscreen;
+    if (ligar && !emTelaCheia() && pedir) {
+      Promise.resolve(pedir.call(raizToque))
+        .then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock("landscape"))
+        .catch(() => {});
+    } else if (!ligar && emTelaCheia() && sair) Promise.resolve(sair.call(document)).catch(() => {});
+    escalar();
+  }
+  /* Saiu da tela cheia pelo navegador (Esc, botão voltar): o deck sai junto. */
+  for (const evento of ["fullscreenchange", "webkitfullscreenchange"]) {
+    document.addEventListener(evento, () => { if (!emTelaCheia()) { raizToque.classList.remove("tela-cheia"); escalar(); } });
+  }
+
+  let toque = null;   /* { x, y }: arrasto com um dedo · { dist, fator }: dois dedos */
+  const distancia = (ts) => Math.hypot(ts[0].clientX - ts[1].clientX, ts[0].clientY - ts[1].clientY);
+  const rola = (el) => {
+    for (let e = el; e && e !== document.body; e = e.parentElement) {
+      const c = getComputedStyle(e);
+      if ((/auto|scroll/.test(c.overflowY) && e.scrollHeight > e.clientHeight + 1) ||
+          (/auto|scroll/.test(c.overflowX) && e.scrollWidth > e.clientWidth + 1)) return true;
+    }
+    return false;
+  };
+  const ficaComOElemento = (el) => !el.closest || !!el.closest("input, select, textarea, [contenteditable], .sem-gesto") || rola(el);
+
+  document.addEventListener("touchstart", (ev) => {
+    if (ev.touches.length === 2) toque = { dist: distancia(ev.touches), fator: 1 };
+    else if (ev.touches.length === 1 && !ficaComOElemento(ev.target)) toque = { x: ev.touches[0].clientX, y: ev.touches[0].clientY };
+    else toque = null;
+  }, { passive: true });
+  document.addEventListener("touchmove", (ev) => {
+    if (ev.touches.length < 2) return;
+    ev.preventDefault();   /* nada de zoom do navegador */
+    if (toque && toque.dist) toque.fator = distancia(ev.touches) / toque.dist;
+  }, { passive: false });
+  /* Safari (iOS) faz zoom por gesturestart mesmo com touch-action: none */
+  document.addEventListener("gesturestart", (ev) => ev.preventDefault());
+  document.addEventListener("touchend", (ev) => {
+    if (!toque) return;
+    const t = toque;
+    toque = null;
+    if (t.dist) {
+      if (t.fator > 1.25) alternarTelaCheia(true);
+      else if (t.fator < 0.8) alternarTelaCheia(false);
+      return;
+    }
+    const fim = ev.changedTouches[0];
+    let dx = fim.clientX - t.x, dy = fim.clientY - t.y;
+    if (raizToque.classList.contains("girado")) [dx, dy] = [dy, -dx];   /* direções do slide, não da tela */
+    const MIN = 40;
+    const ajudaAberta = typeof navegarAjuda === "function" && ajuda;
+    if (Math.abs(dx) > Math.max(MIN, 1.5 * Math.abs(dy))) {
+      if (ajudaAberta) navegarAjuda(dx < 0 ? 1 : -1);
+      else if (dx < 0) avancar();
+      else voltar();
+    } else if (Math.abs(dy) > Math.max(MIN, 1.5 * Math.abs(dx))) {
+      if (dy < 0 && atual < slides.length - 1) ir(atual + 1, true, Infinity);
+      else if (dy > 0 && atual > 0) ir(atual - 1, true, Infinity);
+    }
+  });
+  document.addEventListener("touchcancel", () => { toque = null; });
+
+  /* Na primeira abertura num aparelho de toque, uma dica rápida dos gestos */
+  if (window.matchMedia("(pointer: coarse)").matches) {
+    const aviso = document.createElement("div");
+    aviso.className = "aviso-toque";
+    aviso.textContent = "Arraste para os lados para navegar · afaste dois dedos para a tela cheia";
+    document.body.append(aviso);
+    setTimeout(() => { aviso.style.opacity = "0"; }, 4000);
+    setTimeout(() => aviso.remove(), 5000);
+  }
 
   window.addEventListener("resize", escalar);
   window.addEventListener("hashchange", lerUrl);
