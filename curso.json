@@ -63,10 +63,36 @@
     },
     {
       "slug": "2026-10-29-storytelling",
+      "pasta": "apresentacoes/2026-10-29-storytelling",
       "data": "2026-10-29",
       "horario": "09h–12h · Zoom",
       "titulo": "Storytelling e Boas Práticas",
-      "subtitulo": "Comunicação com dados"
+      "subtitulo": "Comunicação com dados",
+      "proposito": "Transformar uma análise num recado que quem decide entende e usa.",
+      "objetivos": [
+        "Diferenciar o gráfico que explora do gráfico que explica, e escrever a ideia principal em uma frase.",
+        "Escolher forma e formato a partir da pergunta e de quem vai receber: painel, relatório ou apresentação.",
+        "Aplicar título com a conclusão, destaque, anotação e fonte a um gráfico da curva de carga.",
+        "Comunicar limites e incertezas: recorte, data de extração e dados tratados."
+      ],
+      "apresentacao": "dist/index.html",
+      "apoio": [
+        {
+          "rotulo": "Abrir o notebook no VS Code",
+          "link": "notebook/",
+          "tipo": "passo a passo"
+        },
+        {
+          "rotulo": "FT Visual Vocabulary: que gráfico usar para cada pergunta",
+          "link": "https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary",
+          "tipo": "referência"
+        },
+        {
+          "rotulo": "From Data to Viz: árvore de decisão de tipos de gráfico",
+          "link": "https://www.data-to-viz.com/",
+          "tipo": "referência"
+        }
+      ]
     },
     {
       "slug": "2026-11-05-engenharia-de-dados",

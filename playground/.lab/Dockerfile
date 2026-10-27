@@ -10,6 +10,9 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client curl jq \
     && rm -rf /var/lib/apt/lists/*
 
+# VS Code: ao entrar no contêiner (Attach to Running Container), instala Python e Jupyter para abrir notebooks.
+LABEL devcontainer.metadata='[{"customizations":{"vscode":{"extensions":["ms-python.python","ms-toolsai.jupyter"]}}}]'
+
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 

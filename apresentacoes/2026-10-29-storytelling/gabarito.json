@@ -1,0 +1,31 @@
+{
+  "titulo": "Gabarito do desafio",
+  "resumo": "Um recado para cada persona, a partir dos gráficos de `aula3/exploracao.ipynb`. Cada bloco é a versão final do gráfico, já com os seis passos de `aula3/recado.py`. O gabarito completo roda com `python .lab/gabarito/aula3/recado.py` e grava as três imagens em `saida/`. As tabelas `tipico`, `picos` e `no_pico` vêm das funções de `aula3/fontes.py`.",
+  "passos": [
+    {
+      "titulo": "Marina, sala de controle: gráfico 2",
+      "texto": [
+        "Do dia típico, fica só o total: a pergunta é sobre o país, e as quatro linhas dos subsistemas distraem. O pico médio é às 20h, com 86.834 MWmed. O título dá a hora; o ponto vermelho e a anotação dão a evidência. Limite: é uma média de sete dias, com feriado e fim de semana."
+      ],
+      "arquivo": "aula3/recado.py",
+      "codigo": "# Marina, sala de controle: a que horas a carga do país chega ao pico? Gráfico 2, só o total.\nfig, ax = plt.subplots(figsize=(12, 6))\nhora = tipico[\"Total\"].idxmax()\nax.plot(tipico.index, tipico[\"Total\"], color=cinza, linewidth=3)\nax.plot(hora, tipico[\"Total\"].max(), \"o\", color=vermelho, markersize=12)\nax.set_title(f\"A carga do país chega ao pico às {hora}h\", loc=\"left\", fontsize=20)\nax.spines[[\"top\", \"right\"]].set_visible(False)\nax.annotate(f\"{br(tipico['Total'].max())} MWmed\", xy=(hora, tipico[\"Total\"].max()),\n            xytext=(0, 14), textcoords=\"offset points\", ha=\"center\", color=vermelho, fontsize=15)\nax.set_xticks(range(0, 24, 2), [f\"{h}h\" for h in range(0, 24, 2)])\nax.set_ylabel(\"MWmed (soma dos subsistemas)\")\nfig.text(0.01, 0.01, FONTE + \" Média de cada hora do dia na semana.\", fontsize=10, color=\"gray\")\nfig.tight_layout(rect=(0, 0.04, 1, 1))\nfig.savefig(\"saida/recado-marina.png\", dpi=150)"
+    },
+    {
+      "titulo": "Paulo, planejamento: gráfico 3",
+      "texto": [
+        "O pico de cada dia, com o feriado em vermelho e a média dos dias úteis (02, 03, 06 e 07/01: 89.992 MWmed) como referência tracejada. O feriado ficou em 77.889 MWmed, 13% abaixo. Outra leitura possível para o Paulo: na terça, 07/01, o pico veio às 14h, não às 20h; uma semana só não diz se é tendência."
+      ],
+      "arquivo": "aula3/recado.py",
+      "codigo": "# Paulo, planejamento: como o pico mudou ao longo da semana? Gráfico 3, com o feriado em destaque.\nfig, ax = plt.subplots(figsize=(12, 6))\nsemana_pt = [\"seg\", \"ter\", \"qua\", \"qui\", \"sex\", \"sáb\", \"dom\"]\nrotulos = [f\"{semana_pt[d.weekday()]} {d:%d/%m}\" for d in picos.index]\nuteis = picos[\"pico\"].iloc[[1, 2, 5, 6]].mean()  # qui 02, sex 03, seg 06 e ter 07/01\nqueda = (1 - picos[\"pico\"].iloc[0] / uteis) * 100\ncores = [vermelho] + [cinza] * (len(picos) - 1)\nax.bar(rotulos, picos[\"pico\"], color=cores)\nax.set_title(f\"No feriado de 1º de janeiro, o pico ficou {queda:.0f}% abaixo dos dias úteis\",\n             loc=\"left\", fontsize=20)\nax.spines[[\"top\", \"right\"]].set_visible(False)\nax.annotate(f\"{br(picos['pico'].iloc[0])} MWmed\", xy=(0, picos[\"pico\"].iloc[0]),\n            xytext=(0, 6), textcoords=\"offset points\", ha=\"center\", color=vermelho, fontsize=15)\nax.axhline(uteis, color=\"gray\", linestyle=\"--\", linewidth=1)\nax.annotate(f\"média dos dias úteis: {br(uteis)} MWmed\", xy=(-0.4, uteis), xytext=(0, 6),\n            textcoords=\"offset points\", ha=\"left\", color=\"gray\", fontsize=12)\nax.set_ylabel(\"Maior carga horária do dia, MWmed\")\nfig.text(0.01, 0.01, FONTE + \" Soma dos quatro subsistemas.\", fontsize=10, color=\"gray\")\nfig.tight_layout(rect=(0, 0.04, 1, 1))\nfig.savefig(\"saida/recado-paulo.png\", dpi=150)"
+    },
+    {
+      "titulo": "Helena, diretoria: gráfico 4",
+      "texto": [
+        "A pizza vira barras horizontais, ordenadas, com o rótulo direto em cada barra. Na hora de maior carga da semana (07/01, 14h), o SE respondeu por 56%; S, 19%; NE, 16%; N, 9%."
+      ],
+      "arquivo": "aula3/recado.py",
+      "codigo": "# Helena, diretoria: que subsistema pesa mais no pico do país? Gráfico 4, de pizza para barras.\nfig, ax = plt.subplots(figsize=(12, 6))\nordem = no_pico.sort_values()\nbarras = ax.barh(ordem.index, ordem.values, color=[vermelho if s == \"SE\" else cinza for s in ordem.index])\nax.bar_label(barras, [f\"{v:.0f}%\" for v in ordem.values], padding=6, fontsize=15)\nax.set_title(f\"No pico do país, o SE respondeu por {no_pico['SE']:.0f}% da carga\", loc=\"left\", fontsize=20)\nax.spines[[\"top\", \"right\", \"bottom\"]].set_visible(False)\nax.set_xticks([])\nax.tick_params(axis=\"y\", labelsize=15)\nfig.text(0.01, 0.01, FONTE + f\" Hora de maior carga da semana: {total.idxmax():%d/%m, %Hh}.\",\n         fontsize=10, color=\"gray\")\nfig.tight_layout(rect=(0, 0.04, 1, 1))\nfig.savefig(\"saida/recado-helena.png\", dpi=150)"
+    }
+  ],
+  "fechamento": "Conferido em 27/10/2026 com o laboratório recém-preparado: o notebook roda do começo ao fim, `python aula3/recado.py` funciona com os cinco gráficos e o gabarito grava as três imagens."
+}

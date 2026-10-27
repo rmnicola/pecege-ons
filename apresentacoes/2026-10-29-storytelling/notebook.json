@@ -1,0 +1,54 @@
+{
+  "titulo": "Abrir o notebook no VS Code",
+  "resumo": "O desafio começa pelo notebook `aula3/exploracao.ipynb`, que explora o pico de carga e explica cada gráfico. O VS Code abre o notebook dentro do playground, com as extensões **Python** e **Jupyter**.",
+  "passos": [
+    {
+      "titulo": "Atualize o laboratório",
+      "texto": [
+        "Na pasta do material, rode o script de sempre. Ele baixa a aula 3 e reconstrói o playground com o que o notebook precisa; na primeira vez depois da atualização, leva alguns minutos."
+      ],
+      "comandos": "cd pecege-ons/playground\n./preparar.sh",
+      "saida": "Tudo pronto para trabalhar."
+    },
+    {
+      "titulo": "Entre no playground pelo VS Code",
+      "texto": [
+        "Paleta de comandos (`F1`) → **Dev Containers: Attach to Running Container…** → `pecege-ons-etl-playground-1`.",
+        "Na janela nova, **File → Open Folder…** → `/work`."
+      ],
+      "depois": [
+        "Ao entrar, o VS Code instala sozinho as extensões **Python** e **Jupyter** no playground. Confira na aba de extensões (`Ctrl+Shift+X`): as duas devem aparecer instaladas no contêiner."
+      ],
+      "aviso": "Se elas não aparecerem, procure **Jupyter** (Microsoft) na aba de extensões e clique em **Install in Container**. A extensão Python vem junto."
+    },
+    {
+      "titulo": "Abra o notebook e escolha o Python",
+      "texto": [
+        "Abra `aula3/exploracao.ipynb`.",
+        "No canto superior direito, clique em **Select Kernel** → **Python Environments…** → o Python em `/usr/local/bin/python`."
+      ]
+    },
+    {
+      "titulo": "Rode as células",
+      "texto": [
+        "Clique em **Run All**, ou rode uma célula de cada vez com `Shift+Enter`. Cada gráfico aparece logo abaixo da sua célula, seguido do que ele mostra."
+      ]
+    },
+    {
+      "titulo": "Faça o recado",
+      "texto": [
+        "Escolha a persona e o gráfico, abra `aula3/recado.py` e siga os passos do arquivo. Rode no terminal do VS Code (**Terminal → New Terminal**):"
+      ],
+      "comandos": "python aula3/recado.py",
+      "saida": "Recado gravado em saida/recado.png",
+      "depois": [
+        "Abra `saida/recado.png` no VS Code para ver o resultado. Rode quantas vezes quiser."
+      ]
+    }
+  ],
+  "problemas": [
+    ["`ModuleNotFoundError: No module named 'fontes'` no notebook", "O notebook precisa rodar na pasta `aula3`. Feche-o e abra de novo pelo explorador de arquivos, dentro de `/work/aula3`."],
+    ["**Select Kernel** não mostra o Python do playground", "Confira se a janela está conectada ao contêiner (canto inferior esquerdo: *Container pecege-ons-etl-playground-1*). Se estiver, `F1` → **Developer: Reload Window**."],
+    ["`ipykernel` ausente ou *kernel failed to start*", "O playground é anterior à aula 3. Rode `./preparar.sh` de novo."]
+  ]
+}

@@ -26,7 +26,7 @@ Rode a prévia em segundo plano e não inicie um segundo servidor: os dois dispu
 | `site/estilo.css`, `site/DESIGN.md` | design system das páginas: tokens, componentes, regras de contraste |
 | `tools/gerar_site.py` | gera `_site/`: índice, página de cada aula, preparação, tela de senha |
 | `tools/verificar_contraste.py` | regras C1–C4 e T1; falha bloqueia a publicação |
-| `playground/` | laboratório que os alunos clonam: só `aula1/`, `aula2/`, `saida/`, `compose.yaml` e `preparar.sh` à vista; serviços, dados e gabarito em `.lab/`, escondida no VS Code por `.vscode/settings.json` |
+| `playground/` | laboratório que os alunos clonam: só `aula1/`, `aula2/`, `aula3/`, `saida/`, `compose.yaml` e `preparar.sh` à vista; serviços, dados e gabarito em `.lab/`, escondida no VS Code por `.vscode/settings.json` |
 
 ## Registrar uma aula
 
