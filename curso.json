@@ -59,7 +59,14 @@
         "Gravar o resultado em Parquet num armazenamento de objetos compatível com S3.",
         "Diferenciar data warehouse, data lake e lakehouse."
       ],
-      "apresentacao": "dist/index.html"
+      "apresentacao": "dist/index.html",
+      "apoio": [
+        {
+          "rotulo": "Gabarito do desafio",
+          "link": "gabarito/",
+          "tipo": "passo a passo"
+        }
+      ]
     },
     {
       "slug": "2026-10-29-storytelling",
