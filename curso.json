@@ -65,6 +65,16 @@
           "rotulo": "Gabarito do desafio",
           "link": "gabarito/",
           "tipo": "passo a passo"
+        },
+        {
+          "rotulo": "Desafio extra: pipeline modular",
+          "link": "desafio-extra/",
+          "tipo": "desafio opcional"
+        },
+        {
+          "rotulo": "Gabarito do desafio extra",
+          "link": "gabarito-extra/",
+          "tipo": "passo a passo"
         }
       ]
     },

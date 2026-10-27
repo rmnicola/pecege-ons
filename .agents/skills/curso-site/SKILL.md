@@ -53,7 +53,7 @@ Todo `apresentacoes/<pasta>/<nome>.json` vira a página de passo a passo `aulas/
 ```jsonc
 {
   "titulo": "Preparação do ambiente",
-  "resumo": "…",                       // aceita `código`, **forte**, *ênfase*
+  "resumo": "…",                       // aceita `código`, **forte**, *ênfase* e [link](https://…)
   "passos": [
     {
       "titulo": "…",

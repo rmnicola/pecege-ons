@@ -1,0 +1,62 @@
+{
+  "titulo": "Desafio extra: pipeline modular",
+  "resumo": "Opcional. Nas aulas 1 e 2, cada script faz tudo do começo ao fim: extrai, transforma e grava. Aqui você reorganiza esse código em peças que se encaixam, com o padrão **strategy**: o pipeline conhece só o contrato de cada peça, e mudar de onde os dados vêm ou para onde vão é trocar uma peça, sem mexer no pipeline. Os arquivos estão em `aula2/extra/`.",
+  "passos": [
+    {
+      "titulo": "O padrão strategy",
+      "texto": [
+        "Um **contexto** (o pipeline) delega parte do trabalho a **estratégias** intercambiáveis, que têm o mesmo método. Aqui são dois contratos: toda **fonte** tem `extrair(inicio, fim)` e devolve uma tabela com `id_subsistema`, `instante` e as colunas de valor; todo **destino** tem `gravar(dados)`.",
+        "Em Python, basta a classe ter o método com o nome certo. O `Protocol` de `pipeline.py` só documenta o contrato. Leia o arquivo, mas não mexa nele: `executar` junta as fontes pela chave e entrega o resultado ao destino."
+      ],
+      "arquivo": "aula2/extra/pipeline.py",
+      "codigo": "class Fonte(Protocol):\n    def extrair(self, inicio: str, fim: str) -> pd.DataFrame: ...\n\nclass Destino(Protocol):\n    def gravar(self, dados: pd.DataFrame) -> None: ...\n\ndef executar(fontes: list[Fonte], destino: Destino, inicio: str, fim: str): ...",
+      "depois": [
+        "Leitura: [Strategy](https://refactoring.guru/pt-br/design-patterns/strategy), no Refactoring.Guru, e [typing.Protocol](https://docs.python.org/pt-br/3/library/typing.html#typing.Protocol), na documentação do Python."
+      ]
+    },
+    {
+      "titulo": "Rode como está",
+      "texto": [
+        "Atualize o laboratório (`./preparar.sh`) e, dentro do playground, rode o pipeline. Ele já funciona com as duas peças prontas, `CargaPostgres` e `CsvLocal`."
+      ],
+      "comandos": "python aula2/extra/executar.py",
+      "saida": "CargaPostgres: 672 linhas\nJuntas: 672 linhas, 0 valores vazios\n672 linhas gravadas em saida/extra.csv"
+    },
+    {
+      "titulo": "Passo 1. A fonte de clima",
+      "texto": [
+        "Em `aula2/extra/estrategias.py`, complete `ClimaOpenMeteo.extrair`. É o passo 2 do `aula1/combinar.py` dentro de um método: uma tabela por cidade, juntas, com `id_subsistema`, `instante` e `temperatura_c`.",
+        "Cuidado com o fim do período: o contrato vai até **antes** de `fim`, mas a Open-Meteo inclui o `end_date`. Peça até a véspera.",
+        "Para testar, acrescente `ClimaOpenMeteo()` às fontes em `executar.py` (e ao `import`)."
+      ],
+      "saida": "CargaPostgres: 672 linhas\nClimaOpenMeteo: 672 linhas\nJuntas: 672 linhas, 0 valores vazios"
+    },
+    {
+      "titulo": "Passo 2. A carga do laboratório",
+      "texto": [
+        "Complete `CargaLaboratorio.extrair`: lê a cópia com falhas da aula 2, converte o instante, filtra o período e aplica os passos 1 a 5 do seu `aula2/limpar.py`. Devolva também `carga_imputada`.",
+        "Ordene por subsistema e instante antes de interpolar: o banco não garante a ordem das linhas, e a interpolação depende dela.",
+        "Teste trocando `CargaPostgres()` por `CargaLaboratorio()` nas fontes."
+      ],
+      "saida": "CargaLaboratorio: 672 linhas\nClimaOpenMeteo: 672 linhas\nJuntas: 672 linhas, 0 valores vazios"
+    },
+    {
+      "titulo": "Passo 3. O destino no S3",
+      "texto": [
+        "Complete `ParquetS3.gravar`: grave a tabela em Parquet num `io.BytesIO` e envie com `self.s3.put_object` para o bucket da aula 2. O cliente já está pronto.",
+        "Teste trocando o destino por `ParquetS3(\"extra/carga_clima.parquet\")` e confira o arquivo no [console do RustFS](http://localhost:9001/rustfs/console/) (usuário `ons_lab`, senha `ons_lab_s3`)."
+      ],
+      "saida": "672 linhas gravadas em s3://aula2/extra/carga_clima.parquet"
+    },
+    {
+      "titulo": "Passo 4. Trocar as peças",
+      "texto": [
+        "No fim, `executar.py` deve ficar assim. Repare: para ir do CSV ao S3 e da carga oficial à do laboratório, nenhuma linha de `pipeline.py` mudou."
+      ],
+      "arquivo": "aula2/extra/executar.py",
+      "codigo": "from estrategias import CargaLaboratorio, ClimaOpenMeteo, ParquetS3\nfrom pipeline import executar\n\nexecutar(\n    fontes=[CargaLaboratorio(), ClimaOpenMeteo()],\n    destino=ParquetS3(\"extra/carga_clima.parquet\"),\n    inicio=\"2025-01-01\",\n    fim=\"2025-01-08\",\n)",
+      "saida": "CargaLaboratorio: 672 linhas\nClimaOpenMeteo: 672 linhas\nJuntas: 672 linhas, 0 valores vazios\n672 linhas gravadas em s3://aula2/extra/carga_clima.parquet"
+    }
+  ],
+  "fechamento": "Para ir além: escreva uma estratégia nova, como um destino `ParquetLocal` ou uma fonte que leia a temperatura de um arquivo salvo, e encaixe-a no pipeline sem mudar `pipeline.py`."
+}

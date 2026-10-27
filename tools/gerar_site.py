@@ -144,8 +144,9 @@ def pagina(curso: dict, titulo: str, corpo: str, raiz: str) -> str:
 
 
 def inline(texto: str) -> str:
-    """Formatação mínima: `código`, **forte**, *ênfase*."""
+    """Formatação mínima: `código`, **forte**, *ênfase* e [link](https://…)."""
     t = escape(texto)
+    t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", lambda m: f'<a href="{m.group(2)}"{NOVA_ABA}>{m.group(1)}</a>', t)
     t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
     t = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", t)
     return re.sub(r"\*([^*]+)\*", r"<em>\1</em>", t)

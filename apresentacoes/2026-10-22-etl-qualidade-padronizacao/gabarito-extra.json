@@ -1,0 +1,37 @@
+{
+  "titulo": "Gabarito do desafio extra",
+  "resumo": "Uma solução para cada passo de `aula2/extra/estrategias.py`. O gabarito completo roda com `python .lab/gabarito/aula2/extra/executar.py` e usa o `pipeline.py` do aluno, sem alterações.",
+  "passos": [
+    {
+      "titulo": "Passo 1. ClimaOpenMeteo",
+      "texto": [
+        "Um `for` por cidade, como na aula 1. O fim do contrato é exclusivo e o da Open-Meteo, inclusivo: por isso o `end_date` é a véspera de `fim`."
+      ],
+      "arquivo": "aula2/extra/estrategias.py",
+      "codigo": "class ClimaOpenMeteo:\n    URL = \"https://archive-api.open-meteo.com/v1/archive\"\n    CIDADES = {\n        \"N\": (\"Belém\", -1.46, -48.49),\n        \"NE\": (\"Recife\", -8.05, -34.88),\n        \"SE\": (\"São Paulo\", -23.55, -46.63),\n        \"S\": (\"Porto Alegre\", -30.03, -51.23),\n    }\n\n    def extrair(self, inicio, fim):\n        # O contrato vai até antes de fim; a Open-Meteo inclui end_date: pede até a véspera.\n        ultimo_dia = (pd.Timestamp(fim) - pd.Timedelta(days=1)).strftime(\"%Y-%m-%d\")\n        tabelas = []\n        for subsistema, (cidade, lat, lon) in self.CIDADES.items():\n            resposta = httpx.get(self.URL, params={\n                \"latitude\": lat, \"longitude\": lon,\n                \"start_date\": inicio, \"end_date\": ultimo_dia,\n                \"hourly\": \"temperature_2m\", \"timezone\": \"America/Sao_Paulo\",\n            }, timeout=30.0)\n            resposta.raise_for_status()\n            horas = resposta.json()[\"hourly\"]\n            tabelas.append(pd.DataFrame({\n                \"id_subsistema\": subsistema,\n                \"instante\": pd.to_datetime(horas[\"time\"]),\n                \"temperatura_c\": horas[\"temperature_2m\"],\n            }))\n        return pd.concat(tabelas, ignore_index=True)\n"
+    },
+    {
+      "titulo": "Passo 2. CargaLaboratorio",
+      "texto": [
+        "Os passos 1 a 5 da aula 2, na mesma ordem. Duas diferenças: a tabela é ordenada antes de interpolar, e a interpolação é feita dentro de cada subsistema (`groupby`), para não misturar a última hora de um com a primeira do outro. Resultado: 6 horas imputadas, todas a menos de 1,2% do valor oficial; as outras 666 são iguais à base oficial."
+      ],
+      "arquivo": "aula2/extra/estrategias.py",
+      "codigo": "class CargaLaboratorio:\n    SQL = \"\"\"SELECT id_subsistema, din_instante, val_cargaenergiahomwmed\n             FROM laboratorio.curva_horaria\"\"\"\n\n    def extrair(self, inicio, fim):\n        with psycopg.connect(os.environ[\"PG_DSN\"]) as conexao:\n            linhas = conexao.execute(self.SQL).fetchall()\n        carga = pd.DataFrame(linhas, columns=[\"id_subsistema\", \"instante\", \"carga_mwmed\"])\n        carga[\"instante\"] = pd.to_datetime(carga[\"instante\"])\n        carga = carga[(carga[\"instante\"] >= inicio) & (carga[\"instante\"] < fim)].copy()\n        # Passos 1 a 5 da aula 2\n        carga[\"id_subsistema\"] = carga[\"id_subsistema\"].str.strip().str.upper()\n        carga[\"carga_mwmed\"] = pd.to_numeric(carga[\"carga_mwmed\"].str.replace(\",\", \".\"), errors=\"coerce\")\n        carga = carga.drop_duplicates()\n        z = (carga[\"carga_mwmed\"] - carga[\"carga_mwmed\"].mean()) / carga[\"carga_mwmed\"].std()\n        carga[\"carga_mwmed\"] = carga[\"carga_mwmed\"].where(z.abs() <= 3)\n        carga = carga.sort_values([\"id_subsistema\", \"instante\"]).reset_index(drop=True)\n        carga[\"carga_imputada\"] = carga[\"carga_mwmed\"].isna()\n        carga[\"carga_mwmed\"] = carga.groupby(\"id_subsistema\")[\"carga_mwmed\"].transform(lambda s: s.interpolate())\n        return carga\n"
+    },
+    {
+      "titulo": "Passo 3. ParquetS3",
+      "texto": [
+        "O Parquet é escrito na memória e enviado de uma vez. Ele guarda os tipos: o arquivo lido de volta tem `instante` como data, `carga_mwmed` e `temperatura_c` como número e `carga_imputada` como True/False."
+      ],
+      "arquivo": "aula2/extra/estrategias.py",
+      "codigo": "    def gravar(self, dados):\n        buffer = io.BytesIO()\n        dados.to_parquet(buffer, index=False)\n        self.s3.put_object(Bucket=self.bucket, Key=self.chave, Body=buffer.getvalue())\n        print(f\"{len(dados)} linhas gravadas em s3://{self.bucket}/{self.chave}\")"
+    },
+    {
+      "titulo": "Passo 4. O pipeline montado",
+      "arquivo": "aula2/extra/executar.py",
+      "codigo": "from estrategias import CargaLaboratorio, ClimaOpenMeteo, ParquetS3\nfrom pipeline import executar\n\nexecutar(\n    fontes=[CargaLaboratorio(), ClimaOpenMeteo()],\n    destino=ParquetS3(\"extra/carga_clima.parquet\"),\n    inicio=\"2025-01-01\",\n    fim=\"2025-01-08\",\n)",
+      "saida": "CargaLaboratorio: 672 linhas\nClimaOpenMeteo: 672 linhas\nJuntas: 672 linhas, 0 valores vazios\n672 linhas gravadas em s3://aula2/extra/carga_clima.parquet"
+    }
+  ],
+  "fechamento": "Conferido em 27/10/2026 num laboratório recém-preparado: o pipeline roda do jeito que é entregue e com o gabarito, e o Parquet lido de volta do RustFS tem 672 linhas, sem valores vazios."
+}
