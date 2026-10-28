@@ -60,9 +60,20 @@
   #personas .cartao .formato { margin-top:auto; padding-top:16px; border-top:2px solid var(--cinza-claro); font-size:28px; color:var(--cinza-texto); }
   #personas .cartao .formato strong { color:var(--cinza-escuro); }
 
+  /* Adequar a mensagem: pergunta à esquerda, o que muda à direita */
+  #adequar .adequar { display:flex; flex-direction:column; margin:auto 0; }
+  #adequar .adequar p { display:grid; grid-template-columns:72px 640px 1fr; align-items:center; gap:0 24px; padding:22px 0; border-bottom:2px solid var(--cinza-claro); }
+  #adequar .adequar p b { width:52px; height:52px; border-radius:50%; display:grid; place-items:center; background:var(--vermelho-marca); color:var(--branco); font-size:30px; }
+  #adequar .adequar strong { font-size:38px; color:var(--cinza-escuro); }
+  #adequar .adequar span { font-size:32px; color:var(--cinza-texto); }
+  #adequar .adequar .cab { padding:0 0 10px; }
+  #adequar .adequar .cab span { font-size:28px; font-weight:bold; letter-spacing:.06em; text-transform:uppercase; color:var(--vermelho-marca); }
+  #adequar .adequar .cab span:first-child { grid-column:2; }
+
   /* Personas: a lista de nomes à esquerda; a ficha da persona escolhida abre ao lado (modelo do workshop Inteli). */
   #personas .conteudo { gap:20px; }
   #personas .personas-layout { display:grid; grid-template-columns:400px 1fr; gap:48px; flex:1; min-height:0; }
+  #personas .marcador-passo { display:none; }
   #personas .lista-p { display:flex; flex-direction:column; gap:16px; }
   #personas .item-p { display:flex; align-items:center; gap:20px; height:96px; padding:0 22px; border-radius:14px; cursor:pointer; background:var(--branco); border:3px solid transparent; font-size:36px; font-weight:bold; color:var(--cinza-escuro); transition:background-color .2s, color .2s; }
   #personas .item-p:hover { border-color:var(--cinza-escuro); }
@@ -75,8 +86,7 @@
   #personas .ficha-p .nome { font-size:60px; font-weight:bold; line-height:1.1; margin-top:6px; color:var(--cinza-escuro); }
   #personas .ficha-p .rot { font-size:28px; font-weight:bold; letter-spacing:.06em; text-transform:uppercase; color:var(--cinza-texto); margin-top:30px; }
   #personas .ficha-p .pergunta { font-size:36px; line-height:1.3; margin-top:8px; color:var(--cinza-escuro); }
-  #personas .ficha-p .recebe { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; }
-  #personas .ficha-p .recebe span { font-size:28px; font-weight:bold; padding:6px 16px; border-radius:10px; background:var(--cinza-claro); color:var(--cinza-escuro); }
+  #personas .ficha-p .quem { font-size:32px; line-height:1.3; margin-top:8px; color:var(--cinza-texto); }
   @media print { #personas .ficha-p { opacity:1; transform:none; } }
 
   /* Um gráfico não é uma história: quatro quadros, como miniaturas de slides */
@@ -256,9 +266,7 @@
   </div>
 </section>
 
-<section class="slide agenda" id="agenda-intervalo" data-agora="2"><div class="conteudo"><div class="itens"></div></div></section>
-
-<section class="slide agenda" id="agenda-limites" data-agora="3"><div class="conteudo"><div class="itens"></div></div></section>
+<section class="slide agenda" id="agenda-limites" data-agora="2"><div class="conteudo"><div class="itens"></div></div></section>
 
 <section class="slide" id="salmao" data-modelo="imagem-media" data-max-palavras="30">
   <div class="conteudo"><figure class="media"><img src="img/salmao.jpg" alt="Imagens de ressonância magnética de um salmão morto, com pontos vermelhos de atividade no cérebro e na coluna"><figcaption class="fonte">Bennett, Baird, Miller e Wolford, 2010. Journal of Serendipitous and Unexpected Results.</figcaption></figure></div>
@@ -277,6 +285,8 @@
   </div>
 </section>
 
+<section class="slide agenda" id="agenda-intervalo" data-agora="3"><div class="conteudo"><div class="itens"></div></div></section>
+
 <section class="slide agenda" id="agenda-desafio" data-agora="4"><div class="conteudo"><div class="itens"></div></div></section>
 
 <section class="slide" id="explorar" data-modelo="dois-graficos" data-max-palavras="120">
@@ -289,9 +299,21 @@
   </div>
 </section>
 
+<section class="slide" id="adequar" data-modelo="perguntas-publico" data-max-palavras="80">
+  <div class="conteudo"><h2 class="titulo">Adequar a mensagem ao público</h2>
+    <div class="adequar">
+      <p class="cab"><span>Pergunte</span><span>O que muda</span></p>
+      <p class="passo" data-passo="1"><b>1</b><strong>Quão técnica é a pessoa?</strong><span>Vocabulário, unidades e quanto método mostrar</span></p>
+      <p class="passo" data-passo="2"><b>2</b><strong>O que ela precisa decidir?</strong><span>A resposta e a recomendação</span></p>
+      <p class="passo" data-passo="3"><b>3</b><strong>Quanto tempo ela tem?</strong><span>Quantos números e quanto detalhe cabem</span></p>
+      <p class="passo" data-passo="4"><b>4</b><strong>Vai ler sozinha ou com você?</strong><span>Relatório ou apresentação</span></p>
+    </div>
+  </div>
+</section>
+
 <section class="slide" id="personas" data-modelo="personas" data-max-palavras="120">
   <div class="conteudo"><p class="rotulo-termo">Personas do desafio</p>
-    <div class="personas-layout"><div class="lista-p"></div><div class="ficha-p"></div></div>
+    <div class="personas-layout"><div class="lista-p"><span class="passo marcador-passo" data-passo="1" aria-hidden="true"></span><span class="passo marcador-passo" data-passo="2" aria-hidden="true"></span></div><div class="ficha-p"></div></div>
     <p class="referencia">Personas fictícias · o tema é o pico de carga</p>
   </div>
 </section>
@@ -303,16 +325,16 @@
   </div>
 </section>
 
-<section class="slide" id="desafio" data-modelo="desafio-passos" data-max-palavras="90">
-  <div class="conteudo"><h2 class="titulo">Desafio: um pitch para a persona</h2>
+<section class="slide" id="desafio" data-modelo="desafio-passos" data-max-palavras="100">
+  <div class="conteudo"><h2 class="titulo">Desafio: o recado para a persona</h2>
     <div class="desafio-layout">
       <div class="esquerda">
         <p><strong>1.</strong> Explore <span class="mono">aula3/exploracao.ipynb</span> e escolha os gráficos da sua persona.</p>
         <p><strong>2.</strong> Gere as imagens em <span class="mono">aula3/recado.py</span>:</p>
         <div data-codigo="rodar" data-arquivo="playground" data-linguagem="Terminal"></div>
-        <p><strong>3.</strong> Monte o pitch na ferramenta que preferir e apresente em 3 minutos.</p>
+        <p><strong>3.</strong> Escolha o formato pela persona: apresentação ou relatório de uma folha. Apresente em 3 minutos.</p>
       </div>
-      <div class="pitch"><p class="rotulo-termo">O pitch deck</p>
+      <div class="pitch"><p class="rotulo-termo">A história, em qualquer formato</p>
       <ol>
         <li>A resposta, no título</li>
         <li>A evidência: o gráfico</li>
@@ -320,7 +342,7 @@
         <li>O que fazer</li>
       </ol></div>
     </div>
-    <p class="referencia">Notebook no VS Code: <a href="https://rmnicola.github.io/pecege-ons/aulas/2026-10-29-storytelling/notebook/">rmnicola.github.io/pecege-ons</a></p>
+    <p class="referencia">Modelo de relatório e guia do notebook: <a href="https://rmnicola.github.io/pecege-ons/aulas/2026-10-29-storytelling/">rmnicola.github.io/pecege-ons</a></p>
   </div>
 </section>
 
@@ -447,13 +469,13 @@
   const PERSONAS = [
     { nome:'Marina', cargo:'Coordenação da sala de controle',
       pergunta:'A que horas a carga do país chega ao pico? Ela prepara a operação para a janela mais carregada do dia.',
-      recebe:['painel', 'lê em segundos'] },
+      quem:'Engenheira, conhece o sistema a fundo. Lê o recado na sala de controle, entre uma ocorrência e outra.' },
     { nome:'Paulo', cargo:'Planejamento da operação',
       pergunta:'Como o pico de carga mudou ao longo da semana, com feriado e fim de semana? Ele ajusta a previsão.',
-      recebe:['relatório', 'lê com calma', 'quer a comparação'] },
+      quem:'Analista, à vontade com números e método. Lê sozinho e com calma, antes de fechar a previsão da semana.' },
     { nome:'Helena', cargo:'Diretoria',
       pergunta:'Que subsistema pesa mais no pico do país? Ela leva a resposta para a reunião executiva.',
-      recebe:['um slide', 'uma frase e um número'] }
+      quem:'Diretora, não é da área técnica. Tem dez minutos na reunião executiva, e você estará lá para apresentar.' }
   ];
   document.querySelectorAll('#personas').forEach(slide => {
     const lista = slide.querySelector('.lista-p'), ficha = slide.querySelector('.ficha-p');
@@ -461,11 +483,11 @@
       lista.querySelectorAll('.item-p').forEach((item, j) => item.classList.toggle('ativo', j === k));
       const p = PERSONAS[k];
       ficha.classList.remove('aberta');
-      ficha.innerHTML = '<p class="cargo"></p><p class="nome"></p><p class="rot">O que precisa saber</p><p class="pergunta"></p><p class="rot">Como recebe</p><p class="recebe"></p>';
+      ficha.innerHTML = '<p class="cargo"></p><p class="nome"></p><p class="rot">O que precisa saber</p><p class="pergunta"></p><p class="rot">Quem é</p><p class="quem"></p>';
       ficha.querySelector('.cargo').textContent = p.cargo;
       ficha.querySelector('.nome').textContent = p.nome;
       ficha.querySelector('.pergunta').textContent = p.pergunta;
-      p.recebe.forEach(t => { const c = document.createElement('span'); c.textContent = t; ficha.querySelector('.recebe').append(c); });
+      ficha.querySelector('.quem').textContent = p.quem;
       void ficha.offsetWidth; ficha.classList.add('aberta');
     };
     PERSONAS.forEach((p, k) => {
@@ -478,6 +500,9 @@
       lista.append(item);
     });
     abrir(0);
+    // A seta também passa pelas personas: cada passo do slide abre a ficha seguinte.
+    new MutationObserver(() => abrir(Math.min(Number(slide.dataset.estado || 0), PERSONAS.length - 1)))
+      .observe(slide, { attributes:true, attributeFilter:['data-estado'] });
   });
 
   // Miniaturas: o gráfico final do Sul, sem texto, para os quadros de narrativa e formatos.
@@ -544,7 +569,7 @@
     el(g1, 'text', { x:76, y:A - 21, 'font-size':28, fill:'var(--cinza-texto)' }, 'Fonte: ONS, Curva de Carga Horária · extraído em 13/10/2026');
   })(document.querySelector('#incerteza .grafico-limites'));
 
-  const AGENDA = ['Quebra-gelo', 'Do gráfico à história', 'Intervalo', 'Limites e incertezas', 'Desafio'];
+  const AGENDA = ['Quebra-gelo', 'Do gráfico à história', 'Limites e incertezas', 'Intervalo', 'Desafio'];
   document.querySelectorAll('.agenda').forEach(slide => {
     const atual = Number(slide.dataset.agora);
     const itens = slide.querySelector('.itens');

@@ -1,7 +1,7 @@
-"""Desafio: um pitch para a persona.
+"""Desafio: o recado para a persona.
 
 Escolha uma persona e o gráfico de aula3/exploracao.ipynb que responde à pergunta dela.
-Transforme esse gráfico na evidência do seu pitch. A imagem sai em saida/.
+Transforme esse gráfico na evidência do seu recado, em slide ou relatório. A imagem sai em saida/.
 Precisa de mais de um gráfico? Troque o número e o nome do arquivo e rode de novo.
 
 Rode quantas vezes quiser:
@@ -97,7 +97,7 @@ nota = FONTE  # troque
 fig.text(0.01, 0.01, nota, fontsize=10, color="gray")
 
 
-# Passo 6. Gravar a imagem: é ela que vai para o pitch
+# Passo 6. Gravar a imagem: é ela que vai para o slide ou o relatório
 fig.tight_layout(rect=(0, 0.04, 1, 1))
 fig.savefig(arquivo, dpi=150)
 print("Gráfico gravado em", arquivo)

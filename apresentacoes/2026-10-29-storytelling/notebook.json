@@ -35,7 +35,7 @@
       ]
     },
     {
-      "titulo": "Gere a evidência do pitch",
+      "titulo": "Gere a evidência do recado",
       "texto": [
         "Escolha a persona e o gráfico, abra `aula3/recado.py` e siga os passos do arquivo. Rode no terminal do VS Code (**Terminal → New Terminal**):"
       ],
@@ -43,7 +43,7 @@
       "saida": "Gráfico gravado em saida/recado.png",
       "depois": [
         "Abra a imagem no VS Code para ver o resultado. Para gerar outro gráfico, troque `grafico` e `arquivo` no começo do script e rode de novo.",
-        "Para levar a imagem ao pitch deck, clique com o botão direito no arquivo, na pasta `saida/` do VS Code, e escolha **Download…**. Se o material está na sua máquina, o arquivo já está na pasta `playground/saida/`."
+        "Para levar a imagem ao slide ou ao relatório, clique com o botão direito no arquivo, na pasta `saida/` do VS Code, e escolha **Download…**. Se o material está na sua máquina, o arquivo já está na pasta `playground/saida/`."
       ]
     }
   ],
