@@ -1,7 +1,8 @@
-"""Desafio: do gráfico ao recado.
+"""Desafio: um pitch para a persona.
 
 Escolha uma persona e o gráfico de aula3/exploracao.ipynb que responde à pergunta dela.
-Transforme esse gráfico no recado para ela. A imagem sai em saida/recado.png.
+Transforme esse gráfico na evidência do seu pitch. A imagem sai em saida/.
+Precisa de mais de um gráfico? Troque o número e o nome do arquivo e rode de novo.
 
 Rode quantas vezes quiser:
 
@@ -20,6 +21,7 @@ from fontes import FONTE, dia_tipico, ler_semana, participacao_no_pico, pico_dia
 #   Helena, diretoria: que subsistema pesa mais no pico do país?
 
 grafico = 1  # troque pelo número do gráfico do notebook (1 a 5)
+arquivo = "saida/recado.png"  # troque o nome para gravar outro gráfico sem apagar este
 
 semana = ler_semana()
 cinza, vermelho = "#BFC5CF", "#CD0028"
@@ -95,7 +97,7 @@ nota = FONTE  # troque
 fig.text(0.01, 0.01, nota, fontsize=10, color="gray")
 
 
-# Passo 6. Gravar a imagem: é ela que vai para a persona
+# Passo 6. Gravar a imagem: é ela que vai para o pitch
 fig.tight_layout(rect=(0, 0.04, 1, 1))
-fig.savefig("saida/recado.png", dpi=150)
-print("Recado gravado em saida/recado.png")
+fig.savefig(arquivo, dpi=150)
+print("Gráfico gravado em", arquivo)

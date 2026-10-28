@@ -87,10 +87,11 @@
       "subtitulo": "Comunicação com dados",
       "proposito": "Transformar uma análise num recado que quem decide entende e usa.",
       "objetivos": [
-        "Diferenciar o gráfico que explora do gráfico que explica, e escrever a ideia principal em uma frase.",
-        "Escolher forma e formato a partir da pergunta e de quem vai receber: painel, relatório ou apresentação.",
-        "Aplicar título com a conclusão, destaque, anotação e fonte a um gráfico da curva de carga.",
-        "Comunicar limites e incertezas: recorte, data de extração e dados tratados."
+        "Diferenciar o gráfico que explora do gráfico que explica.",
+        "Transformar um gráfico num recado para quem decide: a resposta primeiro, depois a evidência, os limites e o que fazer.",
+        "Contar o mesmo recado em relatório e em apresentação.",
+        "Comunicar limites e incertezas: recorte, data de extração e dados tratados.",
+        "Montar e apresentar um pitch curto para uma persona, com um gráfico gerado em Python."
       ],
       "apresentacao": "dist/index.html",
       "apoio": [

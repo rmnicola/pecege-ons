@@ -35,20 +35,30 @@
       ]
     },
     {
-      "titulo": "Faça o recado",
+      "titulo": "Gere a evidência do pitch",
       "texto": [
         "Escolha a persona e o gráfico, abra `aula3/recado.py` e siga os passos do arquivo. Rode no terminal do VS Code (**Terminal → New Terminal**):"
       ],
       "comandos": "python aula3/recado.py",
-      "saida": "Recado gravado em saida/recado.png",
+      "saida": "Gráfico gravado em saida/recado.png",
       "depois": [
-        "Abra `saida/recado.png` no VS Code para ver o resultado. Rode quantas vezes quiser."
+        "Abra a imagem no VS Code para ver o resultado. Para gerar outro gráfico, troque `grafico` e `arquivo` no começo do script e rode de novo.",
+        "Para levar a imagem ao pitch deck, clique com o botão direito no arquivo, na pasta `saida/` do VS Code, e escolha **Download…**. Se o material está na sua máquina, o arquivo já está na pasta `playground/saida/`."
       ]
     }
   ],
   "problemas": [
-    ["`ModuleNotFoundError: No module named 'fontes'` no notebook", "O notebook precisa rodar na pasta `aula3`. Feche-o e abra de novo pelo explorador de arquivos, dentro de `/work/aula3`."],
-    ["**Select Kernel** não mostra o Python do playground", "Confira se a janela está conectada ao contêiner (canto inferior esquerdo: *Container pecege-ons-etl-playground-1*). Se estiver, `F1` → **Developer: Reload Window**."],
-    ["`ipykernel` ausente ou *kernel failed to start*", "O playground é anterior à aula 3. Rode `./preparar.sh` de novo."]
+    [
+      "`ModuleNotFoundError: No module named 'fontes'` no notebook",
+      "O notebook precisa rodar na pasta `aula3`. Feche-o e abra de novo pelo explorador de arquivos, dentro de `/work/aula3`."
+    ],
+    [
+      "**Select Kernel** não mostra o Python do playground",
+      "Confira se a janela está conectada ao contêiner (canto inferior esquerdo: *Container pecege-ons-etl-playground-1*). Se estiver, `F1` → **Developer: Reload Window**."
+    ],
+    [
+      "`ipykernel` ausente ou *kernel failed to start*",
+      "O playground é anterior à aula 3. Rode `./preparar.sh` de novo."
+    ]
   ]
 }
