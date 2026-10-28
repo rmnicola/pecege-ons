@@ -107,6 +107,11 @@
           "arquivo": "modelo-relatorio.docx"
         },
         {
+          "rotulo": "Modelo de relatório de uma folha",
+          "tipo": "modelo .pdf",
+          "arquivo": "modelo-relatorio.pdf"
+        },
+        {
           "rotulo": "FT Visual Vocabulary: que gráfico usar para cada pergunta",
           "link": "https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary",
           "tipo": "referência"
